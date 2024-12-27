@@ -1,11 +1,14 @@
+// src/App.js
 import React from 'react';
+import TreeOfUp from './components/Tree';
+import roadmapData from './data/roadmap';
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <h1>Hello Roadmap Tree</h1>
+    <div className="app">
+      <TreeOfUp roadmapData={roadmapData} />
     </div>
   );
-}
+};
 
 export default App;
