@@ -3,27 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Quarter from './Quarter';
 import './Phase.css';
 
-const Phase = ({ name, focus, years }) => {
+const Phase = ({ name, focus, years, expandedNode, setExpandedNode, containerVariants, nodeVariants, modalVariants }) => {
   const [expandedYear, setExpandedYear] = useState(null);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const yearVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  };
 
   return (
     <motion.div
@@ -40,7 +21,7 @@ const Phase = ({ name, focus, years }) => {
         <motion.div
           key={index}
           className={`year ${expandedYear === index ? 'expanded' : ''}`}
-          variants={yearVariants}
+          variants={nodeVariants}
           onClick={() => setExpandedYear(expandedYear === index ? null : index)}
         >
           <h3 className="year-name">{year.year}</h3>

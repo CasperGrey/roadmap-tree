@@ -1,4 +1,3 @@
-// src/components/Tree.js
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Node from './Node';
