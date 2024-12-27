@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Node from './Node';
 import Phase from './Phase';
 import config from '../utils/config';
-import './styles/components/Tree.css';
+import '.src/styles/components/Tree.css';
 
 const Tree = ({ roadmapData }) => {
   return (
