@@ -8,11 +8,12 @@ const TreeConnector = ({ start, end }) => {
       y1={start.y}
       x2={end.x}
       y2={end.y}
-      stroke="#E2E8F0"
-      strokeWidth="2"
+      stroke="#e2e8f0"
+      strokeWidth="3"
+      strokeLinecap="round"
       initial={{ pathLength: 0, opacity: 0 }}
       animate={{ pathLength: 1, opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
     />
   );
 };
