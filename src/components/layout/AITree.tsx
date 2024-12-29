@@ -1,128 +1,71 @@
-export default function AITree() {
-  const treeData = {
-    title: "FOUNDATION",
-    description: "Core AI governance and controls",
-    children: [
-      {
-        title: "POLICY & GOVERNANCE",
-        description: "Risk framework and controls",
-      },
-      {
-        title: "SECURITY CONTROLS",
-        description: "MS Purview implementation",
-      }
-    ]
-  };
+// src/App.tsx
+import React from 'react';
+import AITree from './components/layout/AITree';
 
+export default function App() {
   return (
-    <div className="relative w-full h-[800px] overflow-hidden">
-      <svg 
-        width="100%" 
-        height="100%" 
-        viewBox="-500 -100 2000 1000"
-        className="bg-transparent"
-      >
-        <defs>
-          {/* Add glowing effect for hover */}
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-
-          {/* Line gradient */}
-          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#003087" stopOpacity="0.6"/>
-            <stop offset="100%" stopColor="#003087" stopOpacity="0.2"/>
-          </linearGradient>
-        </defs>
-
-        {/* Connecting Lines */}
-        {treeData.children.map((child, index) => (
-          <motion.path
-            key={`line-${index}`}
-            d={`M 500,200 Q 500,${300 + index * 50} ${400 + index * 200},${400}`}
-            stroke="url(#lineGradient)"
-            strokeWidth="2"
-            fill="none"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-          />
-        ))}
-
-        {/* Nodes */}
-        <motion.g
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Root Node */}
-          <g transform="translate(500, 200)" className="cursor-pointer">
-            <motion.circle
-              r="60"
-              fill="#003087"
-              className="transition-all duration-300"
-              whileHover={{ scale: 1.1 }}
-              filter="url(#glow)"
-            />
-            <text
-              className="text-xl font-bold"
-              fill="white"
-              textAnchor="middle"
-              y="-10"
-            >
-              {treeData.title}
-            </text>
-            <text
-              className="text-sm"
-              fill="#94a3b8"
-              textAnchor="middle"
-              y="10"
-            >
-              {treeData.description}
-            </text>
-          </g>
-
-          {/* Child Nodes */}
-          {treeData.children.map((child, index) => (
-            <motion.g
-              key={`node-${index}`}
-              transform={`translate(${400 + index * 200}, 400)`}
-              className="cursor-pointer"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 + index * 0.2 }}
-            >
-              <motion.circle
-                r="50"
-                fill="#1B365D"
-                className="transition-all duration-300"
-                whileHover={{ scale: 1.1 }}
-                filter="url(#glow)"
+    <div className="w-screen min-h-screen bg-[#121212]">
+      {/* Hero Header Section */}
+      <div className="relative">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 w-full h-64">
+            {/* Decorative lines */}
+            <svg width="100%" height="100%" viewBox="0 0 1000 200" className="opacity-10">
+              <path 
+                d="M0,50 C250,0 750,0 1000,50 L1000,0 L0,0 Z" 
+                fill="#003087" 
               />
-              <text
-                className="text-lg font-bold"
-                fill="white"
-                textAnchor="middle"
-                y="-8"
-              >
-                {child.title}
-              </text>
-              <text
-                className="text-xs"
-                fill="#94a3b8"
-                textAnchor="middle"
-                y="8"
-              >
-                {child.description}
-              </text>
-            </motion.g>
-          ))}
-        </motion.g>
-      </svg>
+              {/* Add more decorative SVG elements */}
+            </svg>
+          </div>
+        </div>
+
+        {/* Main header content */}
+        <div className="relative z-10 px-8 pt-16 pb-24">
+          <div className="max-w-7xl mx-auto">
+            {/* Logo or icon */}
+            <div className="mb-8">
+              <svg width="60" height="60" viewBox="0 0 60 60" className="text-ract-blue">
+                {/* Add your logo SVG here */}
+                <circle cx="30" cy="30" r="25" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <path d="M20,30 L40,30 M30,20 L30,40" stroke="currentColor" strokeWidth="2"/>
+              </svg>
+            </div>
+
+            {/* Title and description */}
+            <h1 className="text-6xl font-bold text-white mb-6 tracking-tight">
+              AI Capability Tree
+            </h1>
+            <div className="flex items-center space-x-4 mb-8">
+              <div className="h-px w-12 bg-ract-blue"/>
+              <p className="text-xl text-gray-400">
+                Roadmap for AI implementation
+              </p>
+            </div>
+
+            {/* Optional metadata or additional info */}
+            <div className="flex space-x-6 text-sm text-gray-500">
+              <div className="flex items-center">
+                <span className="w-2 h-2 rounded-full bg-ract-blue mr-2"/>
+                <span>Version 1.0</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-2 h-2 rounded-full bg-ract-blue mr-2"/>
+                <span>Last updated: December 2024</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Connecting element to tree */}
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+            <div className="h-16 w-px bg-gradient-to-b from-ract-blue to-transparent"/>
+          </div>
+        </div>
+      </div>
+
+      {/* Tree Component */}
+      <AITree />
     </div>
   );
 }
