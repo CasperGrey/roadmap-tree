@@ -1,58 +1,127 @@
-// src/components/layout/AITree.tsx
-import React from 'react';
-
 export default function AITree() {
+  const treeData = {
+    title: "FOUNDATION",
+    description: "Core AI governance and controls",
+    children: [
+      {
+        title: "POLICY & GOVERNANCE",
+        description: "Risk framework and controls",
+      },
+      {
+        title: "SECURITY CONTROLS",
+        description: "MS Purview implementation",
+      }
+    ]
+  };
+
   return (
-    <div className="relative w-full min-h-screen bg-gradient-to-b from-ract-light to-white">
-      <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(45deg,transparent_40%,rgba(238,242,246,0.4)_60%)]" />
-      
+    <div className="relative w-full h-[800px] overflow-hidden">
       <svg 
         width="100%" 
         height="100%" 
-        viewBox="-500 -500 2000 2000"
-        className="relative z-10"
+        viewBox="-500 -100 2000 1000"
+        className="bg-transparent"
       >
         <defs>
-          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.15"/>
+          {/* Add glowing effect for hover */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
           </filter>
-          
-          {/* Gradient definitions */}
-          <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#003087" />
-            <stop offset="100%" stopColor="#1B365D" />
+
+          {/* Line gradient */}
+          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#003087" stopOpacity="0.6"/>
+            <stop offset="100%" stopColor="#003087" stopOpacity="0.2"/>
           </linearGradient>
         </defs>
 
-        {/* Foundation Node */}
-        <g transform="translate(500, 200)">
-          <circle 
-            r="60"
-            fill="url(#nodeGradient)"
-            filter="url(#shadow)"
-            className="transition-transform duration-300 hover:scale-105"
+        {/* Connecting Lines */}
+        {treeData.children.map((child, index) => (
+          <motion.path
+            key={`line-${index}`}
+            d={`M 500,200 Q 500,${300 + index * 50} ${400 + index * 200},${400}`}
+            stroke="url(#lineGradient)"
+            strokeWidth="2"
+            fill="none"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
           />
-          
-          <g transform="translate(80, 0)">
-            <text 
-              className="text-xl font-bold tracking-wide"
-              fill="#1B365D"
-              dominantBaseline="middle"
-              style={{ fontFamily: "'Inter', sans-serif" }}
+        ))}
+
+        {/* Nodes */}
+        <motion.g
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Root Node */}
+          <g transform="translate(500, 200)" className="cursor-pointer">
+            <motion.circle
+              r="60"
+              fill="#003087"
+              className="transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              filter="url(#glow)"
+            />
+            <text
+              className="text-xl font-bold"
+              fill="white"
+              textAnchor="middle"
+              y="-10"
             >
-              FOUNDATION
+              {treeData.title}
             </text>
-            <text 
-              y="25" 
+            <text
               className="text-sm"
-              fill="#58595B"
-              dominantBaseline="middle"
-              style={{ fontFamily: "'Inter', sans-serif" }}
+              fill="#94a3b8"
+              textAnchor="middle"
+              y="10"
             >
-              Core AI governance and controls
+              {treeData.description}
             </text>
           </g>
-        </g>
+
+          {/* Child Nodes */}
+          {treeData.children.map((child, index) => (
+            <motion.g
+              key={`node-${index}`}
+              transform={`translate(${400 + index * 200}, 400)`}
+              className="cursor-pointer"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 + index * 0.2 }}
+            >
+              <motion.circle
+                r="50"
+                fill="#1B365D"
+                className="transition-all duration-300"
+                whileHover={{ scale: 1.1 }}
+                filter="url(#glow)"
+              />
+              <text
+                className="text-lg font-bold"
+                fill="white"
+                textAnchor="middle"
+                y="-8"
+              >
+                {child.title}
+              </text>
+              <text
+                className="text-xs"
+                fill="#94a3b8"
+                textAnchor="middle"
+                y="8"
+              >
+                {child.description}
+              </text>
+            </motion.g>
+          ))}
+        </motion.g>
       </svg>
     </div>
   );
