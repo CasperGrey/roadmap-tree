@@ -5,23 +5,17 @@
 @layer base {
   body {
     @apply bg-gray-50;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
 @layer components {
-  .tree-node {
-    @apply transition-all duration-300 ease-in-out cursor-pointer;
+  .tree-node-title {
+    @apply text-2xl font-semibold text-gray-900 tracking-tight;
+    font-family: 'Inter', sans-serif;
   }
   
-  .node-circle {
-    @apply drop-shadow-lg transition-transform duration-300;
-  }
-  
-  .node-text {
-    @apply text-gray-800 font-medium leading-tight;
-  }
-  
-  .node-description {
-    @apply text-gray-500 text-sm mt-1;
+  .tree-node-description {
+    @apply text-base text-gray-600 mt-1;
   }
 }

@@ -14,21 +14,21 @@ const TreeNode = ({ title, description, x, y, color = 'foundation' }) => {
       <motion.circle
         r="40"
         className={`node-circle fill-${color}`}
+        filter="url(#shadow)"  // We'll add this filter
       />
       
-      {/* Text labels */}
-      <g transform="translate(120, 0)">
+      {/* Text group with better positioning */}
+      <g transform="translate(60, 0)">
         <text
-          className="node-text"
-          dominantBaseline="middle"
+          className="tree-node-title"
+          dy="-0.5em"
         >
           {title}
         </text>
         {description && (
           <text
-            y="25"
-            className="node-description"
-            dominantBaseline="middle"
+            className="tree-node-description"
+            dy="1.5em"
           >
             {description}
           </text>

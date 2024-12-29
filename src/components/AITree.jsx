@@ -31,41 +31,16 @@ const AITree = () => {
       <svg 
         width="100%" 
         height="100%" 
-        viewBox="0 0 800 600"
+        viewBox="0 0 1200 800"  // Wider viewBox
         className="bg-gray-50"
       >
-        <g>
-          {/* Root node */}
-          <TreeNode
-            title={treeData.foundation.title}
-            description={treeData.foundation.description}
-            x={treeData.foundation.x}
-            y={treeData.foundation.y}
-          />
-
-          {/* Child nodes */}
-          {treeData.foundation.children.map((child, index) => (
-            <React.Fragment key={index}>
-              <TreeConnector
-                start={{
-                  x: treeData.foundation.x,
-                  y: treeData.foundation.y
-                }}
-                end={{
-                  x: child.x,
-                  y: child.y
-                }}
-              />
-              <TreeNode
-                title={child.title}
-                description={child.description}
-                x={child.x}
-                y={child.y}
-                color="productivity"
-              />
-            </React.Fragment>
-          ))}
-        </g>
+        <defs>
+          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.15" />
+          </filter>
+        </defs>
+        
+        {/* Rest of the tree content */}
       </svg>
     </div>
   );
