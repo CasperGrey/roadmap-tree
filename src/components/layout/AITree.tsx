@@ -1,68 +1,11 @@
-import React, { useState } from 'react';
-import TreeNode from '../nodes/TreeNode';
-import TreeConnector from '../connectors/TreeConnector';
-import { NodeData } from '../../types/tree';
-
-const initialTreeData: NodeData = {
-  title: "FOUNDATION",
-  description: "Core AI governance and controls",
-  x: 1000,
-  y: 500,
-  children: [
-    {
-      title: "POLICY & GOVERNANCE",
-      description: "Risk framework",
-      x: 700,
-      y: 700,
-      color: '#3b82f6'
-    },
-    {
-      title: "SECURITY CONTROLS",
-      description: "MS Purview implementation",
-      x: 1300,
-      y: 700,
-      color: '#3b82f6'
-    }
-  ]
-};
-
-const AITree: React.FC = () => {
-  const [activeNode, setActiveNode] = useState<string | null>(null);
-  const [isAnimated, setIsAnimated] = useState(true);
-
-  const renderNode = (node: NodeData, index: number) => {
-    const nodeId = `${node.title}-${index}`;
-    
-    return (
-      <React.Fragment key={nodeId}>
-        {node.children?.map((child, childIndex) => (
-          <React.Fragment key={`${nodeId}-conn-${childIndex}`}>
-            <TreeConnector
-              startX={node.x}
-              startY={node.y}
-              endX={child.x}
-              endY={child.y}
-              animated={isAnimated}
-            />
-            {renderNode(child, childIndex)}
-          </React.Fragment>
-        ))}
-        <TreeNode
-          {...node}
-          isActive={activeNode === nodeId}
-          isAnimated={isAnimated}
-          onClick={() => setActiveNode(nodeId)}
-        />
-      </React.Fragment>
-    );
-  };
-
+// src/components/layout/AITree.tsx
+const AITree = () => {
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-screen">
       <svg 
         width="100%" 
-        height="900"
-        viewBox="0 0 2000 1000"
+        height="100%" 
+        viewBox="-500 -500 2000 2000" // Adjust viewBox to center content better
         className="bg-gray-50"
       >
         <defs>
@@ -70,10 +13,35 @@ const AITree: React.FC = () => {
             <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.15"/>
           </filter>
         </defs>
-        {renderNode(initialTreeData, 0)}
+
+        {/* Foundation Node */}
+        <g transform="translate(500, 200)"> {/* Adjust position */}
+          <circle 
+            r="60"
+            fill="#4338ca"
+            filter="url(#shadow)"
+          />
+          
+          {/* Text positioned with better spacing */}
+          <g transform="translate(80, 0)">
+            <text 
+              className="text-xl font-bold"
+              fill="#1a2b4b"
+              dominantBaseline="middle"
+            >
+              FOUNDATION
+            </text>
+            <text 
+              y="25" 
+              className="text-sm"
+              fill="#64748b"
+              dominantBaseline="middle"
+            >
+              Core AI governance and controls
+            </text>
+          </g>
+        </g>
       </svg>
     </div>
   );
 };
-
-export default AITree;
