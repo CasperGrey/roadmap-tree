@@ -1,15 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-      "./src/**/*.{js,jsx,ts,tsx}",
-    ],
+    content: ["./src/**/*.{js,jsx,ts,tsx}"],
     theme: {
       extend: {
         colors: {
-          foundation: '#4338ca',
-          productivity: '#3b82f6',
-          'tree-text': '#1a2b4b',
-          'tree-description': '#64748b',
+          'ract-blue': '#003087',      // Primary blue
+          'ract-navy': '#1B365D',      // Dark blue
+          'ract-red': '#ED1C24',       // Red accent
+          'ract-light': '#EEF2F6',     // Light background
+          'ract-grey': '#58595B'       // Text grey
         },
       },
     },
