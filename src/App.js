@@ -1,14 +1,12 @@
-// src/App.js
 import React from 'react';
-import Tree from './components/Tree';
-import roadmapData from './data/roadmap';
+import AITree from './components/AITree';
 
-const App = () => {
+function App() {
   return (
-    <div className="app">
-      <Tree roadmapData={roadmapData} />
+    <div className="App">
+      <AITree />
     </div>
   );
-};
+}
 
 export default App;
