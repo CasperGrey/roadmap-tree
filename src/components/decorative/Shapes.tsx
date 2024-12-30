@@ -1,15 +1,15 @@
 // src/components/decorative/Shapes.tsx
 export function HeaderDecoration() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 300" width="100%" height="300" preserveAspectRatio="xMidYMid slice" className="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 300" width="100%" height="300"  className="w-full">
             <rect width="100%" height="300" fill="#1C3559"/>
 
             {/* Horizon Line */}
-            <line x1="0" y1="260" x2="1920" y2="220" stroke="white" strokeWidth="4"/>
-            <line x1="0" y1="265" x2="1920" y2="220" stroke="white" strokeWidth="4"/>
-            <line x1="0" y1="275" x2="1920" y2="220" stroke="#204B87" strokeWidth="4"/>
-            <line x1="0" y1="280" x2="1920" y2="220" stroke="#204B87" strokeWidth="4"/>
-            <line x1="0" y1="285" x2="1920" y2="220" stroke="#204B87" strokeWidth="4"/>
+            <line x1="0" y1="260" x2="1920" y2="260" stroke="white" strokeWidth="2"/>
+            <line x1="0" y1="265" x2="1920" y2="265" stroke="white" strokeWidth="2"/>
+            <line x1="0" y1="275" x2="1920" y2="275" stroke="#204B87" strokeWidth="2"/>
+            <line x1="0" y1="280" x2="1920" y2="280" stroke="#204B87" strokeWidth="2"/>
+            <line x1="0" y1="285" x2="1920" y2="285" stroke="#204B87" strokeWidth="2"/>
 
             {/* Small Abstract Trees */}
             <polygon points="800,220 810,200 820,220" fill="#204B87"/>

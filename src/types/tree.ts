@@ -21,3 +21,16 @@ export interface NodeData {
     isActive?: boolean;
     isAnimated?: boolean;
   }
+
+export type SwimLane = 'enable' | 'engage' | 'evolve';
+
+export interface TreeNode {
+    id: string;
+    type: 'parent' | 'sub' | 'sub2';
+    title: string;
+    description?: string;
+    icon: string;
+    swimLane?: SwimLane;
+    parentId?: string;
+    children?: TreeNode[];
+}

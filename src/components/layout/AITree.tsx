@@ -1,105 +1,72 @@
-import React from 'react';
-import { TreeNode } from '../../data/treeData';
+import React, { useState, useEffect, useRef } from 'react';
+import { TreeNode as TreeNodeType } from '../../types/tree';
+import { TreeNodeComponent } from '../nodes/TreeNode';
+import { TreeConnector } from '../connectors/TreeConnector';
+import { SwimLanes } from './SwimLanes';
 
-interface AITreeProps {
-    data: TreeNode;
-}
+export default function AITree({ data }: { data: TreeNodeType[] }) {
+    const [treeHeight, setTreeHeight] = useState(0);
+    const treeRef = useRef<HTMLDivElement>(null);
 
-export default function AITree({ data }: AITreeProps) {
-    const renderNode = (node: TreeNode, x: number, y: number) => {
-        const isParent = node.type === 'parent';
+    useEffect(() => {
+        if (treeRef.current) {
+            setTreeHeight(treeRef.current.getBoundingClientRect().height);
+        }
+    }, [data]);
 
-        return (
-            <g key={node.id}>
-                {/* Node Circle */}
-                <circle
-                    cx={x}
-                    cy={y}
-                    r="40"
-                    fill="#204B87"
-                    stroke="white"
-                    strokeWidth="2"
-                    className="cursor-pointer hover:scale-105 transition-transform"
-                />
+    const getNodePosition = (node: TreeNodeType) => {
+        let x = 0;
+        if (node.type === 'parent') {
+            x = 200;
+        } else if (node.type === 'sub') {
+            x = 400;
+        } else {
+            x = 600;
+        }
 
-                {/* Icon */}
-                <svg x={x-20} y={y-20} width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white">
-                    <path d={node.icon} strokeWidth="2" />
-                </svg>
+        let y = 0;
+        if (node.swimLane) {
+            const laneHeight = treeHeight / 3;
+            const laneIndex = ['enable', 'engage', 'evolve'].indexOf(node.swimLane);
+            y = (laneHeight * laneIndex) + (laneHeight / 2);
+        }
 
-                {/* Title */}
-                {isParent ? (
-                    <text
-                        x={x + 60}
-                        y={y}
-                        fill="white"
-                        style={{ fontFamily: 'Karla, sans-serif' }}
-                        className="text-xl"
-                        dominantBaseline="middle"
-                    >
-                        {node.title}
-                    </text>
-                ) : (
-                    <text
-                        x={x}
-                        y={y + 60}
-                        fill="white"
-                        style={{ fontFamily: 'Poppins, sans-serif' }}
-                        className="text-base text-center"
-                        textAnchor="middle"
-                    >
-                        {node.title}
-                    </text>
-                )}
-
-                {/* Children */}
-                {node.children?.map((child, index) => {
-                    let childX = x;
-                    let childY = y;
-
-                    if (child.type === 'sub') {
-                        childY += 200;  // Vertical spacing
-                    } else if (child.type === 'sub2') {
-                        childX += 150;  // Diagonal spacing
-                        childY += 150;
-                    }
-
-                    return (
-                        <g key={child.id}>
-                            <line
-                                x1={x}
-                                y1={y}
-                                x2={childX}
-                                y2={childY}
-                                stroke="white"
-                                strokeWidth="2"
-                            />
-                            {renderNode(child, childX, childY)}
-                        </g>
-                    );
-                })}
-            </g>
-        );
+        return { x, y };
     };
 
     return (
-        <div className="w-full h-full absolute top-0 left-0" style={{ backgroundColor: '#1C3559' }}>
-            {/* Background Pattern */}
-            <div className="absolute inset-0 overflow-hidden">
-                <svg width="100%" height="100%" className="opacity-10">
-                    <path
-                        d="M-100,100 C150,200 350,0 500,100 C650,200 850,0 1000,100 V300 H-100 Z"
-                        fill="white"
-                    />
-                </svg>
-            </div>
+        <div className="relative" ref={treeRef}>
+            <SwimLanes height={treeHeight} />
 
-            {/* Tree */}
-            <div className="relative z-10">
-                <svg width="100%" height="900" viewBox="-500 0 2000 1000">
-                    {renderNode(data, 500, 100)}
-                </svg>
-            </div>
+            <svg className="w-full" style={{ height: treeHeight }}>
+                {data.map(parentNode => {
+                    const pos = getNodePosition(parentNode);
+                    return (
+                        <g key={parentNode.id}>
+                            <TreeNodeComponent
+                                node={parentNode}
+                                position={pos}
+                            />
+
+                            {parentNode.children?.map(childNode => {
+                                const childPos = getNodePosition(childNode);
+                                return (
+                                    <g key={childNode.id}>
+                                        <TreeConnector
+                                            start={pos}
+                                            end={childPos}
+                                        />
+                                        <TreeNodeComponent
+                                            node={childNode}
+                                            position={childPos}
+                                        />
+                                    </g>
+                                );
+                            })}
+                        </g>
+                    );
+                })}
+            </svg>
         </div>
     );
 }
