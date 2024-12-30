@@ -4,7 +4,7 @@ import AITree from './components/layout/AITree';
 
 export default function App() {
   return (
-    <div className="w-screen min-h-screen bg-[#121212]">  {/* Dark background like Tree of Up */}
+    <div className="w-screen min-h-screen bg-[#121212]">  {/* Dark background  s like Tree of Up */}
     <div className="relative overflow-hidden">
       {/* Decorative header section */}
       <div className="px-8 py-12 relative z-10">

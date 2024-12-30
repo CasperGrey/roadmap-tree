@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export default function AITree() {
   const treeData = {
     title: "FOUNDATION",
-    description: "Core AI governance and controls",
+    description: "Core AI governance and contrsols",
     children: [
       {
         title: "POLICY & GOVERNANCE",
