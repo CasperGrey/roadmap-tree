@@ -1,6 +1,7 @@
   // src/App.tsx
 import React from 'react';
 import AITree from './components/layout/AITree';
+import { treeData } from './data/treeData';
 
 export default function App() {
   return (
@@ -29,7 +30,7 @@ export default function App() {
         </svg>
       </div>
     </div>
-    <AITree />
+      <AITree data={treeData} />
   </div>
   );
 }
