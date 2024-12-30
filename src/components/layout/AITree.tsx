@@ -8,7 +8,6 @@ interface AITreeProps {
 export default function AITree({ data }: AITreeProps) {
     const renderNode = (node: TreeNode, x: number, y: number) => {
         const isParent = node.type === 'parent';
-        const isSub = node.type === 'sub';
 
         return (
             <g key={node.id}>
@@ -34,7 +33,8 @@ export default function AITree({ data }: AITreeProps) {
                         x={x + 60}
                         y={y}
                         fill="white"
-                        className="font-karla text-xl"
+                        style={{ fontFamily: 'Karla, sans-serif' }}
+                        className="text-xl"
                         dominantBaseline="middle"
                     >
                         {node.title}
@@ -44,22 +44,23 @@ export default function AITree({ data }: AITreeProps) {
                         x={x}
                         y={y + 60}
                         fill="white"
-                        className="font-poppins text-base text-center"
+                        style={{ fontFamily: 'Poppins, sans-serif' }}
+                        className="text-base text-center"
                         textAnchor="middle"
                     >
                         {node.title}
                     </text>
                 )}
 
-                {/* Render children */}
+                {/* Children */}
                 {node.children?.map((child, index) => {
                     let childX = x;
                     let childY = y;
 
                     if (child.type === 'sub') {
-                        childY += 200;  // Vertical spacing for sub nodes
+                        childY += 200;  // Vertical spacing
                     } else if (child.type === 'sub2') {
-                        childX += 150;  // Diagonal spacing for sub2 nodes
+                        childX += 150;  // Diagonal spacing
                         childY += 150;
                     }
 
@@ -82,9 +83,9 @@ export default function AITree({ data }: AITreeProps) {
     };
 
     return (
-        <div className="bg-bg-dark w-full min-h-screen">
+        <div className="w-full h-full absolute top-0 left-0" style={{ backgroundColor: '#1C3559' }}>
+            {/* Background Pattern */}
             <div className="absolute inset-0 overflow-hidden">
-                {/* Background wave pattern */}
                 <svg width="100%" height="100%" className="opacity-10">
                     <path
                         d="M-100,100 C150,200 350,0 500,100 C650,200 850,0 1000,100 V300 H-100 Z"
@@ -93,9 +94,12 @@ export default function AITree({ data }: AITreeProps) {
                 </svg>
             </div>
 
-            <svg width="100%" height="900" viewBox="-500 0 2000 1000">
-                {renderNode(data, 500, 100)}
-            </svg>
+            {/* Tree */}
+            <div className="relative z-10">
+                <svg width="100%" height="900" viewBox="-500 0 2000 1000">
+                    {renderNode(data, 500, 100)}
+                </svg>
+            </div>
         </div>
     );
 }
