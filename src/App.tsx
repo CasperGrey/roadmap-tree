@@ -5,7 +5,7 @@ import { treeData } from './data/treeData';
 
 export default function App() {
     return (
-        <div className="min-h-screen bg-[#1C3559]">
+        <div className="absolute w-full h-full bg-[#1C3559]">
             <PageHeader />
             <AITree data={treeData} />
         </div>
