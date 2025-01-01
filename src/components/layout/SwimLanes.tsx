@@ -1,27 +1,30 @@
 // src/components/layout/SwimLanes.tsx
-interface SwimLanesProps {
-    height: number;  // Calculated based on content
-}
+export function SwimLanes() {
+    const lanes = ['Enable', 'Engage', 'Evolve'];
+    const laneHeight = 1337.12 / 3;
 
-export function SwimLanes({ height }: SwimLanesProps) {
     return (
-        <div className="absolute left-0 w-full" style={{ height }}>
-            {['enable', 'engage', 'evolve'].map((lane, index) => (
-                <div
-                    key={lane}
-                    className="border-t border-white/10"
-                    style={{
-                        top: `${(index * 100) / 3}%`,
-                        height: `${100 / 3}%`,
-                        position: 'absolute',
-                        width: '100%'
-                    }}
-                >
-          <span className="absolute -top-4 left-4 text-white/40 uppercase text-sm">
-            {lane}
-          </span>
-                </div>
+        <g className="swimlanes">
+            {lanes.map((lane, index) => (
+                <g key={lane}>
+                    <rect
+                        x="0"
+                        y={index * laneHeight}
+                        width="2241.46"
+                        height={laneHeight}
+                        fill="transparent"
+                        stroke="rgba(255, 255, 255, 0.1)"
+                    />
+                    <text
+                        x="24"
+                        y={index * laneHeight + 40}
+                        fill="rgba(255, 255, 255, 0.6)"
+                        className="text-lg font-light"
+                    >
+                        {lane}
+                    </text>
+                </g>
             ))}
-        </div>
+        </g>
     );
 }
