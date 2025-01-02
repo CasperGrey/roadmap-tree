@@ -1,7 +1,15 @@
 // src/components/nodes/AddNodeModal.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AddNodeModalProps } from '../../types/tree';
+import { NewNodeData, SwimLane } from '../../types/tree';
+
+interface AddNodeModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    parentId: string;
+    selectedLane: SwimLane;
+    onAdd: (nodeData: NewNodeData) => void;
+}
 
 export function AddNodeModal({
                                  isOpen,
@@ -9,7 +17,6 @@ export function AddNodeModal({
                                  onAdd,
                                  parentId,
                                  selectedLane,
-                                 existingNodes = []
                              }: AddNodeModalProps) {
     const [title, setTitle] = useState('');
     const [icon, setIcon] = useState('');
@@ -28,21 +35,15 @@ export function AddNodeModal({
             return;
         }
 
-        // Generate clean ID from title
-        const cleanId = title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
-
-        onAdd({
+        const newNode: NewNodeData = {
             type: 'sub',
             title: title.trim(),
             icon: icon.trim(),
             swimLane: selectedLane,
             parentId
-        });
+        };
 
-        onClose();
+        onAdd(newNode);
 
         // Reset form
         setTitle('');

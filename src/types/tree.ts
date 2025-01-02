@@ -18,23 +18,14 @@ export interface TreeNode {
     children?: TreeNode[];
 }
 
+export type NewNodeData = Omit<TreeNode, 'id' | 'children'> & {
+    parentId: string;  // Make parentId required for new nodes
+    swimLane: SwimLane; // Make swimLane required for new nodes
+};
+
 export interface TreeConnectorProps {
     start: Position;
     end: Position;
     startRadius?: number;
     endRadius?: number;
-}
-
-export interface AddNodeModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onAdd: (nodeData: Omit<TreeNode, 'id' | 'children'>) => void;
-    parentId: string;
-    selectedLane: SwimLane;
-    existingNodes?: TreeNode[];
-}
-
-export interface AddNodeData {
-    parentId: string;
-    swimLane: SwimLane;
 }

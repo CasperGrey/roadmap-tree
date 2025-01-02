@@ -1,6 +1,6 @@
 // src/components/layout/AITree.tsx
 import React, { useState } from 'react';
-import { TreeNode as TreeNodeType, SwimLane, Position } from '../../types/tree';
+import { TreeNode as TreeNodeType, SwimLane, Position, NewNodeData } from '../../types/tree';
 import { SwimLanes } from './SwimLanes';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { NodeTree } from '../nodes/NodeTree';
@@ -8,7 +8,7 @@ import { ZoomableViewport } from './ZoomableViewport';
 
 interface AITreeProps {
     data: TreeNodeType[];
-    onAddNode: (nodeData: Omit<TreeNodeType, 'id' | 'children'>) => void;
+    onAddNode: (nodeData: NewNodeData) => void;
 }
 
 export default function AITree({ data, onAddNode }: AITreeProps) {
@@ -55,22 +55,20 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     };
 
     return (
-        <>
-            <ZoomableViewport>
-                <SwimLanes />
-                {data.map((node, index) => (
-                    <NodeTree
-                        key={node.id}
-                        node={node}
-                        position={getNodePosition(node, index)}
-                        index={index}
-                        getNodePosition={getNodePosition}
-                        selectedLane={selectedLanes[node.id] || 'enable'}
-                        onLaneChange={handleLaneChange}
-                        onAddClick={handleAddClick}
-                    />
-                ))}
-            </ZoomableViewport>
+        <ZoomableViewport>
+            <SwimLanes />
+            {data.map((node, index) => (
+                <NodeTree
+                    key={node.id}
+                    node={node}
+                    position={getNodePosition(node, index)}
+                    index={index}
+                    getNodePosition={getNodePosition}
+                    selectedLane={selectedLanes[node.id] || 'enable'}
+                    onLaneChange={handleLaneChange}
+                    onAddClick={handleAddClick}
+                />
+            ))}
 
             {activeParentId && (
                 <AddNodeModal
@@ -79,16 +77,15 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                         setIsModalOpen(false);
                         setActiveParentId(null);
                     }}
-                    onAdd={(nodeData) => {
+                    parentId={activeParentId}
+                    selectedLane={selectedLanes[activeParentId] || 'enable'}
+                    onAdd={(nodeData: NewNodeData) => {
                         onAddNode(nodeData);
                         setIsModalOpen(false);
                         setActiveParentId(null);
                     }}
-                    parentId={activeParentId}
-                    selectedLane={selectedLanes[activeParentId] || 'enable'}
-                    existingNodes={data}
                 />
             )}
-        </>
+        </ZoomableViewport>
     );
 }

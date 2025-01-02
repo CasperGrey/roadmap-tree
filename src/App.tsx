@@ -3,34 +3,44 @@ import React, { useState } from 'react';
 import AITree from './components/layout/AITree';
 import PageHeader from './components/header/PageHeader';
 import { treeData as initialTreeData } from './data/treeData';
-import { TreeNode, SwimLane } from './types/tree';
-
-interface AddNodeData {
-    parentId: string;
-    swimLane: SwimLane;
-}
+import { TreeNode, NewNodeData } from './types/tree';
 
 export default function App() {
     const [treeData, setTreeData] = useState(initialTreeData);
 
-    const handleAddNode = ({ parentId, swimLane }: AddNodeData) => {
+    const handleAddNode = (nodeData: NewNodeData) => {
         setTreeData(currentData => {
             return currentData.map(node => {
-                if (node.id === parentId) {
+                if (node.id === nodeData.parentId) {
+                    const existingChildren = node.children || [];
+                    const existingSub = existingChildren.find(child => child.type === 'sub');
+
                     // Create new node
                     const newNode: TreeNode = {
-                        id: crypto.randomUUID(),
-                        type: 'sub',
-                        title: 'New Node',
-                        icon: '+',
-                        swimLane,
-                        parentId,
+                        id: nodeData.title
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-|-$)/g, ''),
+                        ...nodeData,
+                        children: []
                     };
 
-                    // Add to children array
+                    if (existingSub) {
+                        // Move existing sub node under new node
+                        newNode.children = [existingSub];
+                        return {
+                            ...node,
+                            children: [
+                                ...existingChildren.filter(child => child.id !== existingSub.id),
+                                newNode
+                            ]
+                        };
+                    }
+
+                    // Add new node to children array
                     return {
                         ...node,
-                        children: [...(node.children || []), newNode]
+                        children: [...existingChildren, newNode]
                     };
                 }
                 return node;
