@@ -64,7 +64,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     };
 
     return (
-        <>
+        <div className="relative">
             <ZoomableViewport>
                 <SwimLanes />
                 {data.map((node, index) => (
@@ -81,6 +81,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                 ))}
             </ZoomableViewport>
 
+            {/* Move modal outside of ZoomableViewport */}
             <AddNodeModal
                 isOpen={isModalOpen}
                 onClose={() => {
@@ -92,6 +93,12 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                 selectedLane={activeParentId ? selectedLanes[activeParentId] || 'enable' : 'enable'}
                 onAdd={handleAddNode}
             />
-        </>
+
+            {/* Debug element to show modal state */}
+            <div className="fixed top-0 left-0 bg-black/50 text-white p-2" style={{ zIndex: 9998 }}>
+                Modal open: {isModalOpen ? 'true' : 'false'}<br />
+                Active parent: {activeParentId}
+            </div>
+        </div>
     );
 }
