@@ -26,6 +26,7 @@ export type NewNodeData = Omit<TreeNode, 'id' | 'children'> & {
 export interface TreeConnectorProps {
     start: Position;
     end: Position;
+    nodeType: NodeType;
     startRadius?: number;
     endRadius?: number;
 }

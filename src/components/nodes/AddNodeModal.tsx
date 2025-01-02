@@ -10,7 +10,7 @@ interface AddNodeModalProps {
     parentId: string;
     selectedLane: SwimLane;
     onAdd: (nodeData: NewNodeData) => void;
-    nodeType?: 'sub' | 'sub2';
+    nodeType: 'sub' | 'sub2';
 }
 
 export function AddNodeModal({
@@ -63,7 +63,7 @@ export function AddNodeModal({
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4"
+                        className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4 text-white"
                         onClick={e => e.stopPropagation()}
                     >
                         <h2 className="text-xl font-bold text-white mb-6">
@@ -80,8 +80,8 @@ export function AddNodeModal({
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
-                                            border border-white/20 focus:border-white/50
-                                            focus:outline-none focus:ring-1 focus:ring-white/50"
+                                             border border-white/20 focus:border-white/50
+                                             focus:outline-none focus:ring-1 focus:ring-white/50"
                                     placeholder="Enter node title"
                                 />
                             </div>
@@ -95,8 +95,8 @@ export function AddNodeModal({
                                     value={icon}
                                     onChange={(e) => setIcon(e.target.value)}
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
-                                            border border-white/20 focus:border-white/50
-                                            focus:outline-none focus:ring-1 focus:ring-white/50"
+                                             border border-white/20 focus:border-white/50
+                                             focus:outline-none focus:ring-1 focus:ring-white/50"
                                     placeholder="Paste Font Awesome icon URL"
                                 />
                             </div>
@@ -112,14 +112,14 @@ export function AddNodeModal({
                                     type="button"
                                     onClick={onClose}
                                     className="px-4 py-2 bg-white/10 hover:bg-white/20
-                                            text-white rounded-md transition-colors"
+                                             text-white rounded-md transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-4 py-2 bg-blue-500 hover:bg-blue-600
-                                            text-white rounded-md transition-colors"
+                                             text-white rounded-md transition-colors"
                                 >
                                     Add Node
                                 </button>

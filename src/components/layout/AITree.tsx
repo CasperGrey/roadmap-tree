@@ -15,6 +15,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     const [selectedLanes, setSelectedLanes] = useState<Record<string, SwimLane>>({});
     const [activeParentId, setActiveParentId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeNodeType, setActiveNodeType] = useState<'sub' | 'sub2'>('sub');
 
     const getParentPosition = (parentId?: string): Position => {
         if (!parentId) return { x: 0, y: 0 };
@@ -29,19 +30,26 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
             const spacing = 2241.46 / 5;
             return { x: spacing + (index * spacing), y: 100 };
         }
+
+        const parentPos = getParentPosition(node.parentId);
+
         if (node.type === 'sub' && node.parentId) {
             const laneHeight = 1337.12 / 3;
-            const laneIndex = node.swimLane === 'enable' ? 0 : node.swimLane === 'engage' ? 1 : 2;
-            const parentPos = getParentPosition(node.parentId);
+            const laneIndex = node.swimLane === 'enable' ? 0 :
+                node.swimLane === 'engage' ? 1 : 2;
             return {
                 x: parentPos.x,
                 y: (laneHeight * laneIndex) + (laneHeight / 2)
             };
         }
+
         if (node.type === 'sub2' && node.parentId) {
-            const parentPos = getParentPosition(node.parentId);
-            return { x: parentPos.x + 150, y: parentPos.y + 150 };
+            return {
+                x: parentPos.x + 150,  // Move to the right of parent
+                y: parentPos.y + 100   // Move down diagonally
+            };
         }
+
         return { x: 0, y: 0 };
     };
 
@@ -49,18 +57,11 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
         setSelectedLanes(prev => ({ ...prev, [parentId]: lane }));
     };
 
-    const handleAddClick = (parentId: string) => {
-        console.log('Add clicked for parent:', parentId);
+    const handleAddClick = (parentId: string, nodeType: 'sub' | 'sub2') => {
+        console.log('Adding node:', { parentId, nodeType });
         setActiveParentId(parentId);
+        setActiveNodeType(nodeType);
         setIsModalOpen(true);
-        console.log('Modal state:', { isModalOpen: true, activeParentId: parentId });
-    };
-
-    const handleAddNode = (nodeData: NewNodeData) => {
-        console.log('Adding node:', nodeData);
-        onAddNode(nodeData);
-        setIsModalOpen(false);
-        setActiveParentId(null);
     };
 
     return (
@@ -81,24 +82,26 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                 ))}
             </ZoomableViewport>
 
-            {/* Move modal outside of ZoomableViewport */}
-            <AddNodeModal
-                isOpen={isModalOpen}
-                onClose={() => {
-                    console.log('Closing modal');
-                    setIsModalOpen(false);
-                    setActiveParentId(null);
-                }}
-                parentId={activeParentId || ''}
-                selectedLane={activeParentId ? selectedLanes[activeParentId] || 'enable' : 'enable'}
-                onAdd={handleAddNode}
-            />
-
-            {/* Debug element to show modal state */}
-            <div className="fixed top-0 left-0 bg-black/50 text-white p-2" style={{ zIndex: 9998 }}>
-                Modal open: {isModalOpen ? 'true' : 'false'}<br />
-                Active parent: {activeParentId}
-            </div>
+            {activeParentId && (
+                <AddNodeModal
+                    isOpen={isModalOpen}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setActiveParentId(null);
+                    }}
+                    parentId={activeParentId}
+                    selectedLane={selectedLanes[activeParentId] || 'enable'}
+                    onAdd={(nodeData: NewNodeData) => {
+                        onAddNode({
+                            ...nodeData,
+                            type: activeNodeType
+                        });
+                        setIsModalOpen(false);
+                        setActiveParentId(null);
+                    }}
+                    nodeType={activeNodeType}
+                />
+            )}
         </div>
     );
 }
