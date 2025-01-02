@@ -9,14 +9,10 @@ export default function App() {
     const [treeData, setTreeData] = useState(initialTreeData);
 
     const handleAddNode = (nodeData: NewNodeData) => {
-        console.log('App receiving:', nodeData);
         setTreeData(currentData => {
             return currentData.map(node => {
                 if (node.id === nodeData.parentId) {
                     const existingChildren = node.children || [];
-                    const existingSub = existingChildren.find(child => child.type === 'sub');
-
-                    // Create new node
                     const newNode: TreeNode = {
                         id: nodeData.title
                             .toLowerCase()
@@ -26,22 +22,50 @@ export default function App() {
                         children: []
                     };
 
-                    if (existingSub) {
-                        // Move existing sub node under new node
-                        newNode.children = [existingSub];
-                        return {
-                            ...node,
-                            children: [
-                                ...existingChildren.filter(child => child.id !== existingSub.id),
-                                newNode
-                            ]
-                        };
+                    // If adding to a parent and there's an existing sub node
+                    if (node.type === 'parent') {
+                        const existingSub = existingChildren.find(child => child.type === 'sub');
+                        if (existingSub) {
+                            // Move existing sub under new node
+                            newNode.children = [existingSub];
+                            return {
+                                ...node,
+                                children: [
+                                    ...existingChildren.filter(child => child.id !== existingSub.id),
+                                    newNode
+                                ]
+                            };
+                        }
                     }
 
                     // Add new node to children array
                     return {
                         ...node,
                         children: [...existingChildren, newNode]
+                    };
+                }
+
+                // Check children recursively
+                if (node.children) {
+                    return {
+                        ...node,
+                        children: node.children.map(child => {
+                            if (child.id === nodeData.parentId) {
+                                const newNode: TreeNode = {
+                                    id: nodeData.title
+                                        .toLowerCase()
+                                        .replace(/[^a-z0-9]+/g, '-')
+                                        .replace(/(^-|-$)/g, ''),
+                                    ...nodeData,
+                                    children: []
+                                };
+                                return {
+                                    ...child,
+                                    children: [...(child.children || []), newNode]
+                                };
+                            }
+                            return child;
+                        })
                     };
                 }
                 return node;

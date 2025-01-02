@@ -36,36 +36,24 @@ export function AddNodeModal({
             return;
         }
 
-        const newNode: NewNodeData = {
+        onAdd({
             type: 'sub',
             title: title.trim(),
             icon: icon.trim(),
             swimLane: selectedLane,
             parentId
-        };
+        });
 
-        onAdd(newNode);
-
-        // Reset form
         setTitle('');
         setIcon('');
         setError(null);
     };
 
-    const modalContent = (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 flex items-center justify-center"
-                    style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 9999
-                    }}
+                    className="fixed inset-0 flex items-center justify-center bg-black/75 z-50"
                     onClick={onClose}
                 >
                     <motion.div
@@ -88,9 +76,8 @@ export function AddNodeModal({
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
-                                             border border-white/20 focus:border-white/50
-                                             focus:outline-none focus:ring-1 focus:ring-white/50
-                                             placeholder-white/50"
+                                            border border-white/20 focus:border-white/50
+                                            focus:outline-none focus:ring-1 focus:ring-white/50"
                                     placeholder="Enter node title"
                                 />
                             </div>
@@ -104,32 +91,31 @@ export function AddNodeModal({
                                     value={icon}
                                     onChange={(e) => setIcon(e.target.value)}
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
-                                             border border-white/20 focus:border-white/50
-                                             focus:outline-none focus:ring-1 focus:ring-white/50
-                                             placeholder-white/50"
+                                            border border-white/20 focus:border-white/50
+                                            focus:outline-none focus:ring-1 focus:ring-white/50"
                                     placeholder="Paste Font Awesome icon URL"
                                 />
                             </div>
 
                             {error && (
-                                <div className="text-red-400 text-sm mt-2">
+                                <div className="text-red-400 text-sm">
                                     {error}
                                 </div>
                             )}
 
-                            <div className="flex justify-end space-x-3 mt-6">
+                            <div className="flex justify-end gap-3 mt-6">
                                 <button
                                     type="button"
                                     onClick={onClose}
                                     className="px-4 py-2 bg-white/10 hover:bg-white/20
-                                             text-white rounded-md transition-colors"
+                                            text-white rounded-md transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-4 py-2 bg-blue-500 hover:bg-blue-600
-                                             text-white rounded-md transition-colors"
+                                            text-white rounded-md transition-colors"
                                 >
                                     Add Node
                                 </button>
@@ -139,7 +125,5 @@ export function AddNodeModal({
                 </div>
             )}
         </AnimatePresence>
-    );
-
-    return createPortal(modalContent, document.body);
+        , document.body);
 }
