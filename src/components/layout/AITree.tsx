@@ -55,6 +55,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     };
 
     return (
+        <>
         <ZoomableViewport>
             <SwimLanes />
             {data.map((node, index) => (
@@ -69,23 +70,24 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                     onAddClick={handleAddClick}
                 />
             ))}
-
-            {activeParentId && (
-                <AddNodeModal
-                    isOpen={isModalOpen}
-                    onClose={() => {
-                        setIsModalOpen(false);
-                        setActiveParentId(null);
-                    }}
-                    parentId={activeParentId}
-                    selectedLane={selectedLanes[activeParentId] || 'enable'}
-                    onAdd={(nodeData: NewNodeData) => {
-                        onAddNode(nodeData);
-                        setIsModalOpen(false);
-                        setActiveParentId(null);
-                    }}
-                />
-            )}
         </ZoomableViewport>
+
+    {activeParentId && (
+        <AddNodeModal
+            isOpen={isModalOpen}
+            onClose={() => {
+                setIsModalOpen(false);
+                setActiveParentId(null);
+            }}
+            parentId={activeParentId}
+            selectedLane={selectedLanes[activeParentId] || 'enable'}
+            onAdd={(nodeData: NewNodeData) => {
+                onAddNode(nodeData);
+                setIsModalOpen(false);
+                setActiveParentId(null);
+            }}
+        />
+    )}
+ </>
     );
 }
