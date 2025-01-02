@@ -3,6 +3,11 @@
 export type NodeType = 'parent' | 'sub' | 'sub2';
 export type SwimLane = 'enable' | 'engage' | 'evolve';
 
+export interface Position {
+    x: number;
+    y: number;
+}
+
 export interface TreeNode {
     id: string;
     type: NodeType;
@@ -13,26 +18,23 @@ export interface TreeNode {
     children?: TreeNode[];
 }
 
+export interface TreeConnectorProps {
+    start: Position;
+    end: Position;
+    startRadius?: number;
+    endRadius?: number;
+}
 
-export interface NodeData {
-    title: string;
-    description: string;
-    x: number;
-    y: number;
-    color?: string;
-    children?: NodeData[];
-  }
-  
-  export interface TreeConnectorProps {
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-    animated?: boolean;
-  }
-  
-  export interface TreeNodeProps extends Omit<NodeData, 'children'> {
-    onClick?: () => void;
-    isActive?: boolean;
-    isAnimated?: boolean;
-  }
+export interface AddNodeModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onAdd: (nodeData: Omit<TreeNode, 'id' | 'children'>) => void;
+    parentId: string;
+    selectedLane: SwimLane;
+    existingNodes?: TreeNode[];
+}
+
+export interface AddNodeData {
+    parentId: string;
+    swimLane: SwimLane;
+}
