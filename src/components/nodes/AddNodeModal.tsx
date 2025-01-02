@@ -43,6 +43,8 @@ export function AddNodeModal({
             parentId
         };
 
+        console.log('Modal submitting:', newNode);
+
         onAdd(newNode);
 
         // Reset form

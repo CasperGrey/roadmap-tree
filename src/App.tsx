@@ -9,6 +9,7 @@ export default function App() {
     const [treeData, setTreeData] = useState(initialTreeData);
 
     const handleAddNode = (nodeData: NewNodeData) => {
+        console.log('App receiving:', nodeData);
         setTreeData(currentData => {
             return currentData.map(node => {
                 if (node.id === nodeData.parentId) {

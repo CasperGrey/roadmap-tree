@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+// src/components/layout/ZoomableViewport.tsx
+import React, { useState, useRef, useEffect } from 'react';
 
 interface ViewportState {
     x: number;
@@ -14,10 +15,10 @@ interface ZoomableViewportProps {
 }
 
 export function ZoomableViewport({
-    children,
-    initialWidth = 2241.46,
-    initialHeight = 1337.12
-}: ZoomableViewportProps) {
+                                     children,
+                                     initialWidth = 2241.46,
+                                     initialHeight = 1337.12
+                                 }: ZoomableViewportProps) {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState<ViewportState>({
         x: 0,
@@ -26,31 +27,45 @@ export function ZoomableViewport({
         height: initialHeight
     });
 
-    const handleWheel = useCallback((event: React.WheelEvent) => {
-        event.preventDefault();
-        const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
-        const newZoom = zoom * zoomFactor;
+    const containerRef = useRef<HTMLDivElement>(null);
 
-        if (newZoom < 0.5 || newZoom > 3) return;
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
 
-        const newWidth = viewBox.width * zoomFactor;
-        const newHeight = viewBox.height * zoomFactor;
-        const mouseX = event.nativeEvent.offsetX;
-        const mouseY = event.nativeEvent.offsetY;
-        const newX = viewBox.x + (mouseX / zoom) * (1 - zoomFactor);
-        const newY = viewBox.y + (mouseY / zoom) * (1 - zoomFactor);
+        const handleWheel = (event: WheelEvent) => {
+            event.preventDefault();
+            const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
+            const newZoom = zoom * zoomFactor;
 
-        setZoom(newZoom);
-        setViewBox({
-            x: newX,
-            y: newY,
-            width: newWidth,
-            height: newHeight
-        });
+            if (newZoom < 0.5 || newZoom > 3) return;
+
+            const newWidth = viewBox.width * zoomFactor;
+            const newHeight = viewBox.height * zoomFactor;
+            const mouseX = event.offsetX;
+            const mouseY = event.offsetY;
+            const newX = viewBox.x + (mouseX / zoom) * (1 - zoomFactor);
+            const newY = viewBox.y + (mouseY / zoom) * (1 - zoomFactor);
+
+            setZoom(newZoom);
+            setViewBox({
+                x: newX,
+                y: newY,
+                width: newWidth,
+                height: newHeight
+            });
+        };
+
+        container.addEventListener('wheel', handleWheel, { passive: false });
+
+        return () => {
+            container.removeEventListener('wheel', handleWheel);
+        };
     }, [zoom, viewBox]);
 
     return (
         <div
+            ref={containerRef}
             className="relative"
             style={{
                 left: '24px',
@@ -63,7 +78,6 @@ export function ZoomableViewport({
                 width="100%"
                 height="100%"
                 viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
-                onWheel={handleWheel}
             >
                 {children}
             </svg>
