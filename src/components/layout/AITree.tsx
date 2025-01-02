@@ -17,36 +17,68 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeNodeType, setActiveNodeType] = useState<'sub' | 'sub2'>('sub');
 
-    const getParentPosition = (parentId?: string): Position => {
-        if (!parentId) return { x: 0, y: 0 };
-        const parentNode = data.find(node => node.id === parentId);
-        if (!parentNode) return { x: 0, y: 0 };
-        const parentIndex = data.indexOf(parentNode);
-        return getNodePosition(parentNode, parentIndex);
+    // Helper function to find a node in the tree
+    const findNode = (nodeId: string, nodes: TreeNodeType[]): TreeNodeType | null => {
+        for (const node of nodes) {
+            if (node.id === nodeId) return node;
+            if (node.children) {
+                const found = findNode(nodeId, node.children);
+                if (found) return found;
+            }
+        }
+        return null;
     };
 
-    const getNodePosition = (node: TreeNodeType, index: number): Position => {
+    const getParentPosition = (parentId?: string): Position => {
+        if (!parentId) return { x: 0, y: 0 };
+        const parentNode = findNode(parentId, data);
+        if (!parentNode) return { x: 0, y: 0 };
+
+        // Get the root parent index for horizontal spacing
+        const rootParent = data.find(node =>
+            findNode(parentId, [node]) !== null
+        );
+        const rootIndex = rootParent ? data.indexOf(rootParent) : 0;
+
+        return getNodePosition(parentNode, rootIndex);
+    };
+
+    const getNodePosition = (node: TreeNodeType, rootIndex: number): Position => {
+        // For parent nodes (root level)
         if (node.type === 'parent') {
             const spacing = 2241.46 / 5;
-            return { x: spacing + (index * spacing), y: 100 };
+            return { x: spacing + (rootIndex * spacing), y: 100 };
         }
 
         const parentPos = getParentPosition(node.parentId);
 
-        if (node.type === 'sub' && node.parentId) {
-            const laneHeight = 1337.12 / 3;
-            const laneIndex = node.swimLane === 'enable' ? 0 :
-                node.swimLane === 'engage' ? 1 : 2;
-            return {
-                x: parentPos.x,
-                y: (laneHeight * laneIndex) + (laneHeight / 2)
-            };
+        // For sub nodes
+        if (node.type === 'sub') {
+            const parent = findNode(node.parentId!, data);
+
+            if (parent?.type === 'sub') {
+                // If parent is a sub node, position vertically below it
+                return {
+                    x: parentPos.x,
+                    y: parentPos.y + 150 // Vertical spacing between sub nodes
+                };
+            } else {
+                // If parent is a parent node, use swim lanes
+                const laneHeight = 1337.12 / 3;
+                const laneIndex = node.swimLane === 'enable' ? 0 :
+                    node.swimLane === 'engage' ? 1 : 2;
+                return {
+                    x: parentPos.x,
+                    y: (laneHeight * laneIndex) + (laneHeight / 2)
+                };
+            }
         }
 
-        if (node.type === 'sub2' && node.parentId) {
+        // For sub2 nodes, position diagonally
+        if (node.type === 'sub2') {
             return {
-                x: parentPos.x + 150,  // Move to the right of parent
-                y: parentPos.y + 100   // Move down diagonally
+                x: parentPos.x + 150, // Move right
+                y: parentPos.y + 100  // Move down
             };
         }
 
@@ -82,26 +114,24 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                 ))}
             </ZoomableViewport>
 
-            {activeParentId && (
-                <AddNodeModal
-                    isOpen={isModalOpen}
-                    onClose={() => {
-                        setIsModalOpen(false);
-                        setActiveParentId(null);
-                    }}
-                    parentId={activeParentId}
-                    selectedLane={selectedLanes[activeParentId] || 'enable'}
-                    onAdd={(nodeData: NewNodeData) => {
-                        onAddNode({
-                            ...nodeData,
-                            type: activeNodeType
-                        });
-                        setIsModalOpen(false);
-                        setActiveParentId(null);
-                    }}
-                    nodeType={activeNodeType}
-                />
-            )}
+            <AddNodeModal
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setActiveParentId(null);
+                }}
+                parentId={activeParentId || ''}
+                selectedLane={selectedLanes[activeParentId || ''] || 'enable'}
+                onAdd={(nodeData: NewNodeData) => {
+                    onAddNode({
+                        ...nodeData,
+                        type: activeNodeType
+                    });
+                    setIsModalOpen(false);
+                    setActiveParentId(null);
+                }}
+                nodeType={activeNodeType}
+            />
         </div>
     );
 }
