@@ -50,44 +50,48 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     };
 
     const handleAddClick = (parentId: string) => {
+        console.log('Add clicked for parent:', parentId);
         setActiveParentId(parentId);
         setIsModalOpen(true);
+        console.log('Modal state:', { isModalOpen: true, activeParentId: parentId });
+    };
+
+    const handleAddNode = (nodeData: NewNodeData) => {
+        console.log('Adding node:', nodeData);
+        onAddNode(nodeData);
+        setIsModalOpen(false);
+        setActiveParentId(null);
     };
 
     return (
         <>
-        <ZoomableViewport>
-            <SwimLanes />
-            {data.map((node, index) => (
-                <NodeTree
-                    key={node.id}
-                    node={node}
-                    position={getNodePosition(node, index)}
-                    index={index}
-                    getNodePosition={getNodePosition}
-                    selectedLane={selectedLanes[node.id] || 'enable'}
-                    onLaneChange={handleLaneChange}
-                    onAddClick={handleAddClick}
-                />
-            ))}
-        </ZoomableViewport>
+            <ZoomableViewport>
+                <SwimLanes />
+                {data.map((node, index) => (
+                    <NodeTree
+                        key={node.id}
+                        node={node}
+                        position={getNodePosition(node, index)}
+                        index={index}
+                        getNodePosition={getNodePosition}
+                        selectedLane={selectedLanes[node.id] || 'enable'}
+                        onLaneChange={handleLaneChange}
+                        onAddClick={handleAddClick}
+                    />
+                ))}
+            </ZoomableViewport>
 
-    {activeParentId && (
-        <AddNodeModal
-            isOpen={isModalOpen}
-            onClose={() => {
-                setIsModalOpen(false);
-                setActiveParentId(null);
-            }}
-            parentId={activeParentId}
-            selectedLane={selectedLanes[activeParentId] || 'enable'}
-            onAdd={(nodeData: NewNodeData) => {
-                onAddNode(nodeData);
-                setIsModalOpen(false);
-                setActiveParentId(null);
-            }}
-        />
-    )}
- </>
+            <AddNodeModal
+                isOpen={isModalOpen}
+                onClose={() => {
+                    console.log('Closing modal');
+                    setIsModalOpen(false);
+                    setActiveParentId(null);
+                }}
+                parentId={activeParentId || ''}
+                selectedLane={activeParentId ? selectedLanes[activeParentId] || 'enable' : 'enable'}
+                onAdd={handleAddNode}
+            />
+        </>
     );
 }
