@@ -10,6 +10,7 @@ interface AddNodeModalProps {
     parentId: string;
     selectedLane: SwimLane;
     onAdd: (nodeData: NewNodeData) => void;
+    nodeType?: 'sub' | 'sub2';
 }
 
 export function AddNodeModal({
@@ -18,6 +19,7 @@ export function AddNodeModal({
                                  onAdd,
                                  parentId,
                                  selectedLane,
+                                 nodeType = 'sub'
                              }: AddNodeModalProps) {
     const [title, setTitle] = useState('');
     const [icon, setIcon] = useState('');
@@ -37,7 +39,7 @@ export function AddNodeModal({
         }
 
         onAdd({
-            type: 'sub',
+            type: nodeType,
             title: title.trim(),
             icon: icon.trim(),
             swimLane: selectedLane,
@@ -64,7 +66,9 @@ export function AddNodeModal({
                         className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4"
                         onClick={e => e.stopPropagation()}
                     >
-                        <h2 className="text-xl font-bold text-white mb-6">Add New Node</h2>
+                        <h2 className="text-xl font-bold text-white mb-6">
+                            Add {nodeType === 'sub2' ? 'Sub-2' : 'Sub'} Node
+                        </h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
