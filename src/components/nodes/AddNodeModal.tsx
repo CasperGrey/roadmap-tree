@@ -55,7 +55,10 @@ export function AddNodeModal({
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 flex items-center justify-center bg-black/75 z-50"
+                    className="fixed inset-0 flex items-center justify-center z-50"
+                    style={{
+                        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                    }}
                     onClick={onClose}
                 >
                     <motion.div
@@ -63,7 +66,7 @@ export function AddNodeModal({
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4 text-white"
+                        className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4"
                         onClick={e => e.stopPropagation()}
                     >
                         <h2 className="text-xl font-bold text-white mb-6">

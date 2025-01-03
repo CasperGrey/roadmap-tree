@@ -9,34 +9,8 @@ interface TreeNodeComponentProps {
 
 export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
     const getIconName = (iconUrl: string) => {
-        // Example URL: https://fontawesome.com/icons/vials?f=classic&s=solid
         const match = iconUrl.match(/icons\/([^?]+)/);
-        if (match) {
-            return match[1]; // Returns "vials" from the example URL
-        }
-        return '';
-    };
-
-    const renderIcon = () => {
-        if (!node.icon) return null;
-
-        const iconName = getIconName(node.icon);
-        if (!iconName) return null;
-
-        return (
-            <>
-                <foreignObject
-                    x="-20"
-                    y="-20"
-                    width="40"
-                    height="40"
-                >
-                    <div className="w-full h-full flex items-center justify-center">
-                        <i className={`fas fa-${iconName} text-white text-xl`} />
-                    </div>
-                </foreignObject>
-            </>
-        );
+        return match ? match[1] : '';
     };
 
     return (
@@ -48,10 +22,27 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 strokeWidth="2"
                 className="cursor-pointer hover:scale-105 transition-transform"
             />
-            {renderIcon()}
+
+            {/* Icon container */}
+            <foreignObject
+                x="-20"
+                y="-20"
+                width="40"
+                height="40"
+                className="overflow-visible"
+            >
+                <div className="w-full h-full flex items-center justify-center">
+                    <i
+                        className={`fas fa-${getIconName(node.icon)} text-white text-xl`}
+                        style={{ textAlign: 'center' }}
+                    />
+                </div>
+            </foreignObject>
+
+            {/* Node title */}
             <text
-                x={60}
-                y={0}
+                x="60"
+                y="0"
                 fill="white"
                 className="text-sm"
                 dominantBaseline="middle"
