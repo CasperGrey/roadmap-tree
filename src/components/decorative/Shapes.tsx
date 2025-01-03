@@ -6,33 +6,51 @@ export function HeaderDecoration() {
             <rect width="100%" height="300" fill="#1C3559"/>
 
 
-            <line x1="0" y1="250" x2="1920" y2="250" stroke="#204B87" stroke-width="4"/>
+            <line x1="0" y1="260" x2="1920" y2="260" stroke="#204B87" stroke-width="4"/>
+            <line x1="0" y1="265" x2="1920" y2="265" stroke="#204B87" stroke-width="4"/>
+            <line x1="0" y1="270" x2="1920" y2="270" stroke="#204B87" stroke-width="4"/>
+            <line x1="0" y1="275" x2="1920" y2="275" stroke="#204B87" stroke-width="4"/>
+            <line x1="0" y1="280" x2="1920" y2="280" stroke="#204B87" stroke-width="4"/>
 
 
-            <circle cx="960" cy="150" r="80" fill="none" stroke="#FFFFFF" stroke-width="6"/>
-
-            <line x1="960" y1="70" x2="960" y2="150" stroke="#FFFFFF" stroke-width="4"/>
-            <line x1="960" y1="90" x2="930" y2="130" stroke="#FFFFFF" stroke-width="4"/>
-            <line x1="960" y1="90" x2="990" y2="130" stroke="#FFFFFF" stroke-width="4"/>
-            <line x1="960" y1="110" x2="940" y2="140" stroke="#FFFFFF" stroke-width="4"/>
-            <line x1="960" y1="110" x2="980" y2="140" stroke="#FFFFFF" stroke-width="4"/>
-            <line x1="960" y1="130" x2="950" y2="150" stroke="#FFFFFF" stroke-width="4"/>
-            <line x1="960" y1="130" x2="970" y2="150" stroke="#FFFFFF" stroke-width="4"/>
+            <circle cx="960" cy="150" r="100" fill="none" stroke="#FFFFFF" stroke-width="6"/>
 
 
-            <line x1="960" y1="150" x2="950" y2="250" stroke="#204B87" stroke-width="4"/>
-            <line x1="960" y1="150" x2="970" y2="250" stroke="#204B87" stroke-width="4"/>
+            <line x1="960" y1="50" x2="960" y2="150" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="70" x2="930" y2="100" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="70" x2="990" y2="100" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="90" x2="920" y2="130" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="90" x2="1000" y2="130" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="110" x2="940" y2="150" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="110" x2="980" y2="150" stroke="#FFFFFF" stroke-width="4"/>
 
 
-            <polygon points="870,250 890,220 910,250" fill="#204B87"/>
-            <polygon points="1010,250 1030,220 1050,250" fill="#204B87"/>
-            <polygon points="780,250 800,200 820,250" fill="#204B87"/>
-            <polygon points="1100,250 1120,200 1140,250" fill="#204B87"/>
+            <line x1="960" y1="150" x2="950" y2="260" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="150" x2="970" y2="260" stroke="#FFFFFF" stroke-width="4"/>
 
 
-            <circle cx="960" cy="50" r="10" fill="#204B87"/>
-            <circle cx="880" cy="200" r="6" fill="#204B87"/>
-            <circle cx="1040" cy="200" r="6" fill="#204B87"/>
+            <polygon points="850,260 870,230 890,260" fill="#204B87"/>
+            <polygon points="1030,260 1050,230 1070,260" fill="#204B87"/>
+            <polygon points="910,260 930,200 950,260" fill="#204B87"/>
+            <polygon points="970,260 990,200 1010,260" fill="#204B87"/>
+
+
+            <polygon points="700,280 770,180 840,280" fill="#204B87"/>
+            <polygon points="850,280 920,180 990,280" fill="#204B87"/>
+            <polygon points="1030,280 1100,180 1170,280" fill="#204B87"/>
+            <polygon points="1180,280 1250,180 1320,280" fill="#204B87"/>
+
+
+            <circle cx="960" cy="30" r="8" fill="#204B87"/>
+            <circle cx="940" cy="230" r="6" fill="#204B87"/>
+            <circle cx="980" cy="230" r="6" fill="#204B87"/>
+            <circle cx="910" cy="250" r="4" fill="#204B87"/>
+            <circle cx="1010" cy="250" r="4" fill="#204B87"/>
+
+
+            <line x1="860" y1="200" x2="1060" y2="200" stroke="#204B87" stroke-width="2"/>
+            <line x1="880" y1="220" x2="1040" y2="220" stroke="#204B87" stroke-width="2"/>
+            <line x1="900" y1="240" x2="1020" y2="240" stroke="#204B87" stroke-width="2"/>
         </svg>
     );
 }

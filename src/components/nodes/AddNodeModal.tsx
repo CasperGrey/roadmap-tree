@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NewNodeData, SwimLane } from '../../types/tree';
-import { createPortal } from 'react-dom';
 
 interface AddNodeModalProps {
     isOpen: boolean;
@@ -51,20 +50,30 @@ export function AddNodeModal({
         setError(null);
     };
 
-    return createPortal(
+    return (
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 flex items-center justify-center z-50"
-                    style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                    }}
+                    className="fixed inset-0 flex items-start justify-center bg-black/75 z-50 pt-32"
                     onClick={onClose}
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                        paddingTop: '128px',
+                        zIndex: 9999
+                    }}
                 >
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
                         className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4"
                         onClick={e => e.stopPropagation()}
@@ -83,8 +92,8 @@ export function AddNodeModal({
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
-                                             border border-white/20 focus:border-white/50
-                                             focus:outline-none focus:ring-1 focus:ring-white/50"
+                                            border border-white/20 focus:border-white/50
+                                            focus:outline-none focus:ring-1 focus:ring-white/50"
                                     placeholder="Enter node title"
                                 />
                             </div>
@@ -98,8 +107,8 @@ export function AddNodeModal({
                                     value={icon}
                                     onChange={(e) => setIcon(e.target.value)}
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
-                                             border border-white/20 focus:border-white/50
-                                             focus:outline-none focus:ring-1 focus:ring-white/50"
+                                            border border-white/20 focus:border-white/50
+                                            focus:outline-none focus:ring-1 focus:ring-white/50"
                                     placeholder="Paste Font Awesome icon URL"
                                 />
                             </div>
@@ -115,14 +124,14 @@ export function AddNodeModal({
                                     type="button"
                                     onClick={onClose}
                                     className="px-4 py-2 bg-white/10 hover:bg-white/20
-                                             text-white rounded-md transition-colors"
+                                            text-white rounded-md transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-4 py-2 bg-blue-500 hover:bg-blue-600
-                                             text-white rounded-md transition-colors"
+                                            text-white rounded-md transition-colors"
                                 >
                                     Add Node
                                 </button>
@@ -132,5 +141,5 @@ export function AddNodeModal({
                 </div>
             )}
         </AnimatePresence>
-        , document.body);
+    );
 }
