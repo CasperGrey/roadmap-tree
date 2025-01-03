@@ -1,26 +1,38 @@
 // src/components/decorative/Shapes.tsx
 export function HeaderDecoration() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 300" width="100%" height="300"  className="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 300" width="100%" height="300">
+
             <rect width="100%" height="300" fill="#1C3559"/>
 
-            {/* Horizon Line */}
-            <line x1="0" y1="260" x2="1920" y2="260" stroke="white" strokeWidth="2"/>
-            <line x1="0" y1="265" x2="1920" y2="265" stroke="white" strokeWidth="2"/>
-            <line x1="0" y1="275" x2="1920" y2="275" stroke="#204B87" strokeWidth="2"/>
-            <line x1="0" y1="280" x2="1920" y2="280" stroke="#204B87" strokeWidth="2"/>
-            <line x1="0" y1="285" x2="1920" y2="285" stroke="#204B87" strokeWidth="2"/>
 
-            {/* Small Abstract Trees */}
-            <polygon points="800,220 810,200 820,220" fill="#204B87"/>
-            <polygon points="1120,220 1130,190 1140,220" fill="#204B87"/>
-            <polygon points="880,220 890,210 900,220" fill="#204B87"/>
-            <polygon points="1040,220 1050,200 1060,220" fill="#204B87"/>
+            <line x1="0" y1="250" x2="1920" y2="250" stroke="#204B87" stroke-width="4"/>
 
-            {/* Additional Geometric Shapes */}
-            <circle cx="840" cy="120" r="10" fill="#204B87"/>
-            <circle cx="1080" cy="160" r="8" fill="#204B87"/>
-            <rect x="920" y="200" width="80" height="10" fill="#204B87"/>
+
+            <circle cx="960" cy="150" r="80" fill="none" stroke="#FFFFFF" stroke-width="6"/>
+
+            <line x1="960" y1="70" x2="960" y2="150" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="90" x2="930" y2="130" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="90" x2="990" y2="130" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="110" x2="940" y2="140" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="110" x2="980" y2="140" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="130" x2="950" y2="150" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="960" y1="130" x2="970" y2="150" stroke="#FFFFFF" stroke-width="4"/>
+
+
+            <line x1="960" y1="150" x2="950" y2="250" stroke="#204B87" stroke-width="4"/>
+            <line x1="960" y1="150" x2="970" y2="250" stroke="#204B87" stroke-width="4"/>
+
+
+            <polygon points="870,250 890,220 910,250" fill="#204B87"/>
+            <polygon points="1010,250 1030,220 1050,250" fill="#204B87"/>
+            <polygon points="780,250 800,200 820,250" fill="#204B87"/>
+            <polygon points="1100,250 1120,200 1140,250" fill="#204B87"/>
+
+
+            <circle cx="960" cy="50" r="10" fill="#204B87"/>
+            <circle cx="880" cy="200" r="6" fill="#204B87"/>
+            <circle cx="1040" cy="200" r="6" fill="#204B87"/>
         </svg>
     );
 }
@@ -41,14 +53,14 @@ export function Lines() {
     return (
         <div className="w-full">
             {/* White lines */}
-            <div className="w-full h-px bg-white opacity-60 mb-0.5" />
-            <div className="w-full h-px bg-white opacity-60 mb-2" />
+            <div className="w-full h-px bg-white opacity-60 mb-0.5"/>
+            <div className="w-full h-px bg-white opacity-60 mb-2"/>
 
             {/* Blue lines */}
             <div className="space-y-1">
-                <div className="w-full h-px bg-[#4A90E2] opacity-40" />
-                <div className="w-full h-px bg-[#4A90E2] opacity-40" />
-                <div className="w-full h-px bg-[#4A90E2] opacity-40" />
+                <div className="w-full h-px bg-[#4A90E2] opacity-40"/>
+                <div className="w-full h-px bg-[#4A90E2] opacity-40"/>
+                <div className="w-full h-px bg-[#4A90E2] opacity-40"/>
             </div>
         </div>
     );

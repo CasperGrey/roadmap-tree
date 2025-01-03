@@ -1,21 +1,24 @@
 // src/components/layout/AITree.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TreeNode as TreeNodeType, SwimLane, Position, NewNodeData } from '../../types/tree';
 import { SwimLanes } from './SwimLanes';
-import { AddNodeModal } from '../nodes/AddNodeModal';
 import { NodeTree } from '../nodes/NodeTree';
 import { ZoomableViewport } from './ZoomableViewport';
 
 interface AITreeProps {
     data: TreeNodeType[];
     onAddNode: (nodeData: NewNodeData) => void;
+    onNodeAdd: (parentId: string, nodeType: 'sub' | 'sub2') => void;
 }
 
-export default function AITree({ data, onAddNode }: AITreeProps) {
+// Constants
+const BASE_HEIGHT = 445.71;
+const NODE_SPACING = 250;
+const LANE_PADDING = 200;
+const MIN_LANE_HEIGHT = BASE_HEIGHT;
+
+export default function AITree({ data, onAddNode, onNodeAdd }: AITreeProps) {
     const [selectedLanes, setSelectedLanes] = useState<Record<string, SwimLane>>({});
-    const [activeParentId, setActiveParentId] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [activeNodeType, setActiveNodeType] = useState<'sub' | 'sub2'>('sub');
 
     const findNode = (nodeId: string, nodes: TreeNodeType[]): TreeNodeType | null => {
         for (const node of nodes) {
@@ -35,11 +38,18 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
             if (node.type === 'sub' && node.swimLane === lane) {
                 result.push(node);
             }
-            node.children?.forEach(traverse);
+            if (node.type === 'sub') {
+                node.children?.forEach(traverse);
+            }
         };
 
         nodes.forEach(traverse);
         return result;
+    };
+
+    const calculateNodeDepth = (node: TreeNodeType): number => {
+        if (!node.children?.length) return 1;
+        return 1 + Math.max(...node.children.map(calculateNodeDepth));
     };
 
     const calculateSwimLaneHeights = () => {
@@ -49,28 +59,20 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
             evolve: getAllNodesInLane(data, 'evolve')
         };
 
-        const baseHeight = 445.71;
-        const minHeight = baseHeight;
-        const nodeSpacing = 150;
+        const heights = Object.entries(laneNodes).reduce((acc, [lane, nodes]) => {
+            const maxDepth = nodes.length ? Math.max(...nodes.map(calculateNodeDepth)) : 0;
+            const heightNeeded = Math.max(
+                MIN_LANE_HEIGHT,
+                (nodes.length * NODE_SPACING * maxDepth) + LANE_PADDING
+            );
 
-        return {
-            enable: Math.max(minHeight, (laneNodes.enable.length * nodeSpacing) + 100),
-            engage: Math.max(minHeight, (laneNodes.engage.length * nodeSpacing) + 100),
-            evolve: Math.max(minHeight, (laneNodes.evolve.length * nodeSpacing) + 100)
-        };
-    };
+            return {
+                ...acc,
+                [lane]: heightNeeded
+            };
+        }, {} as Record<SwimLane, number>);
 
-    const getParentPosition = (parentId?: string): Position => {
-        if (!parentId) return { x: 0, y: 0 };
-        const parentNode = findNode(parentId, data);
-        if (!parentNode) return { x: 0, y: 0 };
-
-        const rootParent = data.find(node =>
-            findNode(parentId, [node]) !== null
-        );
-        const rootIndex = rootParent ? data.indexOf(rootParent) : 0;
-
-        return getNodePosition(parentNode, rootIndex);
+        return heights as Record<SwimLane, number>;
     };
 
     const getNodePosition = (node: TreeNodeType, index: number): Position => {
@@ -86,34 +88,32 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
 
         if (node.type === 'sub') {
             if (parent.type === 'sub') {
-                // Vertical positioning for sub under sub
                 const siblings = parent.children?.filter(n => n.type === 'sub') || [];
                 const nodeIndex = siblings.indexOf(node);
                 return {
                     x: parentPos.x,
-                    y: parentPos.y + 150 + (nodeIndex * 150)
+                    y: parentPos.y + NODE_SPACING + (nodeIndex * NODE_SPACING)
                 };
             }
 
-            // Handle swimlane positioning
             const laneHeights = calculateSwimLaneHeights();
-            const laneSpacing = 50;
             let baseY = 0;
 
             if (node.swimLane === 'enable') {
-                baseY = laneHeights.enable / 2;
+                baseY = LANE_PADDING;
             } else if (node.swimLane === 'engage') {
-                baseY = laneHeights.enable + (laneHeights.engage / 2);
+                baseY = laneHeights.enable + LANE_PADDING;
             } else {
-                baseY = laneHeights.enable + laneHeights.engage + (laneHeights.evolve / 2);
+                baseY = laneHeights.enable + laneHeights.engage + LANE_PADDING;
             }
 
             const siblings = getAllNodesInLane([parent], node.swimLane!);
             const nodeIndex = siblings.indexOf(node);
+            const siblingSpacing = NODE_SPACING * (siblings.length > 1 ? siblings.length - 1 : 1);
 
             return {
                 x: parentPos.x,
-                y: baseY + (nodeIndex * laneSpacing) - ((siblings.length - 1) * laneSpacing / 2)
+                y: baseY + (nodeIndex * NODE_SPACING) - (siblingSpacing / 2)
             };
         }
 
@@ -131,15 +131,10 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
         setSelectedLanes(prev => ({ ...prev, [parentId]: lane }));
     };
 
-    const handleAddClick = (parentId: string, nodeType: 'sub' | 'sub2') => {
-        setActiveParentId(parentId);
-        setActiveNodeType(nodeType);
-        setIsModalOpen(true);
-    };
-
     const laneHeights = calculateSwimLaneHeights();
-    const totalHeight = Math.max(1337.12,
-        laneHeights.enable + laneHeights.engage + laneHeights.evolve
+    const totalHeight = Math.max(
+        1337.12,
+        laneHeights.enable + laneHeights.engage + laneHeights.evolve + LANE_PADDING
     );
 
     return (
@@ -155,29 +150,10 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                         getNodePosition={getNodePosition}
                         selectedLane={selectedLanes[node.id] || 'enable'}
                         onLaneChange={handleLaneChange}
-                        onAddClick={handleAddClick}
+                        onAddClick={onNodeAdd}
                     />
                 ))}
             </ZoomableViewport>
-
-            <AddNodeModal
-                isOpen={isModalOpen}
-                onClose={() => {
-                    setIsModalOpen(false);
-                    setActiveParentId(null);
-                }}
-                parentId={activeParentId || ''}
-                selectedLane={selectedLanes[activeParentId || ''] || 'enable'}
-                onAdd={(nodeData: NewNodeData) => {
-                    onAddNode({
-                        ...nodeData,
-                        type: activeNodeType
-                    });
-                    setIsModalOpen(false);
-                    setActiveParentId(null);
-                }}
-                nodeType={activeNodeType}
-            />
         </div>
     );
 }
