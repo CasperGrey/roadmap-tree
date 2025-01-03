@@ -46,22 +46,20 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     // Calculate swimlane heights based on content
     const calculateSwimLaneHeights = () => {
         const laneNodes = {
-            enable: getNodesInLane(data, 'enable'),
-            engage: getNodesInLane(data, 'engage'),
-            evolve: getNodesInLane(data, 'evolve')
+            enable: getAllNodesInLane(data, 'enable'),
+            engage: getAllNodesInLane(data, 'engage'),
+            evolve: getAllNodesInLane(data, 'evolve')
         };
 
         const baseHeight = 445.71; // 1337.12 / 3
         const minHeight = baseHeight;
         const nodeSpacing = 150;
 
-        const heights = {
+        return {
             enable: Math.max(minHeight, (laneNodes.enable.length * nodeSpacing) + 100),
             engage: Math.max(minHeight, (laneNodes.engage.length * nodeSpacing) + 100),
             evolve: Math.max(minHeight, (laneNodes.evolve.length * nodeSpacing) + 100)
         };
-
-        return heights;
     };
 
     const laneHeights = calculateSwimLaneHeights();
@@ -136,6 +134,23 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
         setActiveNodeType(nodeType);
         setIsModalOpen(true);
     };
+
+    const getAllNodesInLane = (nodes: TreeNodeType[], lane: SwimLane): TreeNodeType[] => {
+        const result: TreeNodeType[] = [];
+
+        const traverse = (node: TreeNodeType) => {
+            if (node.type === 'sub' && node.swimLane === lane) {
+                result.push(node);
+            }
+            node.children?.forEach(traverse);
+        };
+
+        nodes.forEach(traverse);
+        return result;
+    };
+
+
+
 
     return (
         <div className="relative">

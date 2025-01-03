@@ -8,78 +8,74 @@ import { TreeNode, NewNodeData } from './types/tree';
 export default function App() {
     const [treeData, setTreeData] = useState(initialTreeData);
 
-    const findNodeAndUpdate = (nodes: TreeNode[], targetId: string, updateFn: (node: TreeNode) => TreeNode): TreeNode[] => {
+    // Recursive function to find and update a node in the tree
+    const updateTreeNode = (nodes: TreeNode[], nodeId: string, updateFn: (node: TreeNode) => TreeNode): TreeNode[] => {
         return nodes.map(node => {
-            if (node.id === targetId) {
+            if (node.id === nodeId) {
                 return updateFn(node);
             }
-            if (node.children) {
+            if (node.children?.length) {
                 return {
                     ...node,
-                    children: findNodeAndUpdate(node.children, targetId, updateFn)
+                    children: updateTreeNode(node.children, nodeId, updateFn)
                 };
             }
             return node;
         });
     };
 
+    const findNode = (nodeId: string, nodes: TreeNode[]): TreeNode | null => {
+        for (const node of nodes) {
+            if (node.id === nodeId) return node;
+            if (node.children?.length) {
+                const found = findNode(nodeId, node.children);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
     const handleAddNode = (nodeData: NewNodeData) => {
         setTreeData(currentData => {
-            // First, find if the parent already has any sub nodes
-            const parentNode = currentData.reduce((found: TreeNode | null, node) => {
-                if (found) return found;
-                if (node.id === nodeData.parentId) return node;
-                if (node.children) {
-                    return node.children.find(child => child.id === nodeData.parentId) || null;
-                }
-                return null;
-            }, null);
-
+            // Find the parent node
+            const parentNode = findNode(nodeData.parentId, currentData);
             if (!parentNode) return currentData;
-
-            const existingChildren = parentNode.children || [];
-            const existingSub = existingChildren.find(child =>
-                child.type === 'sub' && child.swimLane === nodeData.swimLane
-            );
 
             // Create new node
             const newNode: TreeNode = {
-                id: nodeData.title
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, ''),
+                id: nodeData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
                 ...nodeData,
                 children: []
             };
 
-            // If there's an existing sub node, make it a child of the new node
-            if (existingSub && nodeData.type === 'sub') {
-                newNode.children = [existingSub];
+            // Update the parent node with the new child
+            return updateTreeNode(currentData, nodeData.parentId, (parent) => {
+                const updatedChildren = [...(parent.children || [])];
 
-                // Update the existing sub node's parentId
-                const updatedExistingSub = {
-                    ...existingSub,
-                    parentId: newNode.id
-                };
+                if (nodeData.type === 'sub') {
+                    // If adding a sub node and there's an existing sub, make it a child of the new node
+                    const existingSub = parent.children?.find(
+                        child => child.type === 'sub' && child.swimLane === nodeData.swimLane
+                    );
 
-                // Remove the existing sub from its current parent and add the new node
-                return findNodeAndUpdate(currentData, nodeData.parentId, (parent) => ({
+                    if (existingSub) {
+                        newNode.children = [existingSub];
+                        return {
+                            ...parent,
+                            children: [
+                                ...parent.children?.filter(child => child !== existingSub) || [],
+                                newNode
+                            ]
+                        };
+                    }
+                }
+
+                // Otherwise, just add the new node as a child
+                return {
                     ...parent,
-                    children: [
-                        ...parent.children?.filter(child => child.id !== existingSub.id) || [],
-                        {
-                            ...newNode,
-                            children: [updatedExistingSub]
-                        }
-                    ]
-                }));
-            }
-
-            // Otherwise, just add the new node
-            return findNodeAndUpdate(currentData, nodeData.parentId, (parent) => ({
-                ...parent,
-                children: [...(parent.children || []), newNode]
-            }));
+                    children: [...(parent.children || []), newNode]
+                };
+            });
         });
     };
 
