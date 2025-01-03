@@ -16,9 +16,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     const [activeParentId, setActiveParentId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeNodeType, setActiveNodeType] = useState<'sub' | 'sub2'>('sub');
-    const [viewportHeight, setViewportHeight] = useState(1337.12);
 
-    // Helper function to find a node in the tree
     const findNode = (nodeId: string, nodes: TreeNodeType[]): TreeNodeType | null => {
         for (const node of nodes) {
             if (node.id === nodeId) return node;
@@ -30,20 +28,20 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
         return null;
     };
 
-    // Helper function to get all nodes of a specific type in a swimlane
-    const getNodesInLane = (nodes: TreeNodeType[], lane: SwimLane): TreeNodeType[] => {
+    const getAllNodesInLane = (nodes: TreeNodeType[], lane: SwimLane): TreeNodeType[] => {
         const result: TreeNodeType[] = [];
-        const processNode = (node: TreeNodeType) => {
+
+        const traverse = (node: TreeNodeType) => {
             if (node.type === 'sub' && node.swimLane === lane) {
                 result.push(node);
             }
-            node.children?.forEach(processNode);
+            node.children?.forEach(traverse);
         };
-        nodes.forEach(processNode);
+
+        nodes.forEach(traverse);
         return result;
     };
 
-    // Calculate swimlane heights based on content
     const calculateSwimLaneHeights = () => {
         const laneNodes = {
             enable: getAllNodesInLane(data, 'enable'),
@@ -51,7 +49,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
             evolve: getAllNodesInLane(data, 'evolve')
         };
 
-        const baseHeight = 445.71; // 1337.12 / 3
+        const baseHeight = 445.71;
         const minHeight = baseHeight;
         const nodeSpacing = 150;
 
@@ -62,14 +60,18 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
         };
     };
 
-    const laneHeights = calculateSwimLaneHeights();
-    const totalHeight = Math.max(1337.12,
-        laneHeights.enable + laneHeights.engage + laneHeights.evolve
-    );
+    const getParentPosition = (parentId?: string): Position => {
+        if (!parentId) return { x: 0, y: 0 };
+        const parentNode = findNode(parentId, data);
+        if (!parentNode) return { x: 0, y: 0 };
 
-    useEffect(() => {
-        setViewportHeight(totalHeight);
-    }, [totalHeight]);
+        const rootParent = data.find(node =>
+            findNode(parentId, [node]) !== null
+        );
+        const rootIndex = rootParent ? data.indexOf(rootParent) : 0;
+
+        return getNodePosition(parentNode, rootIndex);
+    };
 
     const getNodePosition = (node: TreeNodeType, index: number): Position => {
         if (node.type === 'parent') {
@@ -79,6 +81,7 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
 
         const parent = findNode(node.parentId!, data);
         if (!parent) return { x: 0, y: 0 };
+
         const parentPos = getNodePosition(parent, data.indexOf(parent));
 
         if (node.type === 'sub') {
@@ -90,28 +93,28 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
                     x: parentPos.x,
                     y: parentPos.y + 150 + (nodeIndex * 150)
                 };
-            } else {
-                // Swimlane positioning
-                let baseY = 0;
-                const laneSpacing = 50; // Additional spacing between nodes in same lane
-
-                if (node.swimLane === 'enable') {
-                    baseY = laneHeights.enable / 2;
-                } else if (node.swimLane === 'engage') {
-                    baseY = laneHeights.enable + (laneHeights.engage / 2);
-                } else {
-                    baseY = laneHeights.enable + laneHeights.engage + (laneHeights.evolve / 2);
-                }
-
-                // Find sibling nodes in the same lane
-                const siblings = getNodesInLane([parent], node.swimLane!);
-                const nodeIndex = siblings.indexOf(node);
-
-                return {
-                    x: parentPos.x,
-                    y: baseY + (nodeIndex * laneSpacing) - ((siblings.length - 1) * laneSpacing / 2)
-                };
             }
+
+            // Handle swimlane positioning
+            const laneHeights = calculateSwimLaneHeights();
+            const laneSpacing = 50;
+            let baseY = 0;
+
+            if (node.swimLane === 'enable') {
+                baseY = laneHeights.enable / 2;
+            } else if (node.swimLane === 'engage') {
+                baseY = laneHeights.enable + (laneHeights.engage / 2);
+            } else {
+                baseY = laneHeights.enable + laneHeights.engage + (laneHeights.evolve / 2);
+            }
+
+            const siblings = getAllNodesInLane([parent], node.swimLane!);
+            const nodeIndex = siblings.indexOf(node);
+
+            return {
+                x: parentPos.x,
+                y: baseY + (nodeIndex * laneSpacing) - ((siblings.length - 1) * laneSpacing / 2)
+            };
         }
 
         if (node.type === 'sub2') {
@@ -129,32 +132,19 @@ export default function AITree({ data, onAddNode }: AITreeProps) {
     };
 
     const handleAddClick = (parentId: string, nodeType: 'sub' | 'sub2') => {
-        console.log('Adding node:', { parentId, nodeType });
         setActiveParentId(parentId);
         setActiveNodeType(nodeType);
         setIsModalOpen(true);
     };
 
-    const getAllNodesInLane = (nodes: TreeNodeType[], lane: SwimLane): TreeNodeType[] => {
-        const result: TreeNodeType[] = [];
-
-        const traverse = (node: TreeNodeType) => {
-            if (node.type === 'sub' && node.swimLane === lane) {
-                result.push(node);
-            }
-            node.children?.forEach(traverse);
-        };
-
-        nodes.forEach(traverse);
-        return result;
-    };
-
-
-
+    const laneHeights = calculateSwimLaneHeights();
+    const totalHeight = Math.max(1337.12,
+        laneHeights.enable + laneHeights.engage + laneHeights.evolve
+    );
 
     return (
         <div className="relative">
-            <ZoomableViewport initialHeight={viewportHeight}>
+            <ZoomableViewport initialHeight={totalHeight}>
                 <SwimLanes heights={laneHeights} />
                 {data.map((node, index) => (
                     <NodeTree
