@@ -24,9 +24,13 @@ export function NodeTree({
                              onLaneChange,
                              onAddClick
                          }: NodeTreeProps) {
-    // Show add buttons based on node type
-    const showAddButtons = node.type === 'parent' || node.type === 'sub';
-    const canAddSub = node.type === 'parent' || node.type === 'sub';
+    // All node types can have buttons
+    const showAddButton = true;
+    // Only show lane selector for parent nodes
+    const showLaneSelector = node.type === 'parent';
+    // Allow sub nodes for all types
+    const canAddSub = true;
+    // Allow sub2 nodes for sub nodes only
     const canAddSub2 = node.type === 'sub';
 
     return (
@@ -36,7 +40,7 @@ export function NodeTree({
                 position={position}
             />
 
-            {showAddButtons && (
+            {showAddButton && (
                 <foreignObject
                     x={position.x - 120}
                     y={position.y + 80}
@@ -46,17 +50,19 @@ export function NodeTree({
                     <div className="space-y-2">
                         {canAddSub && (
                             <div className="flex gap-2">
-                                <select
-                                    value={selectedLane}
-                                    onChange={(e) => onLaneChange(node.id, e.target.value as SwimLane)}
-                                    className="w-32 px-3 py-2 bg-node-blue bg-opacity-50 text-white rounded-md
-                                             border border-white border-opacity-20 focus:border-opacity-50
-                                             focus:outline-none capitalize"
-                                >
-                                    <option value="enable">Enable</option>
-                                    <option value="engage">Engage</option>
-                                    <option value="evolve">Evolve</option>
-                                </select>
+                                {showLaneSelector && (
+                                    <select
+                                        value={selectedLane}
+                                        onChange={(e) => onLaneChange(node.id, e.target.value as SwimLane)}
+                                        className="w-32 px-3 py-2 bg-node-blue bg-opacity-50 text-white rounded-md
+                                                border border-white border-opacity-20 focus:border-opacity-50
+                                                focus:outline-none capitalize"
+                                    >
+                                        <option value="enable">Enable</option>
+                                        <option value="engage">Engage</option>
+                                        <option value="evolve">Evolve</option>
+                                    </select>
+                                )}
                                 <button
                                     className="flex-1 flex items-center justify-center gap-2 bg-node-blue
                                              hover:bg-opacity-80 text-white rounded-md px-4 py-2"
