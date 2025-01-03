@@ -9,12 +9,19 @@ interface TreeNodeComponentProps {
 
 export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
     const getIconName = (iconUrl: string) => {
-        const match = iconUrl.match(/icons\/([^?]+)/);
-        return match ? match[1] : '';
+        try {
+            const match = iconUrl.match(/icons\/([^/?]+)/);
+            return match ? match[1] : '';
+        } catch (e) {
+            return '';
+        }
     };
+
+    const iconName = getIconName(node.icon);
 
     return (
         <g transform={`translate(${position.x},${position.y})`}>
+            {/* Background circle */}
             <circle
                 r="40"
                 fill="#204B87"
@@ -23,18 +30,33 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 className="cursor-pointer hover:scale-105 transition-transform"
             />
 
-            {/* Icon container */}
+            {/* Icon container using foreignObject for better centering */}
             <foreignObject
-                x="-20"
-                y="-20"
-                width="40"
-                height="40"
-                className="overflow-visible"
+                x="-25"
+                y="-25"
+                width="50"
+                height="50"
+                style={{
+                    overflow: 'visible',
+                    pointerEvents: 'none'
+                }}
             >
-                <div className="w-full h-full flex items-center justify-center">
+                <div
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white'
+                    }}
+                >
                     <i
-                        className={`fas fa-${getIconName(node.icon)} text-white text-xl`}
-                        style={{ textAlign: 'center' }}
+                        className={`fas fa-${iconName} text-xl`}
+                        style={{
+                            color: 'white',
+                            fontSize: '20px'
+                        }}
                     />
                 </div>
             </foreignObject>
