@@ -13,52 +13,62 @@ export default function PageHeader() {
             <rect width="3432" height="2047" fill="#1C3559" />
 
             {/* Header */}
-            <g>
+            <g transform="translate(100, 100)">
                 <image
-                    xlinkHref="/assets/logo.svg" // Correct path for logo
-                    x="50"
-                    y="50"
-                    width="200"
-                    height="200"
+                    xlinkHref="/assets/logo.png"
+                    x="0"
+                    y="0"
+                    width="150"
+                    height="150"
                 />
                 <text
-                    x="300"
-                    y="150"
+                    x="200"
+                    y="75"
                     fill="#ffffff"
                     fontFamily="Poppins, sans-serif"
-                    fontSize="100"
+                    fontSize="80"
                     fontWeight="bold"
                 >
                     AI Roadmap Tree
                 </text>
-                <text
-                    x="300"
-                    y="250"
-                    fill="#ffffff"
-                    fontFamily="Poppins, sans-serif"
-                    fontSize="50"
-                >
-                    <tspan x="300" dy="1.2em">Home</tspan>
-                    <tspan x="500" dy="0">About</tspan>
-                </text>
+                <g transform="translate(200, 130)">
+                    <text
+                        x="0"
+                        y="0"
+                        fill="#ffffff"
+                        fontFamily="Poppins, sans-serif"
+                        fontSize="50"
+                    >
+                        Home
+                    </text>
+                    <text
+                        x="200"
+                        y="0"
+                        fill="#ffffff"
+                        fontFamily="Poppins, sans-serif"
+                        fontSize="50"
+                    >
+                        About
+                    </text>
+                </g>
             </g>
 
             {/* Clouds */}
             <g className="animate-cloud-drift">
-                <circle cx="500" cy="300" r="100" fill="#ffffff" />
-                <circle cx="650" cy="350" r="80" fill="#ffffff" />
+                <circle cx="800" cy="300" r="120" fill="#ffffff" />
+                <circle cx="1000" cy="350" r="100" fill="#ffffff" />
             </g>
 
             {/* Trees */}
             <g>
-                <rect x="100" y="1800" width="50" height="200" fill="#204B87" />
-                <circle cx="125" cy="1700" r="100" fill="#1C3559" />
+                <rect x="150" y="1800" width="80" height="200" fill="#204B87" />
+                <circle cx="190" cy="1720" r="120" fill="#1C3559" />
             </g>
 
             {/* Circuit Lines */}
             <g>
-                <line x1="800" y1="400" x2="1600" y2="400" stroke="#ffffff" strokeWidth="10" />
-                <line x1="1200" y1="400" x2="1200" y2="1000" stroke="#ffffff" strokeWidth="10" />
+                <line x1="1200" y1="500" x2="2200" y2="500" stroke="#ffffff" strokeWidth="8" />
+                <line x1="1700" y1="500" x2="1700" y2="1200" stroke="#ffffff" strokeWidth="8" />
             </g>
 
             {/* Car */}
@@ -66,7 +76,7 @@ export default function PageHeader() {
                 <path
                     d="M0,172v-172h172v172z"
                     fill="#26e07f"
-                    transform="translate(100, 1800) scale(2)"
+                    transform="translate(400, 1850) scale(2)"
                 />
             </g>
         </svg>
