@@ -1,16 +1,22 @@
 // src/components/layout/AITree.tsx
-import React, { useState, ReactElement } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
-import { ZoomableViewport } from './ZoomableViewport';
 
 const AITree = (): ReactElement => {
+    console.log('AITree rendering'); // Debug log
+    console.log('Initial tree data:', initialTreeData); // Debug log
+
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
     const [selectedNodeType, setSelectedNodeType] = useState<'sub' | 'sub2'>('sub');
+
+    useEffect(() => {
+        console.log('Tree data updated:', treeData);
+    }, [treeData]);
 
     const getNodePosition = (node: TreeNode, index: number): { x: number; y: number } => {
         // Calculate base spacing
@@ -71,6 +77,7 @@ const AITree = (): ReactElement => {
             }
         }
 
+        console.log(`Node position calculated for ${node.id}:`, { x, y }); // Debug log
         return { x, y };
     };
 
@@ -112,27 +119,32 @@ const AITree = (): ReactElement => {
     };
 
     return (
-        <ZoomableViewport initialHeight={2000}>
-            <g transform="translate(0, 690)">
-                {treeData.map((node, index) => (
-                    <NodeTree
-                        key={node.id}
-                        node={node}
-                        position={getNodePosition(node, index)}
-                        index={index}
-                        getNodePosition={getNodePosition}
-                        onAddClick={handleAddNode}
-                    />
-                ))}
-                <AddNodeModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onAdd={handleNodeAdd}
-                    parentId={selectedParentId}
-                    nodeType={selectedNodeType}
-                />
-            </g>
-        </ZoomableViewport>
+        <g transform="translate(0, 690)">
+            {treeData && treeData.length > 0 ? (
+                treeData.map((node, index) => {
+                    console.log('Rendering node:', node); // Debug log
+                    return (
+                        <NodeTree
+                            key={node.id}
+                            node={node}
+                            position={getNodePosition(node, index)}
+                            index={index}
+                            getNodePosition={getNodePosition}
+                            onAddClick={handleAddNode}
+                        />
+                    );
+                })
+            ) : (
+                <text x="1716" y="400" fill="white" textAnchor="middle">No tree data available</text>
+            )}
+            <AddNodeModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onAdd={handleNodeAdd}
+                parentId={selectedParentId}
+                nodeType={selectedNodeType}
+            />
+        </g>
     );
 };
 

@@ -3,8 +3,10 @@ import React from 'react';
 import AITree from './components/layout/AITree';
 
 export default function App() {
+    console.log('App rendering'); // Debug log
+
     return (
-        <div id="root">
+        <div id="root" className="w-full h-full">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-full h-full"
@@ -14,9 +16,6 @@ export default function App() {
                 <defs>
                     <clipPath id="headerClip">
                         <rect x="0" y="0" width="3432" height="700" />
-                    </clipPath>
-                    <clipPath id="treeClip">
-                        <rect x="0" y="700" width="3432" height="1300" />
                     </clipPath>
                 </defs>
 
@@ -64,10 +63,8 @@ export default function App() {
                     </g>
                 </g>
 
-                {/* Tree Section */}
-                <g clipPath="url(#treeClip)" transform="translate(0, 690)">
-                    <AITree />
-                </g>
+                {/* Tree Section - Direct embed without clip path */}
+                <AITree />
             </svg>
             <div id="modal-root"></div>
         </div>
