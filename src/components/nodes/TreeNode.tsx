@@ -13,19 +13,22 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
             radius: 45,
             fill: '#204B87',
             iconSize: 'text-2xl',
-            titleOffset: 70
+            titleOffset: 70,
+            titleClass: 'text-sm font-normal'
         },
         sub: {
             radius: 40,
             fill: '#204B87',
             iconSize: 'text-xl',
-            titleOffset: 60
+            titleOffset: 60,
+            titleClass: 'text-xs font-normal'
         },
         sub2: {
             radius: 35,
             fill: '#204B87',
             iconSize: 'text-lg',
-            titleOffset: 55
+            titleOffset: 55,
+            titleClass: 'text-xs font-normal'
         }
     };
 
@@ -33,6 +36,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
 
     return (
         <g transform={`translate(${position.x},${position.y})`}>
+            {/* Background circle */}
             <circle
                 r={style.radius}
                 fill={style.fill}
@@ -47,13 +51,14 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 y={-style.radius/2}
                 width={style.radius}
                 height={style.radius}
-                style={{
-                    overflow: 'visible',
-                    pointerEvents: 'none'
-                }}
+                className="pointer-events-none"
             >
                 <div
-                    className={`w-full h-full flex items-center justify-center ${style.iconSize} text-white`}
+                    className={`w-full h-full flex items-center justify-center ${style.iconSize}`}
+                    style={{
+                        fontFamily: 'Poppins, sans-serif',
+                        color: 'white'
+                    }}
                 >
                     <i className={`fas fa-${node.icon}`}></i>
                 </div>
@@ -64,8 +69,9 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 x={style.titleOffset}
                 y="0"
                 fill="white"
-                className="text-sm font-medium"
+                className={`${style.titleClass} font-poppins`}
                 dominantBaseline="middle"
+                style={{ fontFamily: 'Poppins, sans-serif' }}
             >
                 {node.title}
             </text>

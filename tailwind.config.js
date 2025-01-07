@@ -7,9 +7,9 @@ module.exports = {
                 'node-blue': '#204B87',
             },
             fontFamily: {
-                'karla': ['Karla', 'sans-serif'],
                 'poppins': ['Poppins', 'sans-serif'],
-            }
+            },
         }
-    }
+    },
+    plugins: [],
 }
