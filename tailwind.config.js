@@ -9,7 +9,21 @@ module.exports = {
             fontFamily: {
                 'poppins': ['Poppins', 'sans-serif'],
             },
-        }
+            animation: {
+                'cloud-drift': 'cloudDrift 20s linear infinite',
+                'car-move': 'carMove 10s linear infinite',
+            },
+            keyframes: {
+                cloudDrift: {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(-100vw)' },
+                },
+                carMove: {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(100vw)' },
+                },
+            },
+        },
     },
     plugins: [],
-}
+};
