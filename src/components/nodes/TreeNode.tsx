@@ -55,10 +55,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
             >
                 <div
                     className={`w-full h-full flex items-center justify-center ${style.iconSize}`}
-                    style={{
-                        fontFamily: 'Poppins, sans-serif',
-                        color: 'white'
-                    }}
+                    style={{ color: 'white' }}
                 >
                     <i className={`fas fa-${node.icon}`}></i>
                 </div>
@@ -69,9 +66,8 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 x={style.titleOffset}
                 y="0"
                 fill="white"
-                className={`${style.titleClass} font-poppins`}
+                className={`${style.titleClass}`}
                 dominantBaseline="middle"
-                style={{ fontFamily: 'Poppins, sans-serif' }}
             >
                 {node.title}
             </text>

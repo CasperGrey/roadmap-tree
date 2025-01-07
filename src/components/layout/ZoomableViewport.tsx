@@ -15,13 +15,13 @@ interface ZoomableViewportProps {
 
 export function ZoomableViewport({
                                      children,
-                                     initialHeight = 1337.12,
+                                     initialHeight = 1000,
                                  }: ZoomableViewportProps) {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState<ViewportState>({
         x: 0,
         y: 0,
-        width: 2241.46,
+        width: 2000,
         height: initialHeight
     });
     const containerRef = useRef<HTMLDivElement>(null);
@@ -57,24 +57,11 @@ export function ZoomableViewport({
         return () => container.removeEventListener('wheel', handleWheel);
     }, [zoom, viewBox]);
 
-    // Update viewBox height when initialHeight changes
-    useEffect(() => {
-        setViewBox(prev => ({
-            ...prev,
-            height: initialHeight
-        }));
-    }, [initialHeight]);
-
     return (
         <div
             ref={containerRef}
-            className="relative"
-            style={{
-                left: '24px',
-                width: '2241.46px',
-                height: `${initialHeight}px`,
-                marginTop: '-15px'
-            }}
+            className="relative w-full h-full overflow-hidden"
+            style={{ height: `${initialHeight}px` }}
         >
             <svg
                 width="100%"

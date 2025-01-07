@@ -22,7 +22,7 @@ export function NodeTree({
                          }: NodeTreeProps) {
     // Show add buttons based on node type
     const showAddButtons = node.type === 'parent' || node.type === 'sub';
-    const canAddSub = true;
+    const canAddSub = node.type === 'parent';
     const canAddSub2 = node.type === 'sub';
 
     return (
@@ -34,9 +34,9 @@ export function NodeTree({
 
             {showAddButtons && (
                 <foreignObject
-                    x={position.x - 120}
+                    x={position.x - 60}
                     y={position.y + 80}
-                    width="240"
+                    width="120"
                     height="80"
                 >
                     <div className="space-y-2">
@@ -46,6 +46,9 @@ export function NodeTree({
                                          hover:bg-opacity-80 text-white rounded-md px-4 py-2"
                                 onClick={() => onAddClick(node.id, 'sub')}
                             >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
                                 Add Sub
                             </button>
                         )}
@@ -55,6 +58,9 @@ export function NodeTree({
                                          hover:bg-opacity-80 text-white rounded-md px-4 py-2"
                                 onClick={() => onAddClick(node.id, 'sub2')}
                             >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
                                 Add Sub-2
                             </button>
                         )}
