@@ -1,107 +1,57 @@
-// src/components/layout/AITree.tsx
 import React from 'react';
-import { TreeNode as TreeNodeType, Position, NewNodeData } from '../../types/tree';
-import { NodeTree } from '../nodes/NodeTree';
-import { ZoomableViewport } from './ZoomableViewport';
-import { Decorations } from '../decorative/decorations';
 
-interface AITreeProps {
-    data: TreeNodeType[];
-    onAddNode: (nodeData: NewNodeData) => void;
-    onNodeAdd: (parentId: string, nodeType: 'sub' | 'sub2') => void;
+// Define the type for a tree node
+interface TreeNode {
+    id: number;
+    label: string;
+    children?: TreeNode[];
 }
 
-// Constants
-const BASE_HEIGHT = 1337.12;
-const NODE_SPACING_VERTICAL = 150;
-const NODE_SPACING_HORIZONTAL = 2241.46 / 5;
+// Define the props for the AITree component
+interface AITreeProps {
+    data: TreeNode[];
+    onAddNode: (node: TreeNode) => void;
+    onNodeAdd: (nodeId: number) => void;
+}
 
-export default function AITree({ data, onNodeAdd }: AITreeProps) {
-    const findNode = (nodeId: string, nodes: TreeNodeType[]): TreeNodeType | null => {
-        for (const node of nodes) {
-            if (node.id === nodeId) return node;
-            if (node.children) {
-                const found = findNode(nodeId, node.children);
-                if (found) return found;
-            }
-        }
-        return null;
+const AITree: React.FC<AITreeProps> = ({ data, onAddNode, onNodeAdd }) => {
+    // Recursive function to render tree nodes
+    const renderTree = (nodes: TreeNode[]) => {
+        return nodes.map((node) => (
+            <li key={node.id} className="mb-2">
+                <div
+                    onClick={() => onNodeAdd(node.id)}
+                    className="cursor-pointer hover:underline text-blue-500"
+                >
+                    {node.label}
+                </div>
+                {node.children && node.children.length > 0 && (
+                    <ul className="ml-4">{renderTree(node.children)}</ul>
+                )}
+            </li>
+        ));
     };
-
-    const getNodePosition = (node: TreeNodeType, index: number): Position => {
-        if (node.type === 'parent') {
-            return {
-                x: NODE_SPACING_HORIZONTAL + (index * NODE_SPACING_HORIZONTAL),
-                y: 200 // Increased to account for decorations
-            };
-        }
-
-        const parent = findNode(node.parentId!, data);
-        if (!parent) return { x: 0, y: 0 };
-
-        const parentPos = getNodePosition(parent, data.indexOf(parent));
-
-        if (node.type === 'sub') {
-            if (parent.type === 'sub') {
-                // Vertical positioning for sub under sub
-                const siblings = parent.children?.filter(n => n.type === 'sub') || [];
-                const nodeIndex = siblings.indexOf(node);
-                return {
-                    x: parentPos.x,
-                    y: parentPos.y + NODE_SPACING_VERTICAL + (nodeIndex * NODE_SPACING_VERTICAL)
-                };
-            }
-
-            // If parent is a parent node
-            const siblings = parent.children?.filter(n => n.type === 'sub') || [];
-            const nodeIndex = siblings.indexOf(node);
-            return {
-                x: parentPos.x,
-                y: parentPos.y + NODE_SPACING_VERTICAL + (nodeIndex * NODE_SPACING_VERTICAL)
-            };
-        }
-
-        if (node.type === 'sub2') {
-            return {
-                x: parentPos.x + NODE_SPACING_VERTICAL, // Diagonal offset
-                y: parentPos.y + NODE_SPACING_VERTICAL
-            };
-        }
-
-        return { x: 0, y: 0 };
-    };
-
-    // Calculate total height based on deepest branch
-    const calculateTotalHeight = (nodes: TreeNodeType[]): number => {
-        let maxDepth = 0;
-
-        const getDepth = (node: TreeNodeType, currentDepth: number) => {
-            maxDepth = Math.max(maxDepth, currentDepth);
-            node.children?.forEach(child => getDepth(child, currentDepth + 1));
-        };
-
-        nodes.forEach(node => getDepth(node, 1));
-
-        return Math.max(BASE_HEIGHT, (maxDepth + 1) * NODE_SPACING_VERTICAL + 200);
-    };
-
-    const totalHeight = calculateTotalHeight(data);
 
     return (
-        <div className="relative">
-            <ZoomableViewport initialHeight={totalHeight}>
-                <Decorations />
-                {data.map((node, index) => (
-                    <NodeTree
-                        key={node.id}
-                        node={node}
-                        position={getNodePosition(node, index)}
-                        index={index}
-                        getNodePosition={getNodePosition}
-                        onAddClick={onNodeAdd}
-                    />
-                ))}
-            </ZoomableViewport>
+        <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-4">
+            <h2 className="text-lg font-bold text-center mb-4">AI Roadmap Tree</h2>
+            <ul>{renderTree(data)}</ul>
+            <div className="mt-4 flex justify-center">
+                <button
+                    onClick={() =>
+                        onAddNode({
+                            id: data.length + 1,
+                            label: `Node ${data.length + 1}`,
+                            children: [],
+                        })
+                    }
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                >
+                    Add New Node
+                </button>
+            </div>
         </div>
     );
-}
+};
+
+export default AITree;
