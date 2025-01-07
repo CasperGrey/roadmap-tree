@@ -1,6 +1,4 @@
-// src/App.tsx
 import React from 'react';
-import PageHeader from './components/header/PageHeader';
 import AITree from './components/layout/AITree';
 
 export default function App() {
@@ -26,20 +24,15 @@ export default function App() {
 
                 {/* Header Section */}
                 <g clipPath="url(#headerClip)">
-                    <g>
-                        {/* Header background */}
-                        <rect width="3432" height="700" fill="#1C3559"/>
+                    {/* White lines */}
+                    <line x1="0" y1="100" x2="3432" y2="100" stroke="#ffffff" strokeWidth="8"/>
+                    <line x1="0" y1="200" x2="3432" y2="200" stroke="#ffffff" strokeWidth="8"/>
 
-                        {/* White lines */}
-                        <line x1="0" y1="100" x2="3432" y2="100" stroke="#ffffff" strokeWidth="8"/>
-                        <line x1="0" y1="200" x2="3432" y2="200" stroke="#ffffff" strokeWidth="8"/>
+                    {/* Blue lines */}
+                    <line x1="0" y1="300" x2="3432" y2="300" stroke="#204B87" strokeWidth="8"/>
+                    <line x1="0" y1="400" x2="3432" y2="400" stroke="#204B87" strokeWidth="8"/>
 
-                        {/* Blue lines */}
-                        <line x1="0" y1="300" x2="3432" y2="300" stroke="#204B87" strokeWidth="8"/>
-                        <line x1="0" y1="400" x2="3432" y2="400" stroke="#204B87" strokeWidth="8"/>
-                    </g>
-
-                    {/* Logo and center line group */}
+                    {/* Logo and center line */}
                     <g transform="translate(1716, 400)">
                         <image
                             href="/assets/logo.png"
@@ -59,10 +52,8 @@ export default function App() {
                     </g>
                 </g>
 
-                {/* Tree Section */}
-                <g clipPath="url(#treeClip)" transform="translate(0, 690)">
-                    <AITree />
-                </g>
+                {/* Tree Section with explicit positioning */}
+                <AITree />
             </svg>
             <div id="modal-root"></div>
         </div>

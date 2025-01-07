@@ -1,37 +1,54 @@
-import React, { useState } from 'react';
-import { ZoomableViewport } from './ZoomableViewport';
+import React, { useEffect, useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 
-const AITree: React.FC = () => {
+const AITree = (): ReactElement => {
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
     const [selectedNodeType, setSelectedNodeType] = useState<'sub' | 'sub2'>('sub');
 
-    // Calculate node positions
-    const getNodePosition = (node: TreeNode, index: number) => {
-        let baseY = 200; // Starting Y position
+    const getNodePosition = (node: TreeNode, index: number): { x: number; y: number } => {
+        const parentCount = treeData.length;
+        const horizontalSpacing = 3432 / (parentCount + 1);
 
-        // Adjust Y position based on node type and parent-child relationship
+        const parentIndex = treeData.findIndex(parent =>
+            parent.id === node.id ||
+            parent.children?.some(child =>
+                child.id === node.id ||
+                child.children?.some(subChild => subChild.id === node.id)
+            )
+        );
+
+        let x = (parentIndex + 1) * horizontalSpacing;
+        let y = 800;
+
         if (node.type === 'sub') {
-            baseY = 400;
+            y = 1000;
+            const parent = treeData[parentIndex];
+            const childIndex = parent.children?.findIndex(child => child.id === node.id) ?? 0;
+            const childCount = parent.children?.length ?? 1;
+            const childSpacing = horizontalSpacing / (childCount + 1);
+            x = (parentIndex * horizontalSpacing) + ((childIndex + 1) * childSpacing);
         } else if (node.type === 'sub2') {
-            baseY = 600;
+            y = 1200;
+            const parentSub = treeData[parentIndex]?.children?.find(child =>
+                child.children?.some(subChild => subChild.id === node.id)
+            );
+            if (parentSub) {
+                const subChildIndex = parentSub.children?.findIndex(child => child.id === node.id) ?? 0;
+                const subChildCount = parentSub.children?.length ?? 1;
+                const subChildSpacing = horizontalSpacing / (subChildCount + 1);
+                x += subChildSpacing * (subChildIndex + 1) - (horizontalSpacing / 4);
+            }
         }
 
-        // Calculate X position based on index and level
-        const baseX = 150 + (index * 300);
-
-        return {
-            x: baseX,
-            y: baseY
-        };
+        return { x, y };
     };
 
-    const handleAddNode = (parentId: string, nodeType: 'sub' | 'sub2') => {
+    const handleAddNode = (parentId: string, nodeType: 'sub' | 'sub2'): void => {
         setSelectedParentId(parentId);
         setSelectedNodeType(nodeType);
         setIsModalOpen(true);
@@ -44,45 +61,42 @@ const AITree: React.FC = () => {
             children: []
         };
 
-        const updateTree = (nodes: TreeNode[]): TreeNode[] => {
-            return nodes.map(node => {
-                if (node.id === nodeData.parentId) {
-                    return {
-                        ...node,
-                        children: [...(node.children || []), newNode]
-                    };
-                }
-                if (node.children) {
-                    return {
-                        ...node,
-                        children: updateTree(node.children)
-                    };
-                }
-                return node;
-            });
-        };
+        setTreeData((currentTreeData: TreeNode[]): TreeNode[] => {
+            const updateNodes = (nodes: TreeNode[]): TreeNode[] => {
+                return nodes.map((node: TreeNode): TreeNode => {
+                    if (node.id === nodeData.parentId) {
+                        return {
+                            ...node,
+                            children: [...(node.children || []), newNode]
+                        };
+                    }
+                    if (node.children) {
+                        return {
+                            ...node,
+                            children: updateNodes(node.children)
+                        };
+                    }
+                    return node;
+                });
+            };
+            return updateNodes(currentTreeData);
+        });
 
-        setTreeData(updateTree(treeData));
         setIsModalOpen(false);
     };
 
     return (
-        <div className="relative w-full h-full">
-            <ZoomableViewport initialHeight={1000}>
-                {/* Tree Nodes */}
-                {treeData.map((node, index) => (
-                    <NodeTree
-                        key={node.id}
-                        node={node}
-                        position={getNodePosition(node, index)}
-                        index={index}
-                        getNodePosition={getNodePosition}
-                        onAddClick={handleAddNode}
-                    />
-                ))}
-            </ZoomableViewport>
-
-            {/* Add Node Modal */}
+        <g transform="translate(0, 690)">
+            {treeData.map((node, index) => (
+                <NodeTree
+                    key={node.id}
+                    node={node}
+                    position={getNodePosition(node, index)}
+                    index={index}
+                    getNodePosition={getNodePosition}
+                    onAddClick={handleAddNode}
+                />
+            ))}
             <AddNodeModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -90,7 +104,7 @@ const AITree: React.FC = () => {
                 parentId={selectedParentId}
                 nodeType={selectedNodeType}
             />
-        </div>
+        </g>
     );
 };
 
