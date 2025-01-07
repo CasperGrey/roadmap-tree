@@ -1,3 +1,4 @@
+// Updated PageHeader.tsx (Aligned with PDF Design)
 import React from 'react';
 
 export default function PageHeader() {
@@ -12,72 +13,42 @@ export default function PageHeader() {
             {/* Background */}
             <rect width="3432" height="2047" fill="#1C3559" />
 
-            {/* Header */}
-            <g transform="translate(100, 100)">
+            {/* Horizontal Lines in Header */}
+            <line x1="0" y1="200" x2="3432" y2="200" stroke="#ffffff" strokeWidth="8" />
+            <line x1="0" y1="300" x2="3432" y2="300" stroke="#ffffff" strokeWidth="8" />
+            <line x1="0" y1="400" x2="3432" y2="400" stroke="#204B87" strokeWidth="8" />
+            <line x1="0" y1="500" x2="3432" y2="500" stroke="#204B87" strokeWidth="8" />
+
+            {/* Logo and Center Line */}
+            <g transform="translate(1716, 100)">
                 <image
-                    xlinkHref="/assets/logo.png"
-                    x="0"
+                    xlinkHref="/assets/logo.svg"
+                    x="-75"
                     y="0"
                     width="150"
                     height="150"
                 />
-                <text
-                    x="200"
-                    y="75"
-                    fill="#ffffff"
-                    fontFamily="Poppins, sans-serif"
-                    fontSize="80"
-                    fontWeight="bold"
-                >
-                    AI Roadmap Tree
-                </text>
-                <g transform="translate(200, 130)">
-                    <text
-                        x="0"
-                        y="0"
-                        fill="#ffffff"
-                        fontFamily="Poppins, sans-serif"
-                        fontSize="50"
-                    >
-                        Home
-                    </text>
-                    <text
-                        x="200"
-                        y="0"
-                        fill="#ffffff"
-                        fontFamily="Poppins, sans-serif"
-                        fontSize="50"
-                    >
-                        About
-                    </text>
-                </g>
+                <line x1="0" y1="150" x2="0" y2="1000" stroke="#ffffff" strokeWidth="8" />
             </g>
 
             {/* Clouds */}
             <g className="animate-cloud-drift">
-                <circle cx="800" cy="300" r="120" fill="#ffffff" />
-                <circle cx="1000" cy="350" r="100" fill="#ffffff" />
-            </g>
-
-            {/* Trees */}
-            <g>
-                <rect x="150" y="1800" width="80" height="200" fill="#204B87" />
-                <circle cx="190" cy="1720" r="120" fill="#1C3559" />
+                <circle cx="500" cy="150" r="120" fill="#ffffff" />
+                <circle cx="700" cy="200" r="100" fill="#ffffff" />
+                <circle cx="2500" cy="150" r="120" fill="#ffffff" />
+                <circle cx="2700" cy="200" r="100" fill="#ffffff" />
             </g>
 
             {/* Circuit Lines */}
             <g>
-                <line x1="1200" y1="500" x2="2200" y2="500" stroke="#ffffff" strokeWidth="8" />
-                <line x1="1700" y1="500" x2="1700" y2="1200" stroke="#ffffff" strokeWidth="8" />
+                <line x1="1500" y1="1100" x2="2200" y2="1100" stroke="#ffffff" strokeWidth="8" />
+                <line x1="1850" y1="1100" x2="1850" y2="1500" stroke="#ffffff" strokeWidth="8" />
             </g>
 
-            {/* Car */}
-            <g className="animate-car-move">
-                <path
-                    d="M0,172v-172h172v172z"
-                    fill="#26e07f"
-                    transform="translate(400, 1850) scale(2)"
-                />
+            {/* Trees */}
+            <g>
+                <rect x="1650" y="1800" width="80" height="200" fill="#204B87" />
+                <circle cx="1690" cy="1720" r="120" fill="#1C3559" />
             </g>
         </svg>
     );
