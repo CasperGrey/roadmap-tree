@@ -1,21 +1,18 @@
 import React from 'react';
 
-// Define the type for a tree node
 interface TreeNode {
     id: number;
     label: string;
     children?: TreeNode[];
 }
 
-// Define the props for the AITree component
 interface AITreeProps {
     data: TreeNode[];
-    onAddNode: (node: TreeNode) => void;
+    onAddNode: (newNode: TreeNode) => void;
     onNodeAdd: (nodeId: number) => void;
 }
 
 const AITree: React.FC<AITreeProps> = ({ data, onAddNode, onNodeAdd }) => {
-    // Recursive function to render tree nodes
     const renderTree = (nodes: TreeNode[]) => {
         return nodes.map((node) => (
             <li key={node.id} className="mb-2">
@@ -38,13 +35,14 @@ const AITree: React.FC<AITreeProps> = ({ data, onAddNode, onNodeAdd }) => {
             <ul>{renderTree(data)}</ul>
             <div className="mt-4 flex justify-center">
                 <button
-                    onClick={() =>
-                        onAddNode({
+                    onClick={() => {
+                        const newNode: TreeNode = {
                             id: data.length + 1,
                             label: `Node ${data.length + 1}`,
                             children: [],
-                        })
-                    }
+                        };
+                        onAddNode(newNode);
+                    }}
                     className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
                 >
                     Add New Node

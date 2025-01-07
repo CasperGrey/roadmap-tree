@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PageHeader from './components/header/PageHeader';
 import AITree from './components/layout/AITree';
 
-// Define the type for a tree node
 interface TreeNode {
     id: number;
     label: string;
@@ -27,7 +26,7 @@ export default function App() {
             <div className="w-full">
                 <PageHeader />
             </div>
-            <div className="w-full flex justify-center mt-[-50px]">
+            <div className="w-full flex justify-center mt-[-30px]">
                 <AITree
                     data={treeData}
                     onAddNode={handleAddNode}
