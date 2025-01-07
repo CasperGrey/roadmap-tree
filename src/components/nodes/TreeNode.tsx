@@ -47,15 +47,17 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
 
             {/* Icon */}
             <foreignObject
-                x={-style.radius/2}
-                y={-style.radius/2}
-                width={style.radius}
-                height={style.radius}
+                x={-style.radius}
+                y={-style.radius}
+                width={style.radius * 2}
+                height={style.radius * 2}
                 className="pointer-events-none"
             >
                 <div
                     className={`w-full h-full flex items-center justify-center ${style.iconSize}`}
-                    style={{ color: 'white' }}
+                    style={{
+                        color: 'white'
+                    }}
                 >
                     <i className={`fas fa-${node.icon}`}></i>
                 </div>

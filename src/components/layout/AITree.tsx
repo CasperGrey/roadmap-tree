@@ -1,8 +1,10 @@
-import React, { useEffect, useState, ReactElement } from 'react';
+// src/components/layout/AITree.tsx
+import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
+import { ZoomableViewport } from './ZoomableViewport';
 
 const AITree = (): ReactElement => {
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
@@ -11,37 +13,61 @@ const AITree = (): ReactElement => {
     const [selectedNodeType, setSelectedNodeType] = useState<'sub' | 'sub2'>('sub');
 
     const getNodePosition = (node: TreeNode, index: number): { x: number; y: number } => {
+        // Calculate base spacing
+        const totalWidth = 3432;
         const parentCount = treeData.length;
-        const horizontalSpacing = 3432 / (parentCount + 1);
+        const parentSpacing = totalWidth / (parentCount + 1);
 
-        const parentIndex = treeData.findIndex(parent =>
-            parent.id === node.id ||
-            parent.children?.some(child =>
-                child.id === node.id ||
-                child.children?.some(subChild => subChild.id === node.id)
-            )
-        );
-
-        let x = (parentIndex + 1) * horizontalSpacing;
+        let x = 0;
         let y = 800;
 
-        if (node.type === 'sub') {
-            y = 1000;
-            const parent = treeData[parentIndex];
-            const childIndex = parent.children?.findIndex(child => child.id === node.id) ?? 0;
-            const childCount = parent.children?.length ?? 1;
-            const childSpacing = horizontalSpacing / (childCount + 1);
-            x = (parentIndex * horizontalSpacing) + ((childIndex + 1) * childSpacing);
-        } else if (node.type === 'sub2') {
-            y = 1200;
-            const parentSub = treeData[parentIndex]?.children?.find(child =>
-                child.children?.some(subChild => subChild.id === node.id)
+        if (node.type === 'parent') {
+            // Position parent nodes evenly across the width
+            x = parentSpacing * (index + 1);
+            y = 800;
+        } else {
+            // Find the parent node
+            const parentNode = treeData.find(parent =>
+                parent.id === node.parentId ||
+                parent.children?.some(child => child.id === node.parentId || child.id === node.id)
             );
-            if (parentSub) {
-                const subChildIndex = parentSub.children?.findIndex(child => child.id === node.id) ?? 0;
-                const subChildCount = parentSub.children?.length ?? 1;
-                const subChildSpacing = horizontalSpacing / (subChildCount + 1);
-                x += subChildSpacing * (subChildIndex + 1) - (horizontalSpacing / 4);
+
+            if (parentNode) {
+                const parentIndex = treeData.indexOf(parentNode);
+                const parentX = parentSpacing * (parentIndex + 1);
+
+                if (node.type === 'sub') {
+                    // Find index among siblings
+                    const siblings = parentNode.children || [];
+                    const siblingIndex = siblings.findIndex(child => child.id === node.id);
+                    const siblingCount = siblings.length;
+                    const subSpacing = parentSpacing / (siblingCount + 1);
+
+                    x = parentX - (parentSpacing / 2) + (subSpacing * (siblingIndex + 1));
+                    y = 1000;
+                } else if (node.type === 'sub2') {
+                    // Find parent sub node
+                    const parentSub = parentNode.children?.find(child =>
+                        child.id === node.parentId
+                    );
+
+                    if (parentSub) {
+                        const subSiblings = parentNode.children || [];
+                        const subIndex = subSiblings.indexOf(parentSub);
+                        const subX = parentX - (parentSpacing / 2) +
+                            (parentSpacing / (subSiblings.length + 1) * (subIndex + 1));
+
+                        // Position sub2 nodes at an angle from their parent sub node
+                        const siblingIndex = parentSub.children?.indexOf(node) ?? 0;
+                        const siblingCount = parentSub.children?.length ?? 1;
+                        const angleSpacing = 45 / (siblingCount + 1);
+                        const angle = -22.5 + (angleSpacing * (siblingIndex + 1));
+                        const radius = 200;
+
+                        x = subX + (radius * Math.cos((angle * Math.PI) / 180));
+                        y = 1000 + (radius * Math.sin((angle * Math.PI) / 180));
+                    }
+                }
             }
         }
 
@@ -86,25 +112,27 @@ const AITree = (): ReactElement => {
     };
 
     return (
-        <g transform="translate(0, 690)">
-            {treeData.map((node, index) => (
-                <NodeTree
-                    key={node.id}
-                    node={node}
-                    position={getNodePosition(node, index)}
-                    index={index}
-                    getNodePosition={getNodePosition}
-                    onAddClick={handleAddNode}
+        <ZoomableViewport initialHeight={2000}>
+            <g transform="translate(0, 690)">
+                {treeData.map((node, index) => (
+                    <NodeTree
+                        key={node.id}
+                        node={node}
+                        position={getNodePosition(node, index)}
+                        index={index}
+                        getNodePosition={getNodePosition}
+                        onAddClick={handleAddNode}
+                    />
+                ))}
+                <AddNodeModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onAdd={handleNodeAdd}
+                    parentId={selectedParentId}
+                    nodeType={selectedNodeType}
                 />
-            ))}
-            <AddNodeModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onAdd={handleNodeAdd}
-                parentId={selectedParentId}
-                nodeType={selectedNodeType}
-            />
-        </g>
+            </g>
+        </ZoomableViewport>
     );
 };
 

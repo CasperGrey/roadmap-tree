@@ -1,3 +1,4 @@
+// src/App.tsx
 import React from 'react';
 import AITree from './components/layout/AITree';
 
@@ -50,10 +51,23 @@ export default function App() {
                             strokeWidth="8"
                         />
                     </g>
+
+                    {/* Decorative elements */}
+                    <g>
+                        {/* Left Clouds */}
+                        <circle cx="400" cy="150" r="80" fill="#ffffff" opacity="0.7" />
+                        <circle cx="600" cy="180" r="60" fill="#ffffff" opacity="0.7" />
+
+                        {/* Right Clouds */}
+                        <circle cx="2800" cy="150" r="80" fill="#ffffff" opacity="0.7" />
+                        <circle cx="3000" cy="180" r="60" fill="#ffffff" opacity="0.7" />
+                    </g>
                 </g>
 
-                {/* Tree Section with explicit positioning */}
-                <AITree />
+                {/* Tree Section */}
+                <g clipPath="url(#treeClip)" transform="translate(0, 690)">
+                    <AITree />
+                </g>
             </svg>
             <div id="modal-root"></div>
         </div>
