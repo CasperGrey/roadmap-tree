@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { SwimLanes } from './SwimLanes';
+import React, { useState } from 'react';
 import { ZoomableViewport } from './ZoomableViewport';
 import { NodeTree } from '../nodes/NodeTree';
-import { TreeNode, SwimLane } from '../../types/tree';
+import { TreeNode } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 
@@ -11,23 +10,20 @@ const AITree: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
     const [selectedNodeType, setSelectedNodeType] = useState<'sub' | 'sub2'>('sub');
-    const [selectedLane, setSelectedLane] = useState<SwimLane>('enable');
 
-    // Calculate heights for swim lanes based on content
-    const laneHeights: Record<SwimLane, number> = {
-        enable: 400,
-        engage: 400,
-        evolve: 400
-    };
-
-    // Calculate total height for viewport
-    const totalHeight = Object.values(laneHeights).reduce((a, b) => a + b, 0);
-
-    // Function to calculate node positions
+    // Calculate node positions
     const getNodePosition = (node: TreeNode, index: number) => {
+        let baseY = 200; // Starting Y position
+
+        // Adjust Y position based on node type and parent-child relationship
+        if (node.type === 'sub') {
+            baseY = 400;
+        } else if (node.type === 'sub2') {
+            baseY = 600;
+        }
+
+        // Calculate X position based on index and level
         const baseX = 150 + (index * 300);
-        const baseY = node.swimLane === 'enable' ? 200 :
-            node.swimLane === 'engage' ? 600 : 1000;
 
         return {
             x: baseX,
@@ -41,7 +37,7 @@ const AITree: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'> & { parentId: string }) => {
+    const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
         const newNode: TreeNode = {
             ...nodeData,
             id: `node-${Date.now()}`,
@@ -72,10 +68,7 @@ const AITree: React.FC = () => {
 
     return (
         <div className="relative w-full h-full">
-            <ZoomableViewport initialHeight={totalHeight}>
-                {/* Swim Lanes Background */}
-                <SwimLanes heights={laneHeights} />
-
+            <ZoomableViewport initialHeight={1000}>
                 {/* Tree Nodes */}
                 {treeData.map((node, index) => (
                     <NodeTree
@@ -95,7 +88,6 @@ const AITree: React.FC = () => {
                 onClose={() => setIsModalOpen(false)}
                 onAdd={handleNodeAdd}
                 parentId={selectedParentId}
-                selectedLane={selectedLane}
                 nodeType={selectedNodeType}
             />
         </div>

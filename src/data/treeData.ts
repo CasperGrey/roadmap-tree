@@ -14,9 +14,9 @@ export const treeData: TreeNode[] = [
                 title: 'Copilot Studio in Edge',
                 icon: 'robot',
                 parentId: 'generative-ai',
-                swimLane: 'enable',
+
                 children: [{
-                    id: 'pilot-pr',
+                    id: 'pilot-par',
                     type: 'sub2',
                     title: 'PILOT: PR',
                     icon: 'newspaper',
@@ -29,7 +29,7 @@ export const treeData: TreeNode[] = [
                 title: 'ChatGPT',
                 icon: 'comments',
                 parentId: 'generative-ai',
-                swimLane: 'enable'
+
             },
             {
                 id: '365-copilot-audit',
@@ -37,7 +37,7 @@ export const treeData: TreeNode[] = [
                 title: '365 COPILOT AUDIT',
                 icon: 'clipboard-check',
                 parentId: 'generative-ai',
-                swimLane: 'enable'
+
             },
             {
                 id: 'claude-ai',
@@ -45,7 +45,7 @@ export const treeData: TreeNode[] = [
                 title: 'CLAUDE AI',
                 icon: 'robot',
                 parentId: 'generative-ai',
-                swimLane: 'enable',
+
                 children: [{
                     id: 'poc-technology',
                     type: 'sub2',
@@ -68,7 +68,7 @@ export const treeData: TreeNode[] = [
                 title: 'MS Teams',
                 icon: 'users',
                 parentId: 'productivity-ai',
-                swimLane: 'enable',
+
                 children: [{
                     id: 'pilot-executive',
                     type: 'sub2',
@@ -83,7 +83,7 @@ export const treeData: TreeNode[] = [
                 title: 'MS Teams Premium',
                 icon: 'star',
                 parentId: 'productivity-ai',
-                swimLane: 'enable'
+
             },
             {
                 id: 'genesys-cloud',
@@ -91,7 +91,7 @@ export const treeData: TreeNode[] = [
                 title: 'Genesys Cloud',
                 icon: 'cloud',
                 parentId: 'productivity-ai',
-                swimLane: 'enable'
+
             },
             {
                 id: 'dynamics365-copilot',
@@ -99,7 +99,7 @@ export const treeData: TreeNode[] = [
                 title: 'Dynamics365 Copilot',
                 icon: 'cogs',
                 parentId: 'productivity-ai',
-                swimLane: 'enable'
+
             }
         ]
     },
@@ -115,7 +115,7 @@ export const treeData: TreeNode[] = [
                 title: 'Azure Foundry POC',
                 icon: 'cloud',
                 parentId: 'developed-ai',
-                swimLane: 'enable'
+
             },
             {
                 id: 'knowledge-management',
@@ -123,7 +123,7 @@ export const treeData: TreeNode[] = [
                 title: 'Knowledge Management POC',
                 icon: 'book',
                 parentId: 'developed-ai',
-                swimLane: 'enable'
+
             }
         ]
     },
@@ -139,7 +139,6 @@ export const treeData: TreeNode[] = [
                 title: 'MS Copilot Readiness Assessment',
                 icon: 'clipboard-list',
                 parentId: 'ai-safety',
-                swimLane: 'enable',
                 children: [{
                     id: 'copilot-red-team',
                     type: 'sub2',
@@ -154,7 +153,7 @@ export const treeData: TreeNode[] = [
                 title: 'MS Purview',
                 icon: 'shield-check',
                 parentId: 'ai-safety',
-                swimLane: 'enable'
+
             },
             {
                 id: 'ai-policy',
@@ -162,7 +161,6 @@ export const treeData: TreeNode[] = [
                 title: 'AI Policy & Governance Model',
                 icon: 'file-contract',
                 parentId: 'ai-safety',
-                swimLane: 'enable',
                 children: [{
                     id: 'ai-tool-register',
                     type: 'sub2',
@@ -177,7 +175,6 @@ export const treeData: TreeNode[] = [
                 title: 'AI LMS',
                 icon: 'graduation-cap',
                 parentId: 'ai-safety',
-                swimLane: 'enable',
                 children: [{
                     id: 'ai-lms-rollout',
                     type: 'sub2',
@@ -192,7 +189,7 @@ export const treeData: TreeNode[] = [
                 title: 'MS Purview Browser Extension',
                 icon: 'puzzle-piece',
                 parentId: 'ai-safety',
-                swimLane: 'enable'
+
             },
             {
                 id: 'ai-monitoring',
@@ -200,7 +197,7 @@ export const treeData: TreeNode[] = [
                 title: 'AI Monitoring & Audits',
                 icon: 'chart-line',
                 parentId: 'ai-safety',
-                swimLane: 'enable'
+
             },
             {
                 id: 'ai-transparency',
@@ -208,7 +205,7 @@ export const treeData: TreeNode[] = [
                 title: 'AI Transparency Report',
                 icon: 'file-alt',
                 parentId: 'ai-safety',
-                swimLane: 'enable'
+
             }
         ]
     }
