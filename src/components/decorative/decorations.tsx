@@ -1,4 +1,3 @@
-// Updated decorations.tsx
 import React from 'react';
 
 export function Decorations() {
@@ -6,41 +5,41 @@ export function Decorations() {
         <div className="absolute inset-0 -z-10">
             {/* Clouds */}
             <svg
-                className="absolute top-4 left-10 opacity-50 animate-cloud-drift"
-                width="100"
-                height="60"
-                viewBox="0 0 100 60"
+                className="absolute top-6 left-20 opacity-70 animate-cloud-drift"
+                width="120"
+                height="70"
+                viewBox="0 0 120 70"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                <circle cx="30" cy="30" r="30" fill="#ffffff" />
-                <circle cx="70" cy="40" r="20" fill="#ffffff" />
+                <circle cx="40" cy="40" r="40" fill="#ffffff" />
+                <circle cx="90" cy="50" r="25" fill="#ffffff" />
             </svg>
 
             {/* Trees */}
             <svg
-                className="absolute bottom-10 left-5"
-                width="60"
-                height="100"
-                viewBox="0 0 60 100"
+                className="absolute bottom-10 left-10"
+                width="80"
+                height="120"
+                viewBox="0 0 80 120"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                <rect x="25" y="40" width="10" height="60" fill="#204B87" />
-                <circle cx="30" cy="20" r="20" fill="#1C3559" />
+                <rect x="35" y="50" width="10" height="70" fill="#204B87" />
+                <circle cx="40" cy="30" r="30" fill="#1C3559" />
             </svg>
 
             {/* Circuit Lines */}
             <svg
-                className="absolute right-10 top-20"
-                width="200"
-                height="100"
-                viewBox="0 0 200 100"
+                className="absolute right-16 top-24"
+                width="240"
+                height="120"
+                viewBox="0 0 240 120"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                <line x1="10" y1="10" x2="190" y2="10" stroke="#ffffff" strokeWidth="2" />
-                <line x1="100" y1="10" x2="100" y2="90" stroke="#ffffff" strokeWidth="2" />
+                <line x1="20" y1="20" x2="220" y2="20" stroke="#ffffff" strokeWidth="2" />
+                <line x1="120" y1="20" x2="120" y2="100" stroke="#ffffff" strokeWidth="2" />
             </svg>
 
             {/* Car */}
@@ -48,7 +47,7 @@ export function Decorations() {
                 className="absolute bottom-10 animate-car-move"
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px" y="0px"
-                width="100" height="100"
+                width="120" height="120"
                 viewBox="0 0 172 172"
                 style={{ fill: '#26e07f' }}
             >
