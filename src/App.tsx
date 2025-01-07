@@ -13,7 +13,8 @@ export default function App() {
         { id: 1, label: 'Root Node', children: [] },
     ]);
 
-    const handleAddNode = (newNode: TreeNode) => {
+    const handleAddNode = () => {
+        const newNode: TreeNode = { id: treeData.length + 1, label: `Node ${treeData.length + 1}`, children: [] };
         setTreeData([...treeData, newNode]);
     };
 
@@ -23,10 +24,13 @@ export default function App() {
 
     return (
         <div className="flex flex-col items-center w-full bg-dark">
+            {/* Header */}
             <div className="w-full">
                 <PageHeader />
             </div>
-            <div className="w-full flex justify-center mt-[-30px]">
+
+            {/* Tree Section */}
+            <div className="relative w-full flex justify-center mt-[-10px]">
                 <AITree
                     data={treeData}
                     onAddNode={handleAddNode}
