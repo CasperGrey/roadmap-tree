@@ -8,65 +8,63 @@ interface TreeNodeComponentProps {
 }
 
 export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
-    const getIconName = (iconUrl: string) => {
-        try {
-            const match = iconUrl.match(/icons\/([^/?]+)/);
-            return match ? match[1] : '';
-        } catch (e) {
-            return '';
+    const nodeStyles = {
+        parent: {
+            radius: 45,
+            fill: '#204B87',
+            iconSize: 'text-2xl',
+            titleOffset: 70
+        },
+        sub: {
+            radius: 40,
+            fill: '#204B87',
+            iconSize: 'text-xl',
+            titleOffset: 60
+        },
+        sub2: {
+            radius: 35,
+            fill: '#204B87',
+            iconSize: 'text-lg',
+            titleOffset: 55
         }
     };
 
-    const iconName = getIconName(node.icon);
+    const style = nodeStyles[node.type];
 
     return (
         <g transform={`translate(${position.x},${position.y})`}>
-            {/* Background circle */}
             <circle
-                r="40"
-                fill="#204B87"
+                r={style.radius}
+                fill={style.fill}
                 stroke="white"
                 strokeWidth="2"
                 className="cursor-pointer hover:scale-105 transition-transform"
             />
 
-            {/* Icon container using foreignObject for better centering */}
+            {/* Icon */}
             <foreignObject
-                x="-25"
-                y="-25"
-                width="50"
-                height="50"
+                x={-style.radius/2}
+                y={-style.radius/2}
+                width={style.radius}
+                height={style.radius}
                 style={{
                     overflow: 'visible',
                     pointerEvents: 'none'
                 }}
             >
                 <div
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white'
-                    }}
+                    className={`w-full h-full flex items-center justify-center ${style.iconSize} text-white`}
                 >
-                    <i
-                        className={`fas fa-${iconName} text-xl`}
-                        style={{
-                            color: 'white',
-                            fontSize: '20px'
-                        }}
-                    />
+                    <i className={`fas fa-${node.icon}`}></i>
                 </div>
             </foreignObject>
 
-            {/* Node title */}
+            {/* Title */}
             <text
-                x="60"
+                x={style.titleOffset}
                 y="0"
                 fill="white"
-                className="text-sm"
+                className="text-sm font-medium"
                 dominantBaseline="middle"
             >
                 {node.title}

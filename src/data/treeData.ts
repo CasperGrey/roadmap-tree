@@ -6,28 +6,210 @@ export const treeData: TreeNode[] = [
         id: 'generative-ai',
         type: 'parent',
         title: 'Generative AI',
-        icon: '+',  // We can change these icons later
-        children: []
+        icon: 'brain',
+        children: [
+            {
+                id: 'copilot-studio',
+                type: 'sub',
+                title: 'Copilot Studio in Edge',
+                icon: 'robot',
+                parentId: 'generative-ai',
+                swimLane: 'enable',
+                children: [{
+                    id: 'pilot-pr',
+                    type: 'sub2',
+                    title: 'PILOT: PR',
+                    icon: 'newspaper',
+                    parentId: 'copilot-studio'
+                }]
+            },
+            {
+                id: 'chatgpt',
+                type: 'sub',
+                title: 'ChatGPT',
+                icon: 'comments',
+                parentId: 'generative-ai',
+                swimLane: 'enable'
+            },
+            {
+                id: '365-copilot-audit',
+                type: 'sub',
+                title: '365 COPILOT AUDIT',
+                icon: 'clipboard-check',
+                parentId: 'generative-ai',
+                swimLane: 'enable'
+            },
+            {
+                id: 'claude-ai',
+                type: 'sub',
+                title: 'CLAUDE AI',
+                icon: 'robot',
+                parentId: 'generative-ai',
+                swimLane: 'enable',
+                children: [{
+                    id: 'poc-technology',
+                    type: 'sub2',
+                    title: 'POC: TECHNOLOGY',
+                    icon: 'microchip',
+                    parentId: 'claude-ai'
+                }]
+            }
+        ]
     },
     {
         id: 'productivity-ai',
         type: 'parent',
         title: 'Productivity AI',
-        icon: '+',
-        children: []
+        icon: 'bolt',
+        children: [
+            {
+                id: 'ms-teams',
+                type: 'sub',
+                title: 'MS Teams',
+                icon: 'users',
+                parentId: 'productivity-ai',
+                swimLane: 'enable',
+                children: [{
+                    id: 'pilot-executive',
+                    type: 'sub2',
+                    title: 'PILOT: EXECUTIVE',
+                    icon: 'user-tie',
+                    parentId: 'ms-teams'
+                }]
+            },
+            {
+                id: 'ms-teams-premium',
+                type: 'sub',
+                title: 'MS Teams Premium',
+                icon: 'star',
+                parentId: 'productivity-ai',
+                swimLane: 'enable'
+            },
+            {
+                id: 'genesys-cloud',
+                type: 'sub',
+                title: 'Genesys Cloud',
+                icon: 'cloud',
+                parentId: 'productivity-ai',
+                swimLane: 'enable'
+            },
+            {
+                id: 'dynamics365-copilot',
+                type: 'sub',
+                title: 'Dynamics365 Copilot',
+                icon: 'cogs',
+                parentId: 'productivity-ai',
+                swimLane: 'enable'
+            }
+        ]
     },
     {
-        id: 'ai-platforms',
+        id: 'developed-ai',
         type: 'parent',
-        title: 'AI Platforms',
-        icon: '+',
-        children: []
+        title: 'Developed AI',
+        icon: 'code',
+        children: [
+            {
+                id: 'azure-foundry',
+                type: 'sub',
+                title: 'Azure Foundry POC',
+                icon: 'cloud',
+                parentId: 'developed-ai',
+                swimLane: 'enable'
+            },
+            {
+                id: 'knowledge-management',
+                type: 'sub',
+                title: 'Knowledge Management POC',
+                icon: 'book',
+                parentId: 'developed-ai',
+                swimLane: 'enable'
+            }
+        ]
     },
     {
-        id: 'safety-governance',
+        id: 'ai-safety',
         type: 'parent',
-        title: 'Safety & Governance',
-        icon: '+',
-        children: []
+        title: 'AI Safety & Security',
+        icon: 'shield-alt',
+        children: [
+            {
+                id: 'copilot-readiness',
+                type: 'sub',
+                title: 'MS Copilot Readiness Assessment',
+                icon: 'clipboard-list',
+                parentId: 'ai-safety',
+                swimLane: 'enable',
+                children: [{
+                    id: 'copilot-red-team',
+                    type: 'sub2',
+                    title: 'CoPilot Red Team',
+                    icon: 'users-cog',
+                    parentId: 'copilot-readiness'
+                }]
+            },
+            {
+                id: 'ms-purview',
+                type: 'sub',
+                title: 'MS Purview',
+                icon: 'shield-check',
+                parentId: 'ai-safety',
+                swimLane: 'enable'
+            },
+            {
+                id: 'ai-policy',
+                type: 'sub',
+                title: 'AI Policy & Governance Model',
+                icon: 'file-contract',
+                parentId: 'ai-safety',
+                swimLane: 'enable',
+                children: [{
+                    id: 'ai-tool-register',
+                    type: 'sub2',
+                    title: 'AI Tool Register',
+                    icon: 'clipboard-list',
+                    parentId: 'ai-policy'
+                }]
+            },
+            {
+                id: 'ai-lms',
+                type: 'sub',
+                title: 'AI LMS',
+                icon: 'graduation-cap',
+                parentId: 'ai-safety',
+                swimLane: 'enable',
+                children: [{
+                    id: 'ai-lms-rollout',
+                    type: 'sub2',
+                    title: 'AI LMS Knowledge Worker Rollout',
+                    icon: 'users',
+                    parentId: 'ai-lms'
+                }]
+            },
+            {
+                id: 'ms-purview-extension',
+                type: 'sub',
+                title: 'MS Purview Browser Extension',
+                icon: 'puzzle-piece',
+                parentId: 'ai-safety',
+                swimLane: 'enable'
+            },
+            {
+                id: 'ai-monitoring',
+                type: 'sub',
+                title: 'AI Monitoring & Audits',
+                icon: 'chart-line',
+                parentId: 'ai-safety',
+                swimLane: 'enable'
+            },
+            {
+                id: 'ai-transparency',
+                type: 'sub',
+                title: 'AI Transparency Report',
+                icon: 'file-alt',
+                parentId: 'ai-safety',
+                swimLane: 'enable'
+            }
+        ]
     }
 ];
