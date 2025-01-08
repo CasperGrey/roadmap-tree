@@ -34,6 +34,43 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
 
     const style = nodeStyles[node.type];
 
+    // Helper to check if icon is a URL
+    const isImageUrl = (icon: string) =>
+        icon.startsWith('http') || icon.startsWith('/') || icon.startsWith('./');
+
+    // Render the appropriate icon
+    const renderIcon = () => {
+        if (isImageUrl(node.icon)) {
+            return (
+                <image
+                    href={node.icon}
+                    x={-style.radius / 2}
+                    y={-style.radius / 2}
+                    width={style.radius}
+                    height={style.radius}
+                    preserveAspectRatio="xMidYMid meet"
+                />
+            );
+        } else {
+            return (
+                <foreignObject
+                    x={-style.radius}
+                    y={-style.radius}
+                    width={style.radius * 2}
+                    height={style.radius * 2}
+                    className="pointer-events-none"
+                >
+                    <div
+                        className={`w-full h-full flex items-center justify-center ${style.iconSize}`}
+                        style={{ color: 'white' }}
+                    >
+                        <i className={`fas fa-${node.icon}`}></i>
+                    </div>
+                </foreignObject>
+            );
+        }
+    };
+
     return (
         <g transform={`translate(${position.x},${position.y})`}>
             {/* Background circle */}
@@ -46,22 +83,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
             />
 
             {/* Icon */}
-            <foreignObject
-                x={-style.radius}
-                y={-style.radius}
-                width={style.radius * 2}
-                height={style.radius * 2}
-                className="pointer-events-none"
-            >
-                <div
-                    className={`w-full h-full flex items-center justify-center ${style.iconSize}`}
-                    style={{
-                        color: 'white'
-                    }}
-                >
-                    <i className={`fas fa-${node.icon}`}></i>
-                </div>
-            </foreignObject>
+            {renderIcon()}
 
             {/* Title */}
             <text
