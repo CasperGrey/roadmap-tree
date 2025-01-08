@@ -27,14 +27,14 @@ export const treeData: TreeNode[] = [
                 type: 'sub',
                 title: 'ChatGPT',
                 icon: 'comments',
-                parentId: 'generative-ai'
+                parentId: 'generative-ai',
             },
             {
                 id: '365-copilot-audit',
                 type: 'sub',
                 title: '365 COPILOT AUDIT',
                 icon: 'clipboard-check',
-                parentId: 'generative-ai'
+                parentId: 'generative-ai',
             },
             {
                 id: 'claude-ai',
@@ -77,21 +77,21 @@ export const treeData: TreeNode[] = [
                 type: 'sub',
                 title: 'MS Teams Premium',
                 icon: 'star',
-                parentId: 'productivity-ai'
+                parentId: 'productivity-ai',
             },
             {
                 id: 'genesys-cloud',
                 type: 'sub',
                 title: 'Genesys Cloud',
                 icon: 'cloud',
-                parentId: 'productivity-ai'
+                parentId: 'productivity-ai',
             },
             {
                 id: 'dynamics365-copilot',
                 type: 'sub',
                 title: 'Dynamics365 Copilot',
                 icon: 'cogs',
-                parentId: 'productivity-ai'
+                parentId: 'productivity-ai',
             }
         ]
     },
@@ -106,14 +106,14 @@ export const treeData: TreeNode[] = [
                 type: 'sub',
                 title: 'Azure Foundry POC',
                 icon: 'cloud',
-                parentId: 'developed-ai'
+                parentId: 'developed-ai',
             },
             {
                 id: 'knowledge-management',
                 type: 'sub',
                 title: 'Knowledge Management POC',
                 icon: 'book',
-                parentId: 'developed-ai'
+                parentId: 'developed-ai',
             }
         ]
     },
@@ -142,7 +142,7 @@ export const treeData: TreeNode[] = [
                 type: 'sub',
                 title: 'MS Purview',
                 icon: 'shield-check',
-                parentId: 'ai-safety'
+                parentId: 'ai-safety',
             },
             {
                 id: 'ai-policy',
@@ -177,21 +177,21 @@ export const treeData: TreeNode[] = [
                 type: 'sub',
                 title: 'MS Purview Browser Extension',
                 icon: 'puzzle-piece',
-                parentId: 'ai-safety'
+                parentId: 'ai-safety',
             },
             {
                 id: 'ai-monitoring',
                 type: 'sub',
                 title: 'AI Monitoring & Audits',
                 icon: 'chart-line',
-                parentId: 'ai-safety'
+                parentId: 'ai-safety',
             },
             {
                 id: 'ai-transparency',
                 type: 'sub',
                 title: 'AI Transparency Report',
                 icon: 'file-alt',
-                parentId: 'ai-safety'
+                parentId: 'ai-safety',
             }
         ]
     }
