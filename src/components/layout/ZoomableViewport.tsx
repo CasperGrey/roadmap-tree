@@ -12,16 +12,12 @@ interface ZoomableViewportProps {
     children: React.ReactNode;
     initialWidth?: number;
     initialHeight?: number;
-    minZoom?: number;
-    maxZoom?: number;
 }
 
 export function ZoomableViewport({
                                      children,
                                      initialWidth = 3432,
                                      initialHeight = 2000,
-                                     minZoom = 0.5,
-                                     maxZoom = 3
                                  }: ZoomableViewportProps): ReactElement {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState<ViewportState>({
@@ -45,20 +41,16 @@ export function ZoomableViewport({
             const mouseY = event.clientY - rect.top;
 
             const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
-            const newZoom = Math.max(minZoom, Math.min(maxZoom, zoom * zoomFactor));
-
-            // Convert mouse position to SVG coordinates
-            const svgPoint = {
-                x: (mouseX / rect.width) * viewBox.width + viewBox.x,
-                y: (mouseY / rect.height) * viewBox.height + viewBox.y
-            };
+            const newZoom = Math.max(0.5, Math.min(3, zoom * zoomFactor));
 
             const newWidth = initialWidth / newZoom;
             const newHeight = initialHeight / newZoom;
 
-            // Calculate new viewBox coordinates to zoom towards mouse position
-            const newX = svgPoint.x - (mouseX / rect.width) * newWidth;
-            const newY = svgPoint.y - (mouseY / rect.height) * newHeight;
+            const mouseViewportX = (mouseX / rect.width) * viewBox.width + viewBox.x;
+            const mouseViewportY = (mouseY / rect.height) * viewBox.height + viewBox.y;
+
+            const newX = mouseViewportX - (mouseX / rect.width) * newWidth;
+            const newY = mouseViewportY - (mouseY / rect.height) * newHeight;
 
             setZoom(newZoom);
             setViewBox({
@@ -78,14 +70,17 @@ export function ZoomableViewport({
         const handleMouseMove = (event: MouseEvent) => {
             if (!isDragging) return;
 
+            const dx = event.clientX - dragStart.x;
+            const dy = event.clientY - dragStart.y;
             const rect = container.getBoundingClientRect();
-            const dx = ((event.clientX - dragStart.x) / rect.width) * viewBox.width;
-            const dy = ((event.clientY - dragStart.y) / rect.height) * viewBox.height;
+
+            const scaleX = viewBox.width / rect.width;
+            const scaleY = viewBox.height / rect.height;
 
             setViewBox(prev => ({
                 ...prev,
-                x: prev.x - dx,
-                y: prev.y - dy
+                x: prev.x - dx * scaleX,
+                y: prev.y - dy * scaleY
             }));
 
             setDragStart({ x: event.clientX, y: event.clientY });
@@ -101,22 +96,23 @@ export function ZoomableViewport({
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
 
-        // Set initial cursor
-        container.style.cursor = 'grab';
-
         return () => {
             container.removeEventListener('wheel', handleWheel);
             container.removeEventListener('mousedown', handleMouseDown);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [zoom, viewBox, isDragging, dragStart, initialWidth, initialHeight, minZoom, maxZoom]);
+    }, [zoom, viewBox, isDragging, dragStart, initialWidth, initialHeight]);
 
     return (
         <div
             ref={containerRef}
-            className="w-full h-full overflow-hidden"
-            style={{ height: `${initialHeight}px` }}
+            className="w-full h-full overflow-hidden cursor-grab"
+            style={{
+                touchAction: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none'
+            }}
         >
             <svg
                 width="100%"
