@@ -10,18 +10,24 @@ interface ViewportState {
 
 interface ZoomableViewportProps {
     children: React.ReactNode;
+    initialWidth?: number;
     initialHeight?: number;
+    minZoom?: number;
+    maxZoom?: number;
 }
 
 export function ZoomableViewport({
                                      children,
+                                     initialWidth = 3432,
                                      initialHeight = 2000,
+                                     minZoom = 0.5,
+                                     maxZoom = 3
                                  }: ZoomableViewportProps): ReactElement {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState<ViewportState>({
         x: 0,
         y: 0,
-        width: 3432,
+        width: initialWidth,
         height: initialHeight
     });
     const containerRef = useRef<HTMLDivElement>(null);
@@ -39,14 +45,20 @@ export function ZoomableViewport({
             const mouseY = event.clientY - rect.top;
 
             const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
-            const newZoom = Math.max(0.5, Math.min(3, zoom * zoomFactor));
+            const newZoom = Math.max(minZoom, Math.min(maxZoom, zoom * zoomFactor));
 
-            const newWidth = viewBox.width * zoomFactor;
-            const newHeight = viewBox.height * zoomFactor;
+            // Convert mouse position to SVG coordinates
+            const svgPoint = {
+                x: (mouseX / rect.width) * viewBox.width + viewBox.x,
+                y: (mouseY / rect.height) * viewBox.height + viewBox.y
+            };
+
+            const newWidth = initialWidth / newZoom;
+            const newHeight = initialHeight / newZoom;
 
             // Calculate new viewBox coordinates to zoom towards mouse position
-            const newX = viewBox.x + (mouseX / zoom) * (1 - zoomFactor);
-            const newY = viewBox.y + (mouseY / zoom) * (1 - zoomFactor);
+            const newX = svgPoint.x - (mouseX / rect.width) * newWidth;
+            const newY = svgPoint.y - (mouseY / rect.height) * newHeight;
 
             setZoom(newZoom);
             setViewBox({
@@ -60,13 +72,15 @@ export function ZoomableViewport({
         const handleMouseDown = (event: MouseEvent) => {
             setIsDragging(true);
             setDragStart({ x: event.clientX, y: event.clientY });
+            container.style.cursor = 'grabbing';
         };
 
         const handleMouseMove = (event: MouseEvent) => {
             if (!isDragging) return;
 
-            const dx = (event.clientX - dragStart.x) * (viewBox.width / container.clientWidth);
-            const dy = (event.clientY - dragStart.y) * (viewBox.height / container.clientHeight);
+            const rect = container.getBoundingClientRect();
+            const dx = ((event.clientX - dragStart.x) / rect.width) * viewBox.width;
+            const dy = ((event.clientY - dragStart.y) / rect.height) * viewBox.height;
 
             setViewBox(prev => ({
                 ...prev,
@@ -79,6 +93,7 @@ export function ZoomableViewport({
 
         const handleMouseUp = () => {
             setIsDragging(false);
+            container.style.cursor = 'grab';
         };
 
         container.addEventListener('wheel', handleWheel, { passive: false });
@@ -86,18 +101,21 @@ export function ZoomableViewport({
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
 
+        // Set initial cursor
+        container.style.cursor = 'grab';
+
         return () => {
             container.removeEventListener('wheel', handleWheel);
             container.removeEventListener('mousedown', handleMouseDown);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [zoom, viewBox, isDragging, dragStart]);
+    }, [zoom, viewBox, isDragging, dragStart, initialWidth, initialHeight, minZoom, maxZoom]);
 
     return (
         <div
             ref={containerRef}
-            className="relative w-full h-full overflow-hidden cursor-move"
+            className="w-full h-full overflow-hidden"
             style={{ height: `${initialHeight}px` }}
         >
             <svg

@@ -1,29 +1,17 @@
 // src/App.tsx
 import React from 'react';
 import AITree from './components/layout/AITree';
+import { ZoomableViewport } from './components/layout/ZoomableViewport';
 
 export default function App() {
-    console.log('App rendering'); // Debug log
-
     return (
-        <div id="root" className="w-full h-full">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full"
-                viewBox="0 0 3432 2000"
-                preserveAspectRatio="xMidYMid meet"
-            >
-                <defs>
-                    <clipPath id="headerClip">
-                        <rect x="0" y="0" width="3432" height="700" />
-                    </clipPath>
-                </defs>
-
+        <div id="root" className="w-full h-screen">
+            <ZoomableViewport initialWidth={3432} initialHeight={2000}>
                 {/* Main background */}
                 <rect width="3432" height="2000" fill="#1C3559"/>
 
                 {/* Header Section */}
-                <g clipPath="url(#headerClip)">
+                <g>
                     {/* White lines */}
                     <line x1="0" y1="100" x2="3432" y2="100" stroke="#ffffff" strokeWidth="8"/>
                     <line x1="0" y1="200" x2="3432" y2="200" stroke="#ffffff" strokeWidth="8"/>
@@ -63,9 +51,11 @@ export default function App() {
                     </g>
                 </g>
 
-                {/* Tree Section - Direct embed without clip path */}
-                <AITree />
-            </svg>
+                {/* Tree Section */}
+                <g transform="translate(0, 690)">
+                    <AITree />
+                </g>
+            </ZoomableViewport>
             <div id="modal-root"></div>
         </div>
     );
