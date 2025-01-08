@@ -1,7 +1,7 @@
 // src/components/layout/AITree.tsx
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
-import { TreeNode } from '../../types/tree';
+import { TreeNode, NewNodeData } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
@@ -23,7 +23,12 @@ const AITree = ({ startY = 690 }: AITreeProps): ReactElement => {
         setIsModalOpen(true);
     };
 
-    const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
+    const handleNodeAdd = (nodeData: NewNodeData) => {
+        if (!nodeData.parentId) {
+            console.error('Parent ID is required for new nodes');
+            return;
+        }
+
         const newNode = createNewNode(nodeData);
         setTreeData(currentTreeData => addNodeToTree(currentTreeData, nodeData.parentId, newNode));
         setIsModalOpen(false);

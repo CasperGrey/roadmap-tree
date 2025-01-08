@@ -1,5 +1,4 @@
 // src/types/tree.ts
-
 export type NodeType = 'parent' | 'sub' | 'sub2';
 
 export interface Position {
@@ -16,9 +15,9 @@ export interface TreeNode {
     children?: TreeNode[];
 }
 
-export type NewNodeData = Omit<TreeNode, 'id' | 'children'> & {
-    parentId: string;  // Make parentId required for new nodes
-};
+export interface NewNodeData extends Omit<TreeNode, 'id' | 'children'> {
+    parentId: string; // Make parentId required for new nodes
+}
 
 export interface TreeConnectorProps {
     start: Position;
