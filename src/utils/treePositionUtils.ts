@@ -27,70 +27,62 @@ export const calculateNodePosition = (
     config: { startY?: number } = {}
 ): { x: number; y: number } => {
     const startY = config.startY || 690;
-    const baseY = startY + 110;  // Base Y position for parent nodes
-    const levelSpacing = 200;    // Vertical spacing between levels
-    const horizontalSpacing = 200; // Spacing between siblings
+    const totalWidth = 3432;
+    const margin = 200;
+    const usableWidth = totalWidth - (margin * 2);
 
-    // Find the complete parent chain for this node
-    const parentChain = findParentChain(node.id, treeData);
+    // Get all parent nodes for base positioning
+    const parentNodes = getParentNodes(treeData);
+    const parentCount = parentNodes.length;
+    const parentSpacing = usableWidth / (parentCount - 1);
 
     if (node.type === 'parent') {
-        const parentNodes = getParentNodes(treeData);
         const parentIndex = parentNodes.findIndex(p => p.id === node.id);
-        const parentCount = parentNodes.length;
-        const parentWidth = 3432 - 400; // Total width minus margins
-        const parentSpacing = parentWidth / (parentCount - 1);
-
         return {
-            x: 200 + (parentIndex * parentSpacing), // 200px margin from left
-            y: baseY
+            x: margin + (parentIndex * parentSpacing),
+            y: startY + 110
         };
     }
 
-    // Get the main parent (top-level) node
+    // Find the parent chain for positioning context
+    const parentChain = findParentChain(node.id, treeData);
     const mainParent = parentChain[0];
+
     if (!mainParent) return { x: 0, y: 0 };
 
-    // Get parent's position
-    const parentNodes = getParentNodes(treeData);
     const parentIndex = parentNodes.findIndex(p => p.id === mainParent.id);
-    const parentCount = parentNodes.length;
-    const parentWidth = 3432 - 400;
-    const parentSpacing = parentWidth / (parentCount - 1);
-    const parentX = 200 + (parentIndex * parentSpacing);
+    const parentX = margin + (parentIndex * parentSpacing);
 
     if (node.type === 'sub') {
-        const siblings = mainParent.children?.filter(c => c.type === 'sub') || [];
-        const siblingIndex = siblings.findIndex(s => s.id === node.id);
-        const siblingCount = siblings.length;
-        const subWidth = horizontalSpacing * (siblingCount - 1);
-        const subX = parentX - (subWidth / 2) + (siblingIndex * horizontalSpacing);
+        // Position each sub node vertically under its parent
+        const parentNode = mainParent;
+        const subNodes = parentNode.children || [];
+        const verticalSpacing = 150; // Space between sub nodes
+        const subIndex = subNodes.findIndex(s => s.id === node.id);
 
         return {
-            x: subX,
-            y: baseY + levelSpacing
+            x: parentX,
+            y: startY + 310 + (subIndex * verticalSpacing)
         };
     }
 
     if (node.type === 'sub2') {
-        // Find immediate sub parent
-        const subParent = parentChain[parentChain.length - 2];
-        if (!subParent || subParent.type !== 'sub') return { x: 0, y: 0 };
+        // Find immediate parent (sub node)
+        const immediateParent = parentChain[parentChain.length - 2];
+        if (!immediateParent || immediateParent.type !== 'sub') return { x: 0, y: 0 };
 
-        // Calculate sub parent's position
-        const subSiblings = mainParent.children?.filter(c => c.type === 'sub') || [];
-        const subParentIndex = subSiblings.findIndex(s => s.id === subParent.id);
-        const subSiblingCount = subSiblings.length;
-        const subWidth = horizontalSpacing * (subSiblingCount - 1);
-        const subParentX = parentX - (subWidth / 2) + (subParentIndex * horizontalSpacing);
+        // Get parent sub's position
+        const parentSubs = mainParent.children || [];
+        const parentSubIndex = parentSubs.findIndex(s => s.id === immediateParent.id);
+        const parentSubY = startY + 310 + (parentSubIndex * 150);
 
-        // Position sub2 node at an angle from its sub parent
-        const angle = Math.PI / 6; // 30 degrees
-        const radius = 150;        // Distance from parent
+        // Position sub2 node diagonally to the right
+        const diagonalDistance = 150;
+        const angleInRadians = Math.PI / 6; // 30 degrees
 
         return {
-            x: subParentX + (radius * Math.cos(angle)),
-            y: baseY + levelSpacing + (radius * Math.sin(angle))
+            x: parentX + diagonalDistance,
+            y: parentSubY + (diagonalDistance * 0.5) // Adjust this multiplier to change angle
         };
     }
 
