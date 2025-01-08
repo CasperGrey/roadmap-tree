@@ -5,7 +5,7 @@ import { ZoomableViewport } from './components/layout/ZoomableViewport';
 
 export default function App() {
     return (
-        <div id="root" className="fixed top-0 left-0 w-full min-h-screen">
+        <div id="root" className="absolute top-0 left-0 w-full min-h-screen overflow-hidden">
             <ZoomableViewport initialWidth={3432} initialHeight={2000}>
                 <g>
                     {/* Main background */}
@@ -35,17 +35,14 @@ export default function App() {
 
                         {/* Decorative elements */}
                         <g>
-                            {/* Left Clouds */}
                             <circle cx="400" cy="150" r="80" fill="#ffffff" opacity="0.7" />
                             <circle cx="600" cy="180" r="60" fill="#ffffff" opacity="0.7" />
-
-                            {/* Right Clouds */}
                             <circle cx="2800" cy="150" r="80" fill="#ffffff" opacity="0.7" />
                             <circle cx="3000" cy="180" r="60" fill="#ffffff" opacity="0.7" />
                         </g>
                     </g>
 
-                    <AITree startY={690} />
+                    <AITree />
                 </g>
             </ZoomableViewport>
             <div id="modal-root"></div>
