@@ -5,7 +5,7 @@ import { ZoomableViewport } from './components/layout/ZoomableViewport';
 
 export default function App() {
     return (
-        <div id="root" className="w-full h-screen">
+        <div id="root" className="fixed top-0 left-0 w-full min-h-screen">
             <ZoomableViewport initialWidth={3432} initialHeight={2000}>
                 <g>
                     {/* Main background */}
@@ -30,14 +30,7 @@ export default function App() {
                                 width="150"
                                 height="150"
                             />
-                            <line
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="300"
-                                stroke="#ffffff"
-                                strokeWidth="8"
-                            />
+                            <line x1="0" y1="0" x2="0" y2="300" stroke="#ffffff" strokeWidth="8"/>
                         </g>
 
                         {/* Decorative elements */}
@@ -52,7 +45,6 @@ export default function App() {
                         </g>
                     </g>
 
-                    {/* Tree Section - Apply transform here */}
                     <AITree startY={690} />
                 </g>
             </ZoomableViewport>
