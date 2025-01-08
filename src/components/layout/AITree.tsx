@@ -4,9 +4,12 @@ import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
-import { ZoomableViewport } from './ZoomableViewport';
 
-const AITree = (): ReactElement => {
+interface AITreeProps {
+    startY?: number;
+}
+
+const AITree = ({ startY = 690 }: AITreeProps): ReactElement => {
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
@@ -28,7 +31,7 @@ const AITree = (): ReactElement => {
             const parentIndex = parentNodes.findIndex(p => p.id === node.id);
             return {
                 x: margin + (parentIndex * parentSpacing),
-                y: 800 // Fixed Y for parent nodes
+                y: startY + 110 // Fixed Y for parent nodes
             };
         }
 
@@ -53,7 +56,7 @@ const AITree = (): ReactElement => {
 
             return {
                 x: parentX - (parentSpacing / 2) + (subSpacing * (siblingIndex + 1)),
-                y: 1000 // Fixed Y for sub nodes
+                y: startY + 310 // Fixed Y for sub nodes
             };
         }
 
@@ -73,7 +76,7 @@ const AITree = (): ReactElement => {
 
             return {
                 x: subParentX + (diagonalDistance * Math.cos(angleInRadians)),
-                y: 1000 + (diagonalDistance * Math.sin(angleInRadians)) // Start from sub node's Y
+                y: startY + 310 + (diagonalDistance * Math.sin(angleInRadians)) // Start from sub node's Y
             };
         }
 
@@ -118,29 +121,27 @@ const AITree = (): ReactElement => {
     };
 
     return (
-        <ZoomableViewport initialHeight={2000}>
-            <g>
-                {treeData.map((node, index) => (
-                    <NodeTree
-                        key={node.id}
-                        node={node}
-                        position={getNodePosition(node, index)}
-                        index={index}
-                        getNodePosition={getNodePosition}
-                        onAddClick={handleAddNode}
-                    />
-                ))}
-                {isModalOpen && (
-                    <AddNodeModal
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
-                        onAdd={handleNodeAdd}
-                        parentId={selectedParentId}
-                        nodeType={selectedNodeType}
-                    />
-                )}
-            </g>
-        </ZoomableViewport>
+        <g>
+            {treeData.map((node, index) => (
+                <NodeTree
+                    key={node.id}
+                    node={node}
+                    position={getNodePosition(node, index)}
+                    index={index}
+                    getNodePosition={getNodePosition}
+                    onAddClick={handleAddNode}
+                />
+            ))}
+            {isModalOpen && (
+                <AddNodeModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onAdd={handleNodeAdd}
+                    parentId={selectedParentId}
+                    nodeType={selectedNodeType}
+                />
+            )}
+        </g>
     );
 };
 
