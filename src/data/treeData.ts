@@ -18,7 +18,7 @@ export const treeData: TreeNode[] = [
                     id: 'pilot-pr',
                     type: 'sub2',
                     title: 'PILOT: PR',
-                    icon: 'newspaper',
+                    icon: '/assets/icons8-microsoft-copilot-50.png',
                     parentId: 'copilot-studio'
                 }]
             },
