@@ -27,13 +27,13 @@ export const treeData: TreeNode[] = [
                 type: 'sub',
                 title: 'ChatGPT',
                 icon: 'comments',
-                parentId: 'generative-ai',
+                parentId: '/assets/icons8-chatgpt-50.png',
             },
             {
                 id: '365-copilot-audit',
                 type: 'sub',
                 title: '365 COPILOT AUDIT',
-                icon: 'clipboard-check',
+                icon: '/assets/icons8-microsoft-copilot-50.png',
                 parentId: 'generative-ai',
             },
             {
