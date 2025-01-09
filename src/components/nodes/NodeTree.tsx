@@ -20,13 +20,12 @@ export function NodeTree({
                              getNodePosition,
                              onAddClick
                          }: NodeTreeProps) {
-    // Show add buttons based on node type
     const showAddButtons = node.type === 'parent' || node.type === 'sub';
     const canAddSub = node.type === 'parent';
     const canAddSub2 = node.type === 'sub';
 
     return (
-        <g key={node.id}>
+        <g>
             <TreeNodeComponent
                 node={node}
                 position={position}
@@ -83,13 +82,15 @@ export function NodeTree({
                             end={childPos}
                             nodeType={child.type}
                         />
-                        <NodeTree
-                            node={child}
-                            position={childPos}
-                            index={index}
-                            getNodePosition={getNodePosition}
-                            onAddClick={onAddClick}
-                        />
+                        <g transform={`translate(${childPos.x}, ${childPos.y})`}>
+                            <NodeTree
+                                node={child}
+                                position={{ x: 0, y: 0 }}
+                                index={index}
+                                getNodePosition={getNodePosition}
+                                onAddClick={onAddClick}
+                            />
+                        </g>
                     </motion.g>
                 );
             })}
