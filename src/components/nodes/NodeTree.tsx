@@ -26,11 +26,13 @@ export function NodeTree({
 
     return (
         <g>
+            {/* Main node */}
             <TreeNodeComponent
                 node={node}
                 position={position}
             />
 
+            {/* Add buttons */}
             {showAddButtons && (
                 <foreignObject
                     x={position.x - 60}
@@ -67,6 +69,7 @@ export function NodeTree({
                 </foreignObject>
             )}
 
+            {/* Child nodes */}
             {node.children?.map((child) => {
                 const childPos = getNodePosition(child, index);
 
@@ -82,15 +85,13 @@ export function NodeTree({
                             end={childPos}
                             nodeType={child.type}
                         />
-                        <g transform={`translate(${childPos.x}, ${childPos.y})`}>
-                            <NodeTree
-                                node={child}
-                                position={{ x: 0, y: 0 }}
-                                index={index}
-                                getNodePosition={getNodePosition}
-                                onAddClick={onAddClick}
-                            />
-                        </g>
+                        <NodeTree
+                            node={child}
+                            position={childPos}
+                            index={index}
+                            getNodePosition={getNodePosition}
+                            onAddClick={onAddClick}
+                        />
                     </motion.g>
                 );
             })}
