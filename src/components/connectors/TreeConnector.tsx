@@ -18,11 +18,15 @@ export function TreeConnector({
                                   startRadius = 45,
                                   endRadius = 40
                               }: TreeConnectorProps) {
-    // Calculate start and end points adjusting for node radius
+    // Calculate connection points based on node type
+    const startNodeRadius = nodeType === 'sub2' ? 40 : 45;  // Parent/Sub nodes are larger
+    const endNodeRadius = nodeType === 'sub2' ? 35 : 40;    // Sub2 nodes are smaller
+
+    // Calculate exact connection points
     const startX = start.x;
-    const startY = start.y + startRadius; // Start from bottom of parent
+    const startY = start.y + startNodeRadius + 5;  // Add small offset for visual polish
     const endX = end.x;
-    const endY = end.y - endRadius; // Connect to top of child
+    const endY = end.y - endNodeRadius - 5;  // Subtract small offset for visual polish
 
     // For sub2 nodes, create a curved path
     if (nodeType === 'sub2') {

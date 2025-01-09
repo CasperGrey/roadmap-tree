@@ -62,43 +62,35 @@ export default function App() {
                             <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8"/>
                             <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8"/>
 
-                            {/* Decorative Images - Updated cloud animations */}
+                            {/* Cloud animations with multiple instances */}
                             <g>
                                 {/* Left-moving clouds */}
-                                <g className="animate-float-left">
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        x="400"
-                                        y="150"
-                                        width="160"
-                                        height="120"
-                                    />
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        x="600"
-                                        y="180"
-                                        width="120"
-                                        height="90"
-                                    />
-                                </g>
+                                {[0, 1, 2].map((i) => (
+                                    <g key={`left-${i}`} style={{ animationDelay: `${i * 10}s` }} className="animate-float-left">
+                                        <image
+                                            href="/assets/icons8-clouds-50.png"
+                                            x="0"
+                                            y="150"
+                                            width="160"
+                                            height="120"
+                                            opacity="0"
+                                        />
+                                    </g>
+                                ))}
 
                                 {/* Right-moving clouds */}
-                                <g className="animate-float-right">
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        x="2800"
-                                        y="150"
-                                        width="160"
-                                        height="120"
-                                    />
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        x="3000"
-                                        y="180"
-                                        width="120"
-                                        height="90"
-                                    />
-                                </g>
+                                {[0, 1, 2].map((i) => (
+                                    <g key={`right-${i}`} style={{ animationDelay: `${i * 10}s` }} className="animate-float-right">
+                                        <image
+                                            href="/assets/icons8-clouds-50.png"
+                                            x="3432"
+                                            y="180"
+                                            width="120"
+                                            height="90"
+                                            opacity="0"
+                                        />
+                                    </g>
+                                ))}
                             </g>
 
                             {/* Logo */}

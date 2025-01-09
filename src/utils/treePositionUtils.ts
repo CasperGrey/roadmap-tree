@@ -74,13 +74,19 @@ export const calculateNodePosition = (
         const subParentIndex = subParentSiblings.findIndex(s => s.id === immediateParent.id);
         const subParentY = startY + 200 + (subParentIndex * verticalSpacing);
 
-        // Calculate sub2 position relative to its immediate parent
+        // Find the next sub sibling to position sub2 between them
+        const nextSubSibling = subParentSiblings[subParentIndex + 1];
+        const nextSubY = nextSubSibling
+            ? startY + 200 + ((subParentIndex + 1) * verticalSpacing)
+            : subParentY + verticalSpacing;
+
+        // Position sub2 halfway between current and next sub node
         const horizontalOffset = 150;  // Distance to the right
-        const verticalOffset = 50;     // Distance down
+        const midpointY = (subParentY + nextSubY) / 2;
 
         return {
             x: parentX + horizontalOffset,
-            y: subParentY + verticalOffset
+            y: midpointY
         };
     }
 
