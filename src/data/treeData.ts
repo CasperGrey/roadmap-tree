@@ -12,7 +12,7 @@ export const treeData: TreeNode[] = [
                 id: 'copilot-studio',
                 type: 'sub',
                 title: 'Copilot Studio in Edge',
-                icon: 'robot',
+                icon: '/assets/icons8-microsoft-copilot-50.png',
                 parentId: 'generative-ai',
                 children: [{
                     id: 'pilot-pr',
@@ -40,13 +40,13 @@ export const treeData: TreeNode[] = [
                 id: 'claude-ai',
                 type: 'sub',
                 title: 'CLAUDE AI',
-                icon: 'robot',
+                icon: '/assets/icons8-claude-50.png',
                 parentId: 'generative-ai',
                 children: [{
                     id: 'poc-technology',
                     type: 'sub2',
                     title: 'POC: TECHNOLOGY',
-                    icon: 'microchip',
+                    icon: '/assets/icons8-claude-50.png',
                     parentId: 'claude-ai'
                 }]
             }
@@ -62,13 +62,13 @@ export const treeData: TreeNode[] = [
                 id: 'ms-teams',
                 type: 'sub',
                 title: 'MS Teams',
-                icon: 'users',
+                icon: '/assets/icons8-teams-50 (1).png',
                 parentId: 'productivity-ai',
                 children: [{
                     id: 'pilot-executive',
                     type: 'sub2',
                     title: 'PILOT: EXECUTIVE',
-                    icon: 'user-tie',
+                    icon: '/assets/icons8-teams-50 (1).png',
                     parentId: 'ms-teams'
                 }]
             },
@@ -76,20 +76,20 @@ export const treeData: TreeNode[] = [
                 id: 'ms-teams-premium',
                 type: 'sub',
                 title: 'MS Teams Premium',
-                icon: 'star',
+                icon: '/assets/icons8-teams-50 (1).png',
                 parentId: 'productivity-ai',
             },
             {
                 id: 'genesys-cloud',
                 type: 'sub',
                 title: 'Genesys Cloud',
-                icon: 'cloud',
+                icon: '/assets/icons8-genesys-cloud-64.png',
                 parentId: 'productivity-ai',
             },
             {
                 id: 'dynamics365-copilot',
                 type: 'sub',
-                title: 'Dynamics365 Copilot',
+                title: '/assets/icons8-chatbot-50.png',
                 icon: 'cogs',
                 parentId: 'productivity-ai',
             }
@@ -112,7 +112,7 @@ export const treeData: TreeNode[] = [
                 id: 'knowledge-management',
                 type: 'sub',
                 title: 'Knowledge Management POC',
-                icon: 'book',
+                icon: '/assets/icons8-chatbot-50.png',
                 parentId: 'developed-ai',
             }
         ]
@@ -127,13 +127,13 @@ export const treeData: TreeNode[] = [
                 id: 'copilot-readiness',
                 type: 'sub',
                 title: 'MS Copilot Readiness Assessment',
-                icon: 'clipboard-list',
+                icon: '/assets/icons8-list-50.png',
                 parentId: 'ai-safety',
                 children: [{
                     id: 'copilot-red-team',
                     type: 'sub2',
                     title: 'CoPilot Red Team',
-                    icon: 'users-cog',
+                    icon: '/assets/icons8-burglar-32.png',
                     parentId: 'copilot-readiness'
                 }]
             },
@@ -141,20 +141,20 @@ export const treeData: TreeNode[] = [
                 id: 'ms-purview',
                 type: 'sub',
                 title: 'MS Purview',
-                icon: 'shield-check',
+                icon: '/assets/icons8-eye-64.png',
                 parentId: 'ai-safety',
             },
             {
                 id: 'ai-policy',
                 type: 'sub',
                 title: 'AI Policy & Governance Model',
-                icon: 'file-contract',
+                icon: '/assets/icons8-report-50.png',
                 parentId: 'ai-safety',
                 children: [{
                     id: 'ai-tool-register',
                     type: 'sub2',
                     title: 'AI Tool Register',
-                    icon: 'clipboard-list',
+                    icon: '/assets/icons8-list-64.png',
                     parentId: 'ai-policy'
                 }]
             },
@@ -162,13 +162,13 @@ export const treeData: TreeNode[] = [
                 id: 'ai-lms',
                 type: 'sub',
                 title: 'AI LMS',
-                icon: 'graduation-cap',
+                icon: '/assets/icons8-learning-50.png',
                 parentId: 'ai-safety',
                 children: [{
                     id: 'ai-lms-rollout',
                     type: 'sub2',
                     title: 'AI LMS Knowledge Worker Rollout',
-                    icon: 'users',
+                    icon: '/assets/icons8-business-man.png',
                     parentId: 'ai-lms'
                 }]
             },
@@ -176,7 +176,7 @@ export const treeData: TreeNode[] = [
                 id: 'ms-purview-extension',
                 type: 'sub',
                 title: 'MS Purview Browser Extension',
-                icon: 'puzzle-piece',
+                icon: '/assets/icons8-eye-64.png',
                 parentId: 'ai-safety',
             },
             {
