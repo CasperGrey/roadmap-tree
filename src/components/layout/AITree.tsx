@@ -1,21 +1,25 @@
 // src/components/layout/AITree.tsx
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
-import { TreeNode, NewNodeData } from '../../types/tree';
+import { TreeNode } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
-import { addNodeToTree, createNewNode } from '../../utils/treeManipulationUtils';
 
 interface AITreeProps {
     startY?: number;
+    showButtons?: boolean;
 }
 
-const AITree = ({ startY = 690 }: AITreeProps): ReactElement => {
+const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElement => {
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
     const [selectedNodeType, setSelectedNodeType] = useState<'sub' | 'sub2'>('sub');
+
+    const getNodePos = (node: TreeNode, index: number) => {
+        return calculateNodePosition(node, index, treeData, { startY });
+    };
 
     const handleAddNode = (parentId: string, nodeType: 'sub' | 'sub2'): void => {
         setSelectedParentId(parentId);
@@ -23,19 +27,36 @@ const AITree = ({ startY = 690 }: AITreeProps): ReactElement => {
         setIsModalOpen(true);
     };
 
-    const handleNodeAdd = (nodeData: NewNodeData) => {
-        if (!nodeData.parentId) {
-            console.error('Parent ID is required for new nodes');
-            return;
-        }
+    const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
+        const newNode: TreeNode = {
+            ...nodeData,
+            id: `node-${Date.now()}`,
+            children: []
+        };
 
-        const newNode = createNewNode(nodeData);
-        setTreeData(currentTreeData => addNodeToTree(currentTreeData, nodeData.parentId, newNode));
+        setTreeData((currentTreeData: TreeNode[]): TreeNode[] => {
+            const updateNodes = (nodes: TreeNode[]): TreeNode[] => {
+                return nodes.map((node: TreeNode): TreeNode => {
+                    if (node.id === nodeData.parentId) {
+                        return {
+                            ...node,
+                            children: [...(node.children || []), newNode]
+                        };
+                    }
+                    if (node.children) {
+                        return {
+                            ...node,
+                            children: updateNodes(node.children)
+                        };
+                    }
+                    return node;
+                });
+            };
+            return updateNodes(currentTreeData);
+        });
+
         setIsModalOpen(false);
     };
-
-    const getNodePos = (node: TreeNode, index: number) =>
-        calculateNodePosition(node, index, treeData, { startY });
 
     return (
         <g>
@@ -47,17 +68,16 @@ const AITree = ({ startY = 690 }: AITreeProps): ReactElement => {
                     index={index}
                     getNodePosition={getNodePos}
                     onAddClick={handleAddNode}
+                    showButtons={showButtons}
                 />
             ))}
-            {isModalOpen && (
-                <AddNodeModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onAdd={handleNodeAdd}
-                    parentId={selectedParentId}
-                    nodeType={selectedNodeType}
-                />
-            )}
+            <AddNodeModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onAdd={handleNodeAdd}
+                parentId={selectedParentId}
+                nodeType={selectedNodeType}
+            />
         </g>
     );
 };

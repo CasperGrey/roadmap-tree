@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { TreeNode as TreeNodeType, Position } from '../../types/tree';
 import { TreeNodeComponent } from './TreeNode';
 import { TreeConnector } from '../connectors/TreeConnector';
+import { Button } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 interface NodeTreeProps {
     node: TreeNodeType;
@@ -11,6 +13,7 @@ interface NodeTreeProps {
     index: number;
     getNodePosition: (node: TreeNodeType, index: number) => Position;
     onAddClick: (parentId: string, nodeType: 'sub' | 'sub2') => void;
+    showButtons?: boolean;
 }
 
 export function NodeTree({
@@ -18,21 +21,20 @@ export function NodeTree({
                              position,
                              index,
                              getNodePosition,
-                             onAddClick
+                             onAddClick,
+                             showButtons = false
                          }: NodeTreeProps) {
-    const showAddButtons = node.type === 'parent' || node.type === 'sub';
+    const showAddButtons = showButtons && (node.type === 'parent' || node.type === 'sub');
     const canAddSub = node.type === 'parent';
     const canAddSub2 = node.type === 'sub';
 
     return (
         <g>
-            {/* Main node */}
             <TreeNodeComponent
                 node={node}
                 position={position}
             />
 
-            {/* Add buttons */}
             {showAddButtons && (
                 <foreignObject
                     x={position.x - 60}
@@ -40,36 +42,43 @@ export function NodeTree({
                     width="120"
                     height="80"
                 >
-                    <div className="space-y-2">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {canAddSub && (
-                            <button
-                                className="w-full flex items-center justify-center gap-2 bg-node-blue
-                                         hover:bg-opacity-80 text-white rounded-md px-4 py-2"
+                            <Button
+                                variant="contained"
+                                size="small"
+                                startIcon={<AddCircleOutlineIcon />}
                                 onClick={() => onAddClick(node.id, 'sub')}
+                                style={{
+                                    backgroundColor: '#1976d2',
+                                    color: 'white',
+                                    textTransform: 'none',
+                                    width: '100%'
+                                }}
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
                                 Add Sub
-                            </button>
+                            </Button>
                         )}
                         {canAddSub2 && (
-                            <button
-                                className="w-full flex items-center justify-center gap-2 bg-node-blue
-                                         hover:bg-opacity-80 text-white rounded-md px-4 py-2"
+                            <Button
+                                variant="contained"
+                                size="small"
+                                startIcon={<AddCircleOutlineIcon />}
                                 onClick={() => onAddClick(node.id, 'sub2')}
+                                style={{
+                                    backgroundColor: '#1976d2',
+                                    color: 'white',
+                                    textTransform: 'none',
+                                    width: '100%'
+                                }}
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
                                 Add Sub-2
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </foreignObject>
             )}
 
-            {/* Child nodes */}
             {node.children?.map((child) => {
                 const childPos = getNodePosition(child, index);
 
@@ -91,6 +100,7 @@ export function NodeTree({
                             index={index}
                             getNodePosition={getNodePosition}
                             onAddClick={onAddClick}
+                            showButtons={showButtons}
                         />
                     </motion.g>
                 );

@@ -1,3 +1,4 @@
+// tailwind.config.js
 module.exports = {
     content: ["./src/**/*.{js,jsx,ts,tsx}"],
     theme: {
@@ -10,17 +11,19 @@ module.exports = {
                 'poppins': ['Poppins', 'sans-serif'],
             },
             animation: {
-                'cloud-drift': 'cloudDrift 20s linear infinite',
-                'car-move': 'carMove 10s linear infinite',
+                'float-left': 'floatLeft 20s linear infinite',
+                'float-right': 'floatRight 20s linear infinite',
             },
             keyframes: {
-                cloudDrift: {
+                floatLeft: {
                     '0%': { transform: 'translateX(0)' },
-                    '100%': { transform: 'translateX(-100vw)' },
+                    '50%': { transform: 'translateX(-100px)' },
+                    '100%': { transform: 'translateX(0)' },
                 },
-                carMove: {
+                floatRight: {
                     '0%': { transform: 'translateX(0)' },
-                    '100%': { transform: 'translateX(100vw)' },
+                    '50%': { transform: 'translateX(100px)' },
+                    '100%': { transform: 'translateX(0)' },
                 },
             },
         },
