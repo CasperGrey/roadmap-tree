@@ -14,15 +14,18 @@ export default function App() {
     const totalWidth = 3432;
     const usableWidth = totalWidth - (margin * 2);
     const parentSpacing = usableWidth / (parentNodes.length - 1);
-    const verticalLineEndY = 800;
-    const parentNodeY = 800;
+
+    // Updated vertical line measurements
+    const verticalLineStartY = 445;  // Where vertical line starts (after the blue lines)
+    const verticalLineEndY = 600;    // Shorter vertical line
+    const parentNodeY = 800;         // Parent nodes Y position
     const parentNodeRadius = 45;
 
-    // Calculate diagonal lines path
+    // Calculate diagonal lines path - from parent nodes to vertical line
     const getDiagonalLines = () => {
         return parentNodes.map((_, index) => {
-            const endX = margin + (index * parentSpacing);
-            return `M 1716 ${verticalLineEndY} L ${endX} ${parentNodeY - parentNodeRadius}`;
+            const parentX = margin + (index * parentSpacing);
+            return `M ${parentX} ${parentNodeY - parentNodeRadius} L 1716 ${verticalLineEndY}`;
         }).join(' ');
     };
 
@@ -112,7 +115,7 @@ export default function App() {
                             {/* Vertical and Diagonal Lines */}
                             <line
                                 x1="1716"
-                                y1="445"
+                                y1={verticalLineStartY}
                                 x2="1716"
                                 y2={verticalLineEndY}
                                 stroke="#ffffff"
