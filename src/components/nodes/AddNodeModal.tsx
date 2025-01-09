@@ -1,3 +1,4 @@
+// src/components/nodes/AddNodeModal.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NewNodeData } from '../../types/tree';
@@ -19,6 +20,7 @@ export function AddNodeModal({
                              }: AddNodeModalProps) {
     const [title, setTitle] = useState('');
     const [icon, setIcon] = useState('');
+    const [description, setDescription] = useState('');
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -38,11 +40,13 @@ export function AddNodeModal({
             type: nodeType,
             title: title.trim(),
             icon: icon.trim(),
+            description: description.trim(),
             parentId
         });
 
         setTitle('');
         setIcon('');
+        setDescription('');
         setError(null);
     };
 
@@ -83,7 +87,7 @@ export function AddNodeModal({
 
                             <div>
                                 <label className="block text-white text-sm font-medium mb-2">
-                                    Font Awesome Icon Name
+                                    Icon Name or URL
                                 </label>
                                 <input
                                     type="text"
@@ -92,7 +96,22 @@ export function AddNodeModal({
                                     className="w-full px-3 py-2 bg-white/10 rounded-md text-white
                                              border border-white/20 focus:border-white/50
                                              focus:outline-none focus:ring-1 focus:ring-white/50"
-                                    placeholder="e.g., 'brain', 'robot', 'code'"
+                                    placeholder="e.g., 'brain', 'robot', or icon URL"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-white text-sm font-medium mb-2">
+                                    Description
+                                </label>
+                                <textarea
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    className="w-full px-3 py-2 bg-white/10 rounded-md text-white
+                                             border border-white/20 focus:border-white/50
+                                             focus:outline-none focus:ring-1 focus:ring-white/50
+                                             min-h-[100px]"
+                                    placeholder="Enter node description"
                                 />
                             </div>
 

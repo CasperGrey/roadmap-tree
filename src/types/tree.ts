@@ -11,6 +11,7 @@ export interface TreeNode {
     type: NodeType;
     title: string;
     icon: string;
+    description?: string;  // Added description field
     parentId?: string;
     children?: TreeNode[];
 }

@@ -11,21 +11,17 @@ module.exports = {
                 'poppins': ['Poppins', 'sans-serif'],
             },
             animation: {
-                'float-left': 'floatLeft 40s linear infinite',
-                'float-right': 'floatRight 40s linear infinite',
+                'float-left': 'floatLeft 60s linear infinite',
+                'float-right': 'floatRight 60s linear infinite',
             },
             keyframes: {
                 floatLeft: {
-                    '0%': { transform: 'translateX(0px)', opacity: '0' },
-                    '5%': { opacity: '0.7' },
-                    '95%': { opacity: '0.7' },
-                    '100%': { transform: 'translateX(-3592px)', opacity: '0' }
+                    '0%': { transform: 'translateX(3432px)' },
+                    '100%': { transform: 'translateX(-200px)' }
                 },
                 floatRight: {
-                    '0%': { transform: 'translateX(0px)', opacity: '0' },
-                    '5%': { opacity: '0.7' },
-                    '95%': { opacity: '0.7' },
-                    '100%': { transform: 'translateX(3592px)', opacity: '0' }
+                    '0%': { transform: 'translateX(-200px)' },
+                    '100%': { transform: 'translateX(3432px)' }
                 },
             },
         },

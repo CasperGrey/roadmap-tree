@@ -63,34 +63,42 @@ export default function App() {
                             <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8"/>
 
                             {/* Cloud animations */}
-                            <g className="clouds">
+                            <g>
                                 {/* Left-moving clouds */}
-                                {[0, 1].map((i) => (
-                                    <g key={`left-${i}`} style={{ animationDelay: `${i * 15}s` }}>
-                                        <image
-                                            href="/assets/icons8-clouds-50.png"
-                                            x="3432"
-                                            y={150 + (i * 30)}
-                                            width="160"
-                                            height="120"
-                                            className="animate-float-left"
-                                        />
-                                    </g>
-                                ))}
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="100"
+                                    className="animate-float-left"
+                                    style={{ opacity: 0.7 }}
+                                />
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="150"
+                                    className="animate-float-left"
+                                    style={{ animationDelay: '30s', opacity: 0.7 }}
+                                />
 
                                 {/* Right-moving clouds */}
-                                {[0, 1].map((i) => (
-                                    <g key={`right-${i}`} style={{ animationDelay: `${i * 15}s` }}>
-                                        <image
-                                            href="/assets/icons8-clouds-50.png"
-                                            x="-160"
-                                            y={180 + (i * 30)}
-                                            width="160"
-                                            height="120"
-                                            className="animate-float-right"
-                                        />
-                                    </g>
-                                ))}
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="180"
+                                    className="animate-float-right"
+                                    style={{ opacity: 0.7 }}
+                                />
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="230"
+                                    className="animate-float-right"
+                                    style={{ animationDelay: '30s', opacity: 0.7 }}
+                                />
                             </g>
 
                             {/* Logo */}

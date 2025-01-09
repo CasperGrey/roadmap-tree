@@ -13,6 +13,7 @@ interface NodeTreeProps {
     index: number;
     getNodePosition: (node: TreeNodeType, index: number) => Position;
     onAddClick: (parentId: string, nodeType: 'sub' | 'sub2') => void;
+    onNodeClick: (node: TreeNodeType) => void;
     showButtons?: boolean;
 }
 
@@ -22,6 +23,7 @@ export function NodeTree({
                              index,
                              getNodePosition,
                              onAddClick,
+                             onNodeClick,
                              showButtons = false
                          }: NodeTreeProps) {
     const showAddButtons = showButtons && (node.type === 'parent' || node.type === 'sub');
@@ -33,6 +35,7 @@ export function NodeTree({
             <TreeNodeComponent
                 node={node}
                 position={position}
+                onNodeClick={onNodeClick}
             />
 
             {showAddButtons && (
@@ -100,6 +103,7 @@ export function NodeTree({
                             index={index}
                             getNodePosition={getNodePosition}
                             onAddClick={onAddClick}
+                            onNodeClick={onNodeClick}
                             showButtons={showButtons}
                         />
                     </motion.g>
