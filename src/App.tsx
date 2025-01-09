@@ -15,13 +15,14 @@ export default function App() {
     const usableWidth = totalWidth - (margin * 2);
     const parentSpacing = usableWidth / (parentNodes.length - 1);
     const verticalLineEndY = 800;
-    const parentY = 800;
+    const parentNodeY = 800;
+    const parentNodeRadius = 45;
 
     // Calculate diagonal lines path
     const getDiagonalLines = () => {
         return parentNodes.map((_, index) => {
             const endX = margin + (index * parentSpacing);
-            return `M 1716 ${verticalLineEndY} L ${endX} ${parentY}`;
+            return `M 1716 ${verticalLineEndY} L ${endX} ${parentNodeY - parentNodeRadius}`;
         }).join(' ');
     };
 
@@ -62,7 +63,7 @@ export default function App() {
                             <g>
                                 {/* Left clouds */}
                                 <image
-                                    href="/assets/cloud.png"
+                                    href="/assets/icons8-clouds-50.png"
                                     x="400"
                                     y="150"
                                     width="160"
@@ -70,7 +71,7 @@ export default function App() {
                                     className="animate-float-left"
                                 />
                                 <image
-                                    href="/assets/cloud.png"
+                                    href="/assets/icons8-clouds-50.png"
                                     x="600"
                                     y="180"
                                     width="120"
@@ -80,7 +81,7 @@ export default function App() {
 
                                 {/* Right clouds */}
                                 <image
-                                    href="/assets/cloud.png"
+                                    href="/assets/icons8-clouds-50.png"
                                     x="2800"
                                     y="150"
                                     width="160"
@@ -88,7 +89,7 @@ export default function App() {
                                     className="animate-float-right"
                                 />
                                 <image
-                                    href="/assets/cloud.png"
+                                    href="/assets/icons8-clouds-50.png"
                                     x="3000"
                                     y="180"
                                     width="120"
