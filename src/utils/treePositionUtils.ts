@@ -4,6 +4,22 @@ import { TreeNode } from '../types/tree';
 export const getParentNodes = (treeData: TreeNode[]): TreeNode[] =>
     treeData.filter(node => node.type === 'parent');
 
+const findParentChain = (nodeId: string, treeData: TreeNode[]): TreeNode[] => {
+    const chain: TreeNode[] = [];
+    let current: TreeNode | undefined = treeData.find(n =>
+        n.id === nodeId ||
+        n.children?.some(c => c.id === nodeId)
+    );
+
+    while (current) {
+        chain.unshift(current);
+        const parent = treeData.find(n => n.children?.some(c => c.id === current!.id));
+        if (!parent) break;
+        current = parent;
+    }
+    return chain;
+};
+
 export const calculateNodePosition = (
     node: TreeNode,
     index: number,
@@ -18,7 +34,7 @@ export const calculateNodePosition = (
     const parentCount = parentNodes.length;
     const parentSpacing = usableWidth / (parentCount - 1);
 
-    // For parent nodes - use the same spacing calculation as the diagonal lines
+    // Parent node positioning
     if (node.type === 'parent') {
         const parentIndex = parentNodes.findIndex(p => p.id === node.id);
         return {
@@ -27,16 +43,17 @@ export const calculateNodePosition = (
         };
     }
 
-    // Find the parent's position for sub nodes
-    const parentNode = treeData.find(n => n.children?.some(c => c.id === node.id));
-    if (!parentNode) return { x: 0, y: 0 };
+    // Find the parent chain for this node
+    const parentChain = findParentChain(node.id, treeData);
+    const mainParent = parentChain[0];
+    if (!mainParent) return { x: 0, y: 0 };
 
-    const parentIndex = parentNodes.findIndex(p => p.id === parentNode.id);
+    const parentIndex = parentNodes.findIndex(p => p.id === mainParent.id);
     const parentX = margin + (parentIndex * parentSpacing);
 
-    // For sub nodes - align vertically under parent
+    // Sub node positioning
     if (node.type === 'sub') {
-        const siblings = parentNode.children?.filter(c => c.type === 'sub') || [];
+        const siblings = mainParent.children?.filter(c => c.type === 'sub') || [];
         const subIndex = siblings.findIndex(s => s.id === node.id);
         const verticalSpacing = 150;
 
@@ -46,20 +63,24 @@ export const calculateNodePosition = (
         };
     }
 
-    // For sub2 nodes - position diagonally from their immediate sub parent
+    // Sub2 node positioning
     if (node.type === 'sub2') {
-        const immediateParent = parentNode.children?.find(c =>
-            c.children?.some(sub2 => sub2.id === node.id)
-        );
-        if (!immediateParent) return { x: 0, y: 0 };
+        // Find immediate parent (which should be a sub node)
+        const subParent = parentChain[parentChain.length - 2];
+        if (!subParent || subParent.type !== 'sub') return { x: 0, y: 0 };
 
-        const subNodes = parentNode.children?.filter(c => c.type === 'sub') || [];
-        const subIndex = subNodes.indexOf(immediateParent);
-        const subY = startY + 200 + (subIndex * 150);
+        // Get the sub parent's position
+        const subSiblings = mainParent.children?.filter(c => c.type === 'sub') || [];
+        const subParentIndex = subSiblings.findIndex(s => s.id === subParent.id);
+        const subParentY = startY + 200 + (subParentIndex * 150);
+
+        // Position sub2 node diagonally from its sub parent
+        const diagonalOffsetX = 150;  // Distance to the right
+        const diagonalOffsetY = 100;  // Distance down
 
         return {
-            x: parentX + 150,  // Diagonal offset to the right
-            y: subY + 100    // Diagonal offset down
+            x: parentX + diagonalOffsetX,
+            y: subParentY + diagonalOffsetY
         };
     }
 
