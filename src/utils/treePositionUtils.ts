@@ -20,62 +20,74 @@ export const findParentChain = (nodeId: string, treeData: TreeNode[]): TreeNode[
     return chain;
 };
 
+const findNode = (nodeId: string, nodes: TreeNode[]): TreeNode | null => {
+    for (const node of nodes) {
+        if (node.id === nodeId) return node;
+        if (node.children) {
+            const found = findNode(nodeId, node.children);
+            if (found) return found;
+        }
+    }
+    return null;
+};
+
+const getParentPosition = (parentId: string | undefined, treeData: TreeNode[]): { x: number; y: number } => {
+    if (!parentId) return { x: 0, y: 0 };
+    const parentNode = findNode(parentId, treeData);
+    if (!parentNode) return { x: 0, y: 0 };
+
+    const rootParent = treeData.find(node => findNode(parentId, [node]) !== null);
+    const rootIndex = rootParent ? treeData.indexOf(rootParent) : 0;
+
+    return calculateNodePosition(parentNode, rootIndex, treeData);
+};
+
 export const calculateNodePosition = (
     node: TreeNode,
     index: number,
     treeData: TreeNode[],
     config: { startY?: number } = {}
 ): { x: number; y: number } => {
-    const startY = config.startY || 690;
+    const startY = config.startY || 800;
     const totalWidth = 3432;
     const margin = 200;
     const usableWidth = totalWidth - (margin * 2);
+    const spacing = usableWidth / 5;
 
-    // Get all parent nodes for base positioning
-    const parentNodes = getParentNodes(treeData);
-    const parentCount = parentNodes.length;
-    const parentSpacing = usableWidth / (parentCount - 1);
-
+    // For parent nodes
     if (node.type === 'parent') {
-        const parentIndex = parentNodes.findIndex(p => p.id === node.id);
+        const parentIndex = getParentNodes(treeData).indexOf(node);
         return {
-            x: margin + (parentIndex * parentSpacing),
-            y: startY + 110
+            x: margin + (spacing * parentIndex),
+            y: startY
         };
     }
 
-    const parentChain = findParentChain(node.id, treeData);
-    const mainParent = parentChain[0];
-    if (!mainParent) return { x: 0, y: 0 };
+    // Get parent position
+    const parentPos = getParentPosition(node.parentId, treeData);
 
-    const parentIndex = parentNodes.findIndex(p => p.id === mainParent.id);
-    const parentX = margin + (parentIndex * parentSpacing);
-
+    // For sub nodes
     if (node.type === 'sub') {
-        const subNodes = mainParent.children?.filter(n => n.type === 'sub') || [];
-        const subIndex = subNodes.findIndex(s => s.id === node.id);
-        const verticalSpacing = 150;
+        const parent = findNode(node.parentId!, treeData);
+        if (!parent) return { x: 0, y: 0 };
+
+        const siblings = parent.children?.filter(c => c.type === 'sub') || [];
+        const siblingIndex = siblings.findIndex(s => s.id === node.id);
+
         return {
-            x: parentX,
-            y: startY + 310 + (subIndex * verticalSpacing)
+            x: parentPos.x,
+            y: startY + 200 + (siblingIndex * 150)
         };
     }
 
+    // For sub2 nodes - position diagonally from parent sub node
     if (node.type === 'sub2') {
-        const subParent = parentChain[parentChain.length - 2];
-        if (!subParent || subParent.type !== 'sub') return { x: 0, y: 0 };
-
-        const subNodes = mainParent.children?.filter(n => n.type === 'sub') || [];
-        const subParentIndex = subNodes.findIndex(s => s.id === subParent.id);
-        const subY = startY + 310 + (subParentIndex * 150);
-
-        // Calculate diagonal offset for sub2 nodes
-        const diagonalDistanceX = 200;  // Distance to the right
-        const diagonalDistanceY = 100;  // Distance down
+        const parent = findNode(node.parentId!, treeData);
+        if (!parent || parent.type !== 'sub') return { x: 0, y: 0 };
 
         return {
-            x: parentX + diagonalDistanceX,
-            y: subY + diagonalDistanceY
+            x: parentPos.x + 150,
+            y: parentPos.y + 100
         };
     }
 
