@@ -62,32 +62,32 @@ export default function App() {
                             <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8"/>
                             <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8"/>
 
-                            {/* Cloud animations with multiple instances */}
-                            <g>
+                            {/* Cloud animations */}
+                            <g className="clouds">
                                 {/* Left-moving clouds */}
-                                {[0, 1, 2].map((i) => (
-                                    <g key={`left-${i}`} style={{ animationDelay: `${i * 10}s` }} className="animate-float-left">
+                                {[0, 1].map((i) => (
+                                    <g key={`left-${i}`} style={{ animationDelay: `${i * 15}s` }}>
                                         <image
                                             href="/assets/icons8-clouds-50.png"
-                                            x="0"
-                                            y="150"
+                                            x="3432"
+                                            y={150 + (i * 30)}
                                             width="160"
                                             height="120"
-                                            opacity="0"
+                                            className="animate-float-left"
                                         />
                                     </g>
                                 ))}
 
                                 {/* Right-moving clouds */}
-                                {[0, 1, 2].map((i) => (
-                                    <g key={`right-${i}`} style={{ animationDelay: `${i * 10}s` }} className="animate-float-right">
+                                {[0, 1].map((i) => (
+                                    <g key={`right-${i}`} style={{ animationDelay: `${i * 15}s` }}>
                                         <image
                                             href="/assets/icons8-clouds-50.png"
-                                            x="3432"
-                                            y="180"
-                                            width="120"
-                                            height="90"
-                                            opacity="0"
+                                            x="-160"
+                                            y={180 + (i * 30)}
+                                            width="160"
+                                            height="120"
+                                            className="animate-float-right"
                                         />
                                     </g>
                                 ))}

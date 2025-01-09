@@ -25,7 +25,7 @@ export const treeData: TreeNode[] = [
                 children: [{
                     id: 'pilot-pr',
                     type: 'sub2',
-                    title: 'PILOT: PR',
+                    title: 'PILOT: COMMS & PR Team',
                     icon: '/assets/icons8-microsoft-copilot-50.png',
                     parentId: 'copilot-studio'
                 }]
@@ -46,7 +46,7 @@ export const treeData: TreeNode[] = [
                 children: [{
                     id: 'poc-technology',
                     type: 'sub2',
-                    title: 'POC: TECHNOLOGY',
+                    title: 'POC: EXECUTIVE',
                     icon: '/assets/icons8-claude-50.png',
                     parentId: 'claude-ai'
                 }]
@@ -68,7 +68,7 @@ export const treeData: TreeNode[] = [
                 children: [{
                     id: 'pilot-executive',
                     type: 'sub2',
-                    title: 'PILOT: EXECUTIVE',
+                    title: 'PILOT: KNOWLEDGE WORKERS',
                     icon: '/assets/icons8-teams-50 (1).png',
                     parentId: 'ms-teams'
                 }]
@@ -90,8 +90,8 @@ export const treeData: TreeNode[] = [
             {
                 id: 'dynamics365-copilot',
                 type: 'sub',
-                title: '/assets/icons8-chatbot-50.png',
-                icon: 'cogs',
+                title: 'DYNAMICS COPILOT',
+                icon: '/assets/icons8-chatbot-50.png',
                 parentId: 'productivity-ai',
             }
         ]

@@ -14,7 +14,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 radius: 45,
                 fill: '#204B87',
                 titleOffset: 70,
-                titleClass: 'text-sm font-normal'
+                titleClass: 'text-lg font-medium'
             },
             sub: {
                 radius: 40,

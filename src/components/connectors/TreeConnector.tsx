@@ -28,12 +28,22 @@ export function TreeConnector({
     const endX = end.x;
     const endY = end.y - endNodeRadius - 5;  // Subtract small offset for visual polish
 
-    // For sub2 nodes, create a curved path
+    // For sub2 nodes, create a curved path from right side of parent
     if (nodeType === 'sub2') {
-        const controlPoint1X = startX;
-        const controlPoint1Y = startY + (endY - startY) / 3;
-        const controlPoint2X = endX;
-        const controlPoint2Y = endY - (endY - startY) / 3;
+        const startNodeRadius = 40;  // Parent/Sub nodes radius
+        const endNodeRadius = 35;    // Sub2 nodes radius
+
+        // Start from right side of parent node
+        const startX = start.x + startNodeRadius;
+        const startY = start.y;
+        const endX = end.x - endNodeRadius;
+        const endY = end.y;
+
+        // Calculate control points for the curve
+        const controlPoint1X = startX + (endX - startX) * 0.5;
+        const controlPoint1Y = startY;
+        const controlPoint2X = startX + (endX - startX) * 0.5;
+        const controlPoint2Y = endY;
 
         return (
             <motion.path
