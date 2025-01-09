@@ -5,19 +5,19 @@ export const getParentNodes = (treeData: TreeNode[]): TreeNode[] =>
     treeData.filter(node => node.type === 'parent');
 
 const findParentChain = (nodeId: string, treeData: TreeNode[]): TreeNode[] => {
-    const chain: TreeNode[] = [];
-    let current: TreeNode | undefined = treeData.find(n =>
-        n.id === nodeId ||
-        n.children?.some(c => c.id === nodeId)
-    );
-
-    while (current) {
-        chain.unshift(current);
-        const parent = treeData.find(n => n.children?.some(c => c.id === current!.id));
-        if (!parent) break;
-        current = parent;
-    }
-    return chain;
+    const findInNodes = (nodes: TreeNode[], chain: TreeNode[] = []): TreeNode[] => {
+        for (const node of nodes) {
+            if (node.id === nodeId) {
+                return [...chain, node];
+            }
+            if (node.children) {
+                const result = findInNodes(node.children, [...chain, node]);
+                if (result.length) return result;
+            }
+        }
+        return [];
+    };
+    return findInNodes(treeData);
 };
 
 export const calculateNodePosition = (
@@ -31,8 +31,7 @@ export const calculateNodePosition = (
     const totalWidth = 3432;
     const usableWidth = totalWidth - (margin * 2);
     const parentNodes = getParentNodes(treeData);
-    const parentCount = parentNodes.length;
-    const parentSpacing = usableWidth / (parentCount - 1);
+    const parentSpacing = usableWidth / (parentNodes.length - 1);
 
     // Parent node positioning
     if (node.type === 'parent') {
@@ -45,17 +44,17 @@ export const calculateNodePosition = (
 
     // Find the parent chain for this node
     const parentChain = findParentChain(node.id, treeData);
-    const mainParent = parentChain[0];
-    if (!mainParent) return { x: 0, y: 0 };
+    if (!parentChain.length) return { x: 0, y: 0 };
 
+    const mainParent = parentChain[0];
     const parentIndex = parentNodes.findIndex(p => p.id === mainParent.id);
     const parentX = margin + (parentIndex * parentSpacing);
+    const verticalSpacing = 150; // Space between sub nodes
 
     // Sub node positioning
     if (node.type === 'sub') {
         const siblings = mainParent.children?.filter(c => c.type === 'sub') || [];
         const subIndex = siblings.findIndex(s => s.id === node.id);
-        const verticalSpacing = 150;
 
         return {
             x: parentX,
@@ -65,22 +64,23 @@ export const calculateNodePosition = (
 
     // Sub2 node positioning
     if (node.type === 'sub2') {
-        // Find immediate parent (which should be a sub node)
-        const subParent = parentChain[parentChain.length - 2];
-        if (!subParent || subParent.type !== 'sub') return { x: 0, y: 0 };
+        const immediateParent = parentChain[parentChain.length - 2];
+        if (!immediateParent || immediateParent.type !== 'sub') {
+            return { x: 0, y: 0 };
+        }
 
-        // Get the sub parent's position
-        const subSiblings = mainParent.children?.filter(c => c.type === 'sub') || [];
-        const subParentIndex = subSiblings.findIndex(s => s.id === subParent.id);
-        const subParentY = startY + 200 + (subParentIndex * 150);
+        // Find the sub parent's position
+        const subParentSiblings = mainParent.children?.filter(c => c.type === 'sub') || [];
+        const subParentIndex = subParentSiblings.findIndex(s => s.id === immediateParent.id);
+        const subParentY = startY + 200 + (subParentIndex * verticalSpacing);
 
-        // Position sub2 node diagonally from its sub parent
-        const diagonalOffsetX = 150;  // Distance to the right
-        const diagonalOffsetY = 100;  // Distance down
+        // Calculate sub2 position relative to its immediate parent
+        const horizontalOffset = 150;  // Distance to the right
+        const verticalOffset = 50;     // Distance down
 
         return {
-            x: parentX + diagonalOffsetX,
-            y: subParentY + diagonalOffsetY
+            x: parentX + horizontalOffset,
+            y: subParentY + verticalOffset
         };
     }
 

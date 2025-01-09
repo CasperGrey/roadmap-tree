@@ -16,12 +16,12 @@ export default function App() {
     const parentSpacing = usableWidth / (parentNodes.length - 1);
 
     // Updated vertical line measurements
-    const verticalLineStartY = 445;  // Where vertical line starts (after the blue lines)
-    const verticalLineEndY = 600;    // Shorter vertical line
-    const parentNodeY = 800;         // Parent nodes Y position
+    const verticalLineStartY = 445;
+    const verticalLineEndY = 600;
+    const parentNodeY = 800;
     const parentNodeRadius = 45;
 
-    // Calculate diagonal lines path - from parent nodes to vertical line
+    // Calculate diagonal lines path
     const getDiagonalLines = () => {
         return parentNodes.map((_, index) => {
             const parentX = margin + (index * parentSpacing);
@@ -62,43 +62,43 @@ export default function App() {
                             <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8"/>
                             <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8"/>
 
-                            {/* Decorative Images */}
+                            {/* Decorative Images - Updated cloud animations */}
                             <g>
-                                {/* Left clouds */}
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    x="400"
-                                    y="150"
-                                    width="160"
-                                    height="120"
-                                    className="animate-float-left"
-                                />
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    x="600"
-                                    y="180"
-                                    width="120"
-                                    height="90"
-                                    className="animate-float-left"
-                                />
+                                {/* Left-moving clouds */}
+                                <g className="animate-float-left">
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        x="400"
+                                        y="150"
+                                        width="160"
+                                        height="120"
+                                    />
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        x="600"
+                                        y="180"
+                                        width="120"
+                                        height="90"
+                                    />
+                                </g>
 
-                                {/* Right clouds */}
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    x="2800"
-                                    y="150"
-                                    width="160"
-                                    height="120"
-                                    className="animate-float-right"
-                                />
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    x="3000"
-                                    y="180"
-                                    width="120"
-                                    height="90"
-                                    className="animate-float-right"
-                                />
+                                {/* Right-moving clouds */}
+                                <g className="animate-float-right">
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        x="2800"
+                                        y="150"
+                                        width="160"
+                                        height="120"
+                                    />
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        x="3000"
+                                        y="180"
+                                        width="120"
+                                        height="90"
+                                    />
+                                </g>
                             </g>
 
                             {/* Logo */}

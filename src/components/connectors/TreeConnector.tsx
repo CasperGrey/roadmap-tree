@@ -15,22 +15,25 @@ export function TreeConnector({
                                   start,
                                   end,
                                   nodeType,
-                                  startRadius = 40,
-                                  endRadius = 35
+                                  startRadius = 45,
+                                  endRadius = 40
                               }: TreeConnectorProps) {
-    const angle = Math.atan2(end.y - start.y, end.x - start.x);
+    // Calculate start and end points adjusting for node radius
     const startX = start.x;
-    const startY = start.y;
+    const startY = start.y + startRadius; // Start from bottom of parent
     const endX = end.x;
-    const endY = end.y;
+    const endY = end.y - endRadius; // Connect to top of child
 
-    // For sub2 nodes, create a diagonal line with a curve
+    // For sub2 nodes, create a curved path
     if (nodeType === 'sub2') {
-        const controlX = (startX + endX) / 2;
-        const controlY = (startY + endY) / 2;
+        const controlPoint1X = startX;
+        const controlPoint1Y = startY + (endY - startY) / 3;
+        const controlPoint2X = endX;
+        const controlPoint2Y = endY - (endY - startY) / 3;
+
         return (
             <motion.path
-                d={`M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}`}
+                d={`M ${startX} ${startY} C ${controlPoint1X} ${controlPoint1Y}, ${controlPoint2X} ${controlPoint2Y}, ${endX} ${endY}`}
                 stroke="rgba(255, 255, 255, 0.3)"
                 strokeWidth="2"
                 fill="none"
@@ -41,12 +44,10 @@ export function TreeConnector({
         );
     }
 
-    // For sub nodes, create a straight vertical line
-    const path = `M ${startX} ${startY} L ${startX} ${endY} L ${endX} ${endY}`;
-
+    // For sub nodes, create a straight vertical line with a horizontal connection
     return (
         <motion.path
-            d={path}
+            d={`M ${startX} ${startY} L ${startX} ${(startY + endY) / 2} L ${endX} ${(startY + endY) / 2} L ${endX} ${endY}`}
             stroke="rgba(255, 255, 255, 0.3)"
             strokeWidth="2"
             fill="none"
