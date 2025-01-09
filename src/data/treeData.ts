@@ -14,6 +14,14 @@ export const treeData: TreeNode[] = [
                 title: 'Copilot Studio in Edge',
                 icon: '/assets/icons8-microsoft-copilot-50.png',
                 parentId: 'generative-ai',
+
+            },
+            {
+                id: 'chatgpt',
+                type: 'sub',
+                title: 'ChatGPT',
+                icon: '/assets/icons8-chatgpt-50.png',
+                parentId: 'generative-ai',
                 children: [{
                     id: 'pilot-pr',
                     type: 'sub2',
@@ -21,13 +29,6 @@ export const treeData: TreeNode[] = [
                     icon: '/assets/icons8-microsoft-copilot-50.png',
                     parentId: 'copilot-studio'
                 }]
-            },
-            {
-                id: 'chatgpt',
-                type: 'sub',
-                title: 'ChatGPT',
-                icon: 'comments',
-                parentId: '/assets/icons8-chatgpt-50.png',
             },
             {
                 id: '365-copilot-audit',
