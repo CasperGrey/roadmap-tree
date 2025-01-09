@@ -4,44 +4,6 @@ import { TreeNode } from '../types/tree';
 export const getParentNodes = (treeData: TreeNode[]): TreeNode[] =>
     treeData.filter(node => node.type === 'parent');
 
-export const findParentChain = (nodeId: string, treeData: TreeNode[]): TreeNode[] => {
-    const chain: TreeNode[] = [];
-    let current: TreeNode | undefined = treeData.find(n =>
-        n.id === nodeId ||
-        n.children?.some(c => c.id === nodeId)
-    );
-
-    while (current) {
-        chain.unshift(current);
-        const parent = treeData.find(n => n.children?.some(c => c.id === current!.id));
-        if (!parent) break;
-        current = parent;
-    }
-    return chain;
-};
-
-const findNode = (nodeId: string, nodes: TreeNode[]): TreeNode | null => {
-    for (const node of nodes) {
-        if (node.id === nodeId) return node;
-        if (node.children) {
-            const found = findNode(nodeId, node.children);
-            if (found) return found;
-        }
-    }
-    return null;
-};
-
-const getParentPosition = (parentId: string | undefined, treeData: TreeNode[]): { x: number; y: number } => {
-    if (!parentId) return { x: 0, y: 0 };
-    const parentNode = findNode(parentId, treeData);
-    if (!parentNode) return { x: 0, y: 0 };
-
-    const rootParent = treeData.find(node => findNode(parentId, [node]) !== null);
-    const rootIndex = rootParent ? treeData.indexOf(rootParent) : 0;
-
-    return calculateNodePosition(parentNode, rootIndex, treeData);
-};
-
 export const calculateNodePosition = (
     node: TreeNode,
     index: number,
@@ -49,45 +11,55 @@ export const calculateNodePosition = (
     config: { startY?: number } = {}
 ): { x: number; y: number } => {
     const startY = config.startY || 800;
-    const totalWidth = 3432;
     const margin = 200;
+    const totalWidth = 3432;
     const usableWidth = totalWidth - (margin * 2);
-    const spacing = usableWidth / 5;
+    const parentNodes = getParentNodes(treeData);
+    const parentCount = parentNodes.length;
+    const parentSpacing = usableWidth / (parentCount - 1);
 
-    // For parent nodes
+    // For parent nodes - use the same spacing calculation as the diagonal lines
     if (node.type === 'parent') {
-        const parentIndex = getParentNodes(treeData).indexOf(node);
+        const parentIndex = parentNodes.findIndex(p => p.id === node.id);
         return {
-            x: margin + (spacing * parentIndex),
+            x: margin + (parentIndex * parentSpacing),
             y: startY
         };
     }
 
-    // Get parent position
-    const parentPos = getParentPosition(node.parentId, treeData);
+    // Find the parent's position for sub nodes
+    const parentNode = treeData.find(n => n.children?.some(c => c.id === node.id));
+    if (!parentNode) return { x: 0, y: 0 };
 
-    // For sub nodes
+    const parentIndex = parentNodes.findIndex(p => p.id === parentNode.id);
+    const parentX = margin + (parentIndex * parentSpacing);
+
+    // For sub nodes - align vertically under parent
     if (node.type === 'sub') {
-        const parent = findNode(node.parentId!, treeData);
-        if (!parent) return { x: 0, y: 0 };
-
-        const siblings = parent.children?.filter(c => c.type === 'sub') || [];
-        const siblingIndex = siblings.findIndex(s => s.id === node.id);
+        const siblings = parentNode.children?.filter(c => c.type === 'sub') || [];
+        const subIndex = siblings.findIndex(s => s.id === node.id);
+        const verticalSpacing = 150;
 
         return {
-            x: parentPos.x,
-            y: startY + 200 + (siblingIndex * 150)
+            x: parentX,
+            y: startY + 200 + (subIndex * verticalSpacing)
         };
     }
 
-    // For sub2 nodes - position diagonally from parent sub node
+    // For sub2 nodes - position diagonally from their immediate sub parent
     if (node.type === 'sub2') {
-        const parent = findNode(node.parentId!, treeData);
-        if (!parent || parent.type !== 'sub') return { x: 0, y: 0 };
+        const immediateParent = parentNode.children?.find(c =>
+            c.children?.some(sub2 => sub2.id === node.id)
+        );
+        if (!immediateParent) return { x: 0, y: 0 };
+
+        const subNodes = parentNode.children?.filter(c => c.type === 'sub') || [];
+        const subIndex = subNodes.indexOf(immediateParent);
+        const subY = startY + 200 + (subIndex * 150);
 
         return {
-            x: parentPos.x + 150,
-            y: parentPos.y + 100
+            x: parentX + 150,  // Diagonal offset to the right
+            y: subY + 100    // Diagonal offset down
         };
     }
 
