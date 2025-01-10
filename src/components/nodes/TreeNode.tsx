@@ -5,9 +5,14 @@ import { TreeNode } from '../../types/tree';
 interface TreeNodeComponentProps {
     node: TreeNode;
     position: { x: number; y: number };
+    onNodeClick?: (node: TreeNode) => void;
 }
 
-export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
+export function TreeNodeComponent({
+                                      node,
+                                      position,
+                                      onNodeClick
+                                  }: TreeNodeComponentProps) {
     const getNodeStyles = (type: 'parent' | 'sub' | 'sub2') => {
         const styles = {
             parent: {
@@ -30,10 +35,9 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
             }
         };
 
-        const style = styles[type];
         return {
-            ...style,
-            iconSize: style.radius * 0.75 // 75% of node radius
+            ...styles[type],
+            iconSize: styles[type].radius * 0.75
         };
     };
 
@@ -49,6 +53,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 stroke="white"
                 strokeWidth="2"
                 className="cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => onNodeClick && onNodeClick(node)}
             />
 
             {/* Icon */}
@@ -58,7 +63,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                         href={node.icon}
                         width="100%"
                         height="100%"
-                        filter="brightness(0) invert(1)"  // Makes the icon white
+                        filter="brightness(0) invert(1)"
                         preserveAspectRatio="xMidYMid meet"
                     />
                 </svg>
@@ -75,7 +80,7 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 </foreignObject>
             )}
 
-            {/* Title */}
+            {/* Title with title case for parent nodes */}
             <text
                 x={style.titleOffset}
                 y="0"
@@ -83,7 +88,9 @@ export function TreeNodeComponent({ node, position }: TreeNodeComponentProps) {
                 className={`${style.titleClass}`}
                 dominantBaseline="middle"
             >
-                {node.title}
+                {node.type === 'parent'
+                    ? node.title.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')
+                    : node.title}
             </text>
         </g>
     );
