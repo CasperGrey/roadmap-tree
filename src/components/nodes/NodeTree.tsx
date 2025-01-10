@@ -26,9 +26,22 @@ export function NodeTree({
                              onNodeClick,
                              showButtons = false
                          }: NodeTreeProps) {
+    // Debug: Log node hierarchy
+    console.log('Rendering node:', {
+        id: node.id,
+        type: node.type,
+        childCount: node.children?.length || 0,
+        position
+    });
+
     const showAddButtons = showButtons && (node.type === 'parent' || node.type === 'sub');
     const canAddSub = node.type === 'parent';
     const canAddSub2 = node.type === 'sub';
+
+    // Function to determine if node is a direct child
+    const isDirectChild = (parent: TreeNodeType, child: TreeNodeType) => {
+        return child.parentId === parent.id;
+    };
 
     return (
         <g>
@@ -37,6 +50,69 @@ export function NodeTree({
                 position={position}
                 onNodeClick={onNodeClick}
             />
+
+            {node.children?.map((child) => {
+                const childPos = getNodePosition(child, index);
+
+                if (!childPos) {
+                    console.error('Failed to get position for child:', child);
+                    return null;
+                }
+
+                // Debug: Log connection details
+                console.log('Creating connection:', {
+                    from: node.id,
+                    to: child.id,
+                    fromType: node.type,
+                    toType: child.type,
+                    fromPos: position,
+                    toPos: childPos,
+                    isDirectChild: isDirectChild(node, child)
+                });
+
+                return (
+                    <motion.g
+                        key={child.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {/* Connection line with debug info */}
+                        <TreeConnector
+                            start={position}
+                            end={childPos}
+                            nodeType={child.type}
+                        />
+
+                        {/* Debug: Add connection points */}
+                        <circle
+                            cx={position.x}
+                            cy={position.y + (node.type === 'parent' ? 45 : 40)}
+                            r="3"
+                            fill="blue"
+                            opacity="0.5"
+                        />
+                        <circle
+                            cx={childPos.x}
+                            cy={childPos.y - (child.type === 'sub2' ? 35 : 40)}
+                            r="3"
+                            fill="yellow"
+                            opacity="0.5"
+                        />
+
+                        {/* Recursive node rendering */}
+                        <NodeTree
+                            node={child}
+                            position={childPos}
+                            index={index}
+                            getNodePosition={getNodePosition}
+                            onAddClick={onAddClick}
+                            onNodeClick={onNodeClick}
+                            showButtons={showButtons}
+                        />
+                    </motion.g>
+                );
+            })}
 
             {showAddButtons && (
                 <foreignObject
@@ -81,34 +157,6 @@ export function NodeTree({
                     </div>
                 </foreignObject>
             )}
-
-            {node.children?.map((child) => {
-                const childPos = getNodePosition(child, index);
-
-                return (
-                    <motion.g
-                        key={child.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <TreeConnector
-                            start={position}
-                            end={childPos}
-                            nodeType={child.type}
-                        />
-                        <NodeTree
-                            node={child}
-                            position={childPos}
-                            index={index}
-                            getNodePosition={getNodePosition}
-                            onAddClick={onAddClick}
-                            onNodeClick={onNodeClick}
-                            showButtons={showButtons}
-                        />
-                    </motion.g>
-                );
-            })}
         </g>
     );
 }
