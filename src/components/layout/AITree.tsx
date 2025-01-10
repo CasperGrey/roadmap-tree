@@ -1,3 +1,4 @@
+// src/components/layout/AITree.tsx
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode } from '../../types/tree';
@@ -23,10 +24,19 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     const handleNodeClick = (node: TreeNode) => {
+        console.log('AITree handling node click:', {
+            node,
+            currentSelectedNode: selectedNode,
+            willShowModal: true
+        });
         setSelectedNode(node);
     };
 
     const handleAddNode = (parentId: string, nodeType: 'sub' | 'sub2'): void => {
+        console.log('AITree handling add node:', {
+            parentId,
+            nodeType
+        });
         setSelectedParentId(parentId);
         setSelectedNodeType(nodeType);
         setIsAddModalOpen(true);
@@ -63,6 +73,12 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
         setIsAddModalOpen(false);
     };
 
+    console.log('AITree render state:', {
+        selectedNode,
+        isAddModalOpen,
+        nodesCount: treeData.length
+    });
+
     return (
         <>
             <g>
@@ -79,9 +95,14 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                     />
                 ))}
             </g>
+            {/* Debug: Show modal state */}
+            {/* <text x="100" y="50" fill="white">Modal State: {selectedNode ? 'Node Selected' : 'No Selection'}</text> */}
             <NodeModal
                 node={selectedNode}
-                onClose={() => setSelectedNode(null)}
+                onClose={() => {
+                    console.log('Closing node modal');
+                    setSelectedNode(null);
+                }}
             />
             <AddNodeModal
                 isOpen={isAddModalOpen}

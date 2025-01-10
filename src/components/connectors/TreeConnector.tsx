@@ -31,50 +31,89 @@ export function TreeConnector({
     const actualStartRadius = getNodeRadius(nodeType === 'sub2' ? 'sub' : 'parent');
     const actualEndRadius = getNodeRadius(nodeType);
 
-    if (nodeType === 'sub2') {
-        // Sub2 nodes connect from the right side of their parent sub node
-        const startX = start.x + actualStartRadius; // Right side of parent
-        const startY = start.y;
-        const endX = end.x - actualEndRadius;      // Left side of sub2
-        const endY = end.y;
+    let startX, startY, endX, endY;
 
-        // Calculate curve control points
-        const controlX = startX + (endX - startX) / 2;
+    if (nodeType === 'sub2') {
+        startX = start.x + actualStartRadius; // Right side of parent
+        startY = start.y;
+        endX = end.x - actualEndRadius;      // Left side of sub2
+        endY = end.y;
+
+        console.log('Sub2 Connector:', {
+            nodeType,
+            start: { x: startX, y: startY },
+            end: { x: endX, y: endY },
+            radii: { start: actualStartRadius, end: actualEndRadius }
+        });
 
         return (
-            <motion.path
-                d={`M ${startX} ${startY} 
-                    C ${controlX} ${startY},
-                      ${controlX} ${endY},
-                      ${endX} ${endY}`}
-                stroke="rgba(255, 255, 255, 0.3)"
-                strokeWidth="2"
-                fill="none"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
+            <>
+                {/* Debug elements */}
+                <circle cx={startX} cy={startY} r="3" fill="red" />
+                <circle cx={endX} cy={endY} r="3" fill="green" />
+                <line
+                    x1={startX} y1={startY}
+                    x2={endX} y2={endY}
+                    stroke="yellow"
+                    strokeWidth="1"
+                    strokeDasharray="5,5"
+                />
+
+                {/* Actual connector */}
+                <motion.path
+                    d={`M ${startX} ${startY} 
+                        Q ${startX + (endX - startX) / 2} ${startY},
+                          ${startX + (endX - startX) / 2} ${endY},
+                          ${endX} ${endY}`}
+                    stroke="rgba(255, 255, 255, 0.3)"
+                    strokeWidth="2"
+                    fill="none"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+            </>
         );
     } else {
-        // Regular sub nodes connect from bottom to top
-        const startX = start.x;
-        const startY = start.y + actualStartRadius; // Bottom of parent
-        const endX = end.x;
-        const endY = end.y - actualEndRadius;      // Top of child
+        startX = start.x;
+        startY = start.y + actualStartRadius; // Bottom of parent
+        endX = end.x;
+        endY = end.y - actualEndRadius;      // Top of child
+
+        console.log('Sub Connector:', {
+            nodeType,
+            start: { x: startX, y: startY },
+            end: { x: endX, y: endY },
+            radii: { start: actualStartRadius, end: actualEndRadius }
+        });
 
         return (
-            <motion.path
-                d={`M ${startX} ${startY} 
-                    L ${startX} ${startY + 20}
-                    L ${endX} ${endY - 20}
-                    L ${endX} ${endY}`}
-                stroke="rgba(255, 255, 255, 0.3)"
-                strokeWidth="2"
-                fill="none"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
+            <>
+                {/* Debug elements */}
+                <circle cx={startX} cy={startY} r="3" fill="red" />
+                <circle cx={endX} cy={endY} r="3" fill="green" />
+                <line
+                    x1={startX} y1={startY}
+                    x2={endX} y2={endY}
+                    stroke="yellow"
+                    strokeWidth="1"
+                    strokeDasharray="5,5"
+                />
+
+                {/* Actual connector */}
+                <motion.path
+                    d={`M ${startX} ${startY} 
+                        L ${startX} ${startY + ((endY - startY) / 3)}
+                        L ${endX} ${endY - ((endY - startY) / 3)}
+                        L ${endX} ${endY}`}
+                    stroke="rgba(255, 255, 255, 0.3)"
+                    strokeWidth="2"
+                    fill="none"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+            </>
         );
     }
 }

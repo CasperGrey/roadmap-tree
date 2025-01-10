@@ -13,6 +13,15 @@ export function TreeNodeComponent({
                                       position,
                                       onNodeClick
                                   }: TreeNodeComponentProps) {
+    const handleClick = () => {
+        console.log('TreeNode clicked:', {
+            node,
+            position,
+            hasClickHandler: !!onNodeClick
+        });
+        onNodeClick?.(node);
+    };
+
     const getNodeStyles = (type: 'parent' | 'sub' | 'sub2') => {
         const styles = {
             parent: {
@@ -53,7 +62,7 @@ export function TreeNodeComponent({
                 stroke="white"
                 strokeWidth="2"
                 className="cursor-pointer hover:scale-105 transition-transform"
-                onClick={() => onNodeClick && onNodeClick(node)}
+                onClick={handleClick}
             />
 
             {/* Icon */}
