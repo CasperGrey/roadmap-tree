@@ -11,17 +11,17 @@ module.exports = {
                 'poppins': ['Poppins', 'sans-serif'],
             },
             animation: {
-                'float-left': 'floatLeft 60s linear infinite',
-                'float-right': 'floatRight 60s linear infinite',
+                'float-left': 'floatLeft 20s linear infinite',
+                'float-right': 'floatRight 20s linear infinite',
             },
             keyframes: {
                 floatLeft: {
-                    '0%': { transform: 'translateX(3432px)' },
-                    '100%': { transform: 'translateX(-200px)' }
+                    '0%': { transform: 'translate(100%)' },
+                    '100%': { transform: 'translate(-100%)' }
                 },
                 floatRight: {
-                    '0%': { transform: 'translateX(-200px)' },
-                    '100%': { transform: 'translateX(3432px)' }
+                    '0%': { transform: 'translate(-100%)' },
+                    '100%': { transform: 'translate(100%)' }
                 },
             },
         },
