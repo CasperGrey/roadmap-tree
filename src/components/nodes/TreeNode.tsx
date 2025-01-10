@@ -14,11 +14,7 @@ export function TreeNodeComponent({
                                       onNodeClick
                                   }: TreeNodeComponentProps) {
     const handleClick = () => {
-        console.log('TreeNode clicked:', {
-            node,
-            position,
-            hasClickHandler: !!onNodeClick
-        });
+        console.log('Node clicked:', node.id);
         onNodeClick?.(node);
     };
 
@@ -28,7 +24,7 @@ export function TreeNodeComponent({
                 radius: 45,
                 fill: '#204B87',
                 titleOffset: 70,
-                titleClass: 'text-lg font-medium'
+                titleClass: 'text-lg font-medium uppercase'
             },
             sub: {
                 radius: 40,
@@ -55,7 +51,7 @@ export function TreeNodeComponent({
 
     return (
         <g transform={`translate(${position.x},${position.y})`}>
-            {/* Background circle */}
+            {/* Background circle with click handler */}
             <circle
                 r={style.radius}
                 fill={style.fill}
@@ -89,7 +85,7 @@ export function TreeNodeComponent({
                 </foreignObject>
             )}
 
-            {/* Title with title case for parent nodes */}
+            {/* Title */}
             <text
                 x={style.titleOffset}
                 y="0"
@@ -97,9 +93,7 @@ export function TreeNodeComponent({
                 className={`${style.titleClass}`}
                 dominantBaseline="middle"
             >
-                {node.type === 'parent'
-                    ? node.title.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')
-                    : node.title}
+                {node.title}
             </text>
         </g>
     );

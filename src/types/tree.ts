@@ -11,19 +11,22 @@ export interface TreeNode {
     type: NodeType;
     title: string;
     icon: string;
-    description?: string;  // Added description field
-    parentId?: string;
-    children?: TreeNode[];
+    description?: string;
+    parentId: string;           // Required - references the actual parent node
+    nextSiblingId?: string;     // Optional - references the next node in sequence
+    prevSiblingId?: string;     // Optional - references the previous node in sequence
+    children?: TreeNode[];      // Optional - contains sub2 nodes or nested structures
 }
 
 export interface NewNodeData extends Omit<TreeNode, 'id' | 'children'> {
-    parentId: string; // Make parentId required for new nodes
+    parentId: string;
 }
 
 export interface TreeConnectorProps {
     start: Position;
     end: Position;
     nodeType: NodeType;
+    connectionType: 'vertical' | 'sequential' | 'sub2';
     startRadius?: number;
     endRadius?: number;
 }

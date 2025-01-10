@@ -7,6 +7,7 @@ interface TreeConnectorProps {
     start: Position;
     end: Position;
     nodeType: NodeType;
+    connectionType: 'vertical' | 'sequential' | 'sub2';
     startRadius?: number;
     endRadius?: number;
 }
@@ -15,6 +16,7 @@ export function TreeConnector({
                                   start,
                                   end,
                                   nodeType,
+                                  connectionType,
                                   startRadius: propStartRadius,
                                   endRadius: propEndRadius
                               }: TreeConnectorProps) {
@@ -23,7 +25,7 @@ export function TreeConnector({
         return null;
     }
 
-    // Define node-specific radii with explicit fallbacks
+    // Define node-specific radii
     const getNodeRadius = (type: NodeType): number => {
         switch(type) {
             case 'parent': return 45;
@@ -36,49 +38,42 @@ export function TreeConnector({
     const startRadius = propStartRadius || getNodeRadius(nodeType === 'sub2' ? 'sub' : 'parent');
     const endRadius = propEndRadius || getNodeRadius(nodeType);
 
-    // For sub2 nodes (diagonal connectors from parent node)
-    if (nodeType === 'sub2') {
-        const startX = start.x + startRadius;  // Start from right side of parent
-        const startY = start.y;                // Center height
-        const endX = end.x - endRadius;        // Connect to left side of child
-        const endY = end.y;                    // Center height
+    // Sub2 connections (diagonal)
+    if (connectionType === 'sub2') {
+        const startX = start.x + startRadius;
+        const startY = start.y;
+        const endX = end.x - endRadius;
+        const endY = end.y;
+        const controlX = startX + (endX - startX) / 2;
 
         return (
-            <>
-                {/* Actual connector */}
-                <motion.path
-                    d={`M ${startX} ${startY} 
-                        C ${startX + (endX - startX) / 2} ${startY},
-                          ${startX + (endX - startX) / 2} ${endY},
-                          ${endX} ${endY}`}
-                    stroke="rgba(255, 255, 255, 0.3)"
-                    strokeWidth="2"
-                    fill="none"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                />
-
-                {/* Debug visualization - comment out in production */}
-                <circle cx={startX} cy={startY} r="3" fill="red" opacity="0.5" />
-                <circle cx={endX} cy={endY} r="3" fill="green" opacity="0.5" />
-            </>
+            <motion.path
+                d={`M ${startX} ${startY} 
+                    C ${controlX} ${startY},
+                      ${controlX} ${endY},
+                      ${endX} ${endY}`}
+                stroke="rgba(255, 255, 255, 0.3)"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
         );
     }
 
-    // For regular sub nodes (vertical connectors)
-    const startX = start.x;
-    const startY = start.y + startRadius;  // Start from bottom of parent
-    const endX = end.x;
-    const endY = end.y - endRadius;        // Connect to top of child
+    // Sequential connections (between siblings)
+    if (connectionType === 'sequential') {
+        const startX = start.x;
+        const startY = start.y + startRadius;
+        const endX = end.x;
+        const endY = end.y - endRadius;
 
-    return (
-        <>
-            {/* Actual connector */}
+        return (
             <motion.path
                 d={`M ${startX} ${startY} 
-                    L ${startX} ${startY + ((endY - startY) / 3)}
-                    L ${endX} ${endY - ((endY - startY) / 3)}
+                    L ${startX} ${startY + ((endY - startY) / 2)}
+                    L ${endX} ${endY - ((endY - startY) / 2)}
                     L ${endX} ${endY}`}
                 stroke="rgba(255, 255, 255, 0.3)"
                 strokeWidth="2"
@@ -87,10 +82,25 @@ export function TreeConnector({
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
             />
+        );
+    }
 
-            {/* Debug visualization - comment out in production */}
-            <circle cx={startX} cy={startY} r="3" fill="red" opacity="0.5" />
-            <circle cx={endX} cy={endY} r="3" fill="green" opacity="0.5" />
-        </>
+    // Vertical connections (parent to child)
+    const startX = start.x;
+    const startY = start.y + startRadius;
+    const endX = end.x;
+    const endY = end.y - endRadius;
+
+    return (
+        <motion.path
+            d={`M ${startX} ${startY} 
+                L ${startX} ${endY}`}
+            stroke="rgba(255, 255, 255, 0.3)"
+            strokeWidth="2"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+        />
     );
 }

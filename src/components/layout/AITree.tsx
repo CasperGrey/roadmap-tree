@@ -1,7 +1,7 @@
 // src/components/layout/AITree.tsx
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
-import { TreeNode } from '../../types/tree';
+import { TreeNode, NodeType } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { NodeModal } from '../modals/NodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
@@ -12,11 +12,14 @@ interface AITreeProps {
     showButtons?: boolean;
 }
 
+// Define a more specific type for node type selection
+type SelectableNodeType = Extract<NodeType, 'sub' | 'sub2'>;
+
 const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElement => {
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
-    const [selectedNodeType, setSelectedNodeType] = useState<'sub' | 'sub2'>('sub');
+    const [selectedNodeType, setSelectedNodeType] = useState<SelectableNodeType>('sub');
     const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
 
     const getNodePos = (node: TreeNode, index: number) => {
@@ -24,34 +27,57 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     const handleNodeClick = (node: TreeNode) => {
-        console.log('AITree handling node click:', {
-            node,
-            currentSelectedNode: selectedNode,
-            willShowModal: true
-        });
+        console.log('Opening modal for node:', node.id);
         setSelectedNode(node);
     };
 
-    const handleAddNode = (parentId: string, nodeType: 'sub' | 'sub2'): void => {
-        console.log('AITree handling add node:', {
-            parentId,
-            nodeType
-        });
+    const handleAddNode = (parentId: string, nodeType: SelectableNodeType): void => {
         setSelectedParentId(parentId);
         setSelectedNodeType(nodeType);
         setIsAddModalOpen(true);
     };
 
+    const findLastSibling = (parentId: string, nodeType: SelectableNodeType): TreeNode | undefined => {
+        const parent = treeData.find(node => node.id === parentId) ||
+            treeData.flatMap(node => node.children || []).find(node => node.id === parentId);
+
+        if (!parent?.children) return undefined;
+
+        const siblings = parent.children.filter(node => node.type === nodeType);
+        return siblings[siblings.length - 1];
+    };
+
     const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
+        const lastSibling = findLastSibling(nodeData.parentId, nodeData.type as SelectableNodeType);
+
         const newNode: TreeNode = {
             ...nodeData,
             id: `node-${Date.now()}`,
-            children: []
+            children: [],
+            prevSiblingId: lastSibling?.id
         };
 
-        setTreeData((currentTreeData: TreeNode[]): TreeNode[] => {
+        // Update the previous last sibling's nextSiblingId
+        if (lastSibling) {
+            setTreeData(currentTreeData => {
+                const updateNodeInTree = (nodes: TreeNode[]): TreeNode[] => {
+                    return nodes.map(node => {
+                        if (node.id === lastSibling.id) {
+                            return { ...node, nextSiblingId: newNode.id };
+                        }
+                        if (node.children) {
+                            return { ...node, children: updateNodeInTree(node.children) };
+                        }
+                        return node;
+                    });
+                };
+                return updateNodeInTree(currentTreeData);
+            });
+        }
+
+        setTreeData(currentTreeData => {
             const updateNodes = (nodes: TreeNode[]): TreeNode[] => {
-                return nodes.map((node: TreeNode): TreeNode => {
+                return nodes.map(node => {
                     if (node.id === nodeData.parentId) {
                         return {
                             ...node,
@@ -73,12 +99,6 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
         setIsAddModalOpen(false);
     };
 
-    console.log('AITree render state:', {
-        selectedNode,
-        isAddModalOpen,
-        nodesCount: treeData.length
-    });
-
     return (
         <>
             <g>
@@ -95,14 +115,9 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                     />
                 ))}
             </g>
-            {/* Debug: Show modal state */}
-            {/* <text x="100" y="50" fill="white">Modal State: {selectedNode ? 'Node Selected' : 'No Selection'}</text> */}
             <NodeModal
                 node={selectedNode}
-                onClose={() => {
-                    console.log('Closing node modal');
-                    setSelectedNode(null);
-                }}
+                onClose={() => setSelectedNode(null)}
             />
             <AddNodeModal
                 isOpen={isAddModalOpen}
