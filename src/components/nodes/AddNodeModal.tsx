@@ -1,22 +1,14 @@
 // src/components/nodes/AddNodeModal.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NewNodeData } from '../../types/tree';
-
-interface AddNodeModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    parentId: string;
-    onAdd: (nodeData: NewNodeData) => void;
-    nodeType: 'sub' | 'sub2';
-}
+import { AddNodeModalProps, NewNodeData } from '../../types/tree';
 
 export function AddNodeModal({
                                  isOpen,
                                  onClose,
                                  onAdd,
                                  parentId,
-                                 nodeType = 'sub'
+                                 nodeType
                              }: AddNodeModalProps) {
     const [title, setTitle] = useState('');
     const [icon, setIcon] = useState('');
@@ -32,18 +24,19 @@ export function AddNodeModal({
         }
 
         if (!icon.trim()) {
-            setError('Icon URL is required');
+            setError('Icon URL or name is required');
             return;
         }
 
-        onAdd({
+        const newNode: NewNodeData = {
             type: nodeType,
             title: title.trim(),
             icon: icon.trim(),
             description: description.trim(),
             parentId
-        });
+        };
 
+        onAdd(newNode);
         setTitle('');
         setIcon('');
         setDescription('');
@@ -54,7 +47,7 @@ export function AddNodeModal({
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 flex items-start justify-center bg-black/75 z-50 pt-32"
+                    className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
                     onClick={onClose}
                 >
                     <motion.div
@@ -62,8 +55,8 @@ export function AddNodeModal({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
-                        className="bg-node-blue rounded-lg p-6 max-w-md w-full mx-4"
                         onClick={e => e.stopPropagation()}
+                        className="bg-[#1C3559] rounded-lg p-6 max-w-md w-full mx-4 border-2 border-white"
                     >
                         <h2 className="text-xl font-bold text-white mb-6">
                             Add {nodeType === 'sub2' ? 'Sub-2' : 'Sub'} Node
@@ -102,7 +95,7 @@ export function AddNodeModal({
 
                             <div>
                                 <label className="block text-white text-sm font-medium mb-2">
-                                    Description
+                                    Description (optional)
                                 </label>
                                 <textarea
                                     value={description}
