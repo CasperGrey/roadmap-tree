@@ -11,6 +11,24 @@ interface NodeModalProps {
 export function NodeModal({ node, onClose }: NodeModalProps) {
     if (!node) return null;
 
+    // Title case helper function
+    const toTitleCase = (str: string) => {
+        return str.split(' ').map(word => {
+            // Handle special cases like "AI", "PR", "MS", etc.
+            if (word.toUpperCase() === 'AI' ||
+                word.toUpperCase() === 'PR' ||
+                word.toUpperCase() === 'MS' ||
+                word.toUpperCase() === 'LMS' ||
+                word.toUpperCase() === 'POC') {
+                return word.toUpperCase();
+            }
+            // Handle ampersand
+            if (word === '&') return '&';
+            // Normal title case
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }).join(' ');
+    };
+
     return (
         <div
             className="fixed inset-0 z-50 overflow-auto bg-black/50 flex items-center justify-center"
@@ -39,9 +57,7 @@ export function NodeModal({ node, onClose }: NodeModalProps) {
                         )}
                     </div>
                     <h2 className="text-2xl font-bold text-white">
-                        {node.type === 'parent'
-                            ? node.title.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')
-                            : node.title}
+                        {toTitleCase(node.title)}
                     </h2>
                 </div>
 

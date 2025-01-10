@@ -134,7 +134,7 @@ export const treeData: TreeNode[] = [
                 id: 'azure-foundry',
                 type: 'sub',
                 title: 'Azure Foundry POC',
-                icon: 'cloud',
+                icon: '/assets/icons8-power-50.png',
                 description: 'Proof of concept for Azure-based AI development.',
                 parentId: 'developed-ai',
                 nextSiblingId: 'knowledge-management'
@@ -235,7 +235,7 @@ export const treeData: TreeNode[] = [
                 id: 'ai-monitoring',
                 type: 'sub',
                 title: 'AI Monitoring & Audits',
-                icon: 'chart-line',
+                icon: '/assets/icons8-audit-50.png',
                 description: 'Continuous monitoring of AI systems.',
                 parentId: 'ai-safety',
                 prevSiblingId: 'ms-purview-extension',
@@ -245,7 +245,7 @@ export const treeData: TreeNode[] = [
                 id: 'ai-transparency',
                 type: 'sub',
                 title: 'AI Transparency Report',
-                icon: 'file-alt',
+                icon: '/assets/icons8-report-50.png',
                 description: 'Regular reporting on AI usage and compliance.',
                 parentId: 'ai-safety',
                 prevSiblingId: 'ai-monitoring'

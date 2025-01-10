@@ -39,7 +39,7 @@ export default function App() {
                     position: 'fixed',
                     top: '1rem',
                     right: '1rem',
-                    zIndex: 50,
+                    zIndex: 40,
                     backgroundColor: isAdmin ? '#f44336' : '#1976d2',
                     minWidth: '120px'
                 }}
@@ -48,7 +48,7 @@ export default function App() {
             </Button>
 
             {/* Main Content */}
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full relative">
                 <ZoomableViewport initialWidth={3432} initialHeight={2000}>
                     <g>
                         {/* Background */}
@@ -63,13 +63,15 @@ export default function App() {
                             <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8" />
 
                             {/* Cloud animations */}
+                            {/* Left to right cloud */}
                             <motion.g
                                 initial={{ x: -200 }}
                                 animate={{ x: 3632 }}
                                 transition={{
                                     duration: 30,
                                     repeat: Infinity,
-                                    ease: "linear"
+                                    ease: "linear",
+                                    repeatDelay: 0
                                 }}
                             >
                                 <image
@@ -81,6 +83,7 @@ export default function App() {
                                 />
                             </motion.g>
 
+                            {/* Right to left cloud - starts from right */}
                             <motion.g
                                 initial={{ x: 3632 }}
                                 animate={{ x: -200 }}
@@ -88,7 +91,7 @@ export default function App() {
                                     duration: 30,
                                     repeat: Infinity,
                                     ease: "linear",
-                                    delay: 15
+                                    repeatDelay: 0
                                 }}
                             >
                                 <image
@@ -96,6 +99,45 @@ export default function App() {
                                     width="160"
                                     height="120"
                                     y="180"
+                                    style={{ opacity: 0.7 }}
+                                />
+                            </motion.g>
+
+                            {/* Additional clouds with offset starting positions */}
+                            <motion.g
+                                initial={{ x: 1716 }}
+                                animate={{ x: 3632 }}
+                                transition={{
+                                    duration: 30,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                    repeatDelay: 0
+                                }}
+                            >
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="140"
+                                    style={{ opacity: 0.7 }}
+                                />
+                            </motion.g>
+
+                            <motion.g
+                                initial={{ x: 1716 }}
+                                animate={{ x: -200 }}
+                                transition={{
+                                    duration: 30,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                    repeatDelay: 0
+                                }}
+                            >
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="220"
                                     style={{ opacity: 0.7 }}
                                 />
                             </motion.g>
@@ -134,10 +176,14 @@ export default function App() {
                 </ZoomableViewport>
             </div>
 
-            {/* Modal Root */}
-            <div id="modal-root" className="fixed inset-0 pointer-events-none">
-                <div className="pointer-events-auto">
-                    {/* Modals will be rendered here */}
+            {/* Absolute positioned modal container */}
+            <div
+                id="modal-root"
+                className="fixed inset-0 z-50"
+                style={{ pointerEvents: 'none' }}
+            >
+                <div style={{ pointerEvents: 'auto' }}>
+                    {/* Modal content will be rendered here */}
                 </div>
             </div>
         </div>
