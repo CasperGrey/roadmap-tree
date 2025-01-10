@@ -176,13 +176,12 @@ export default function App() {
                 </ZoomableViewport>
             </div>
 
-            {/* Absolute positioned modal container */}
+            {/* Modal container for portals */}
             <div
                 id="modal-root"
-                className="fixed inset-0 z-50"
-                style={{ pointerEvents: 'none' }}
+                className="fixed inset-0 z-50 pointer-events-none"
             >
-                <div style={{ pointerEvents: 'auto' }}>
+                <div className="pointer-events-auto w-full h-full">
                     {/* Modal content will be rendered here */}
                 </div>
             </div>

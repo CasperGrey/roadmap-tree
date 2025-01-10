@@ -6,6 +6,7 @@ import { AddNodeModal } from '../nodes/AddNodeModal';
 import { NodeModal } from '../modals/NodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
+import ReactDOM from 'react-dom';
 
 interface AITreeProps {
     startY?: number;
@@ -26,7 +27,7 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     const handleNodeClick = (node: TreeNode) => {
-        console.log('Opening modal for node:', node.id);
+        console.log('Opening modal for node:', node);
         setSelectedNode(node);
     };
 
@@ -36,42 +37,12 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
         setIsAddModalOpen(true);
     };
 
-    const findLastSibling = (parentId: string, nodeType: SelectableNodeType): TreeNode | undefined => {
-        const parent = treeData.find(node => node.id === parentId) ||
-            treeData.flatMap(node => node.children || []).find(node => node.id === parentId);
-
-        if (!parent?.children) return undefined;
-
-        const siblings = parent.children.filter(node => node.type === nodeType);
-        return siblings[siblings.length - 1];
-    };
-
     const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
-        const lastSibling = findLastSibling(nodeData.parentId, nodeData.type as SelectableNodeType);
-
         const newNode: TreeNode = {
             ...nodeData,
             id: `node-${Date.now()}`,
-            children: [],
-            prevSiblingId: lastSibling?.id
+            children: []
         };
-
-        if (lastSibling) {
-            setTreeData(currentTreeData => {
-                const updateNodeInTree = (nodes: TreeNode[]): TreeNode[] => {
-                    return nodes.map(node => {
-                        if (node.id === lastSibling.id) {
-                            return { ...node, nextSiblingId: newNode.id };
-                        }
-                        if (node.children) {
-                            return { ...node, children: updateNodeInTree(node.children) };
-                        }
-                        return node;
-                    });
-                };
-                return updateNodeInTree(currentTreeData);
-            });
-        }
 
         setTreeData(currentTreeData => {
             const updateNodes = (nodes: TreeNode[]): TreeNode[] => {
@@ -97,9 +68,37 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
         setIsAddModalOpen(false);
     };
 
+    const renderModals = () => {
+        const modalRoot = document.getElementById('modal-root');
+        if (!modalRoot) return null;
+
+        return ReactDOM.createPortal(
+            <>
+                {selectedNode && (
+                    <NodeModal
+                        node={selectedNode}
+                        onClose={() => {
+                            console.log('Closing modal');
+                            setSelectedNode(null);
+                        }}
+                    />
+                )}
+                {isAddModalOpen && (
+                    <AddNodeModal
+                        isOpen={isAddModalOpen}
+                        onClose={() => setIsAddModalOpen(false)}
+                        onAdd={handleNodeAdd}
+                        parentId={selectedParentId}
+                        nodeType={selectedNodeType}
+                    />
+                )}
+            </>,
+            modalRoot
+        );
+    };
+
     return (
         <>
-            {/* SVG Tree Content */}
             <g>
                 {treeData.map((node, index) => (
                     <NodeTree
@@ -114,24 +113,7 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                     />
                 ))}
             </g>
-
-            {/* Portaled Modal Content */}
-            <div id="modal-root">
-                <NodeModal
-                    node={selectedNode}
-                    onClose={() => {
-                        console.log('Closing modal');
-                        setSelectedNode(null);
-                    }}
-                />
-                <AddNodeModal
-                    isOpen={isAddModalOpen}
-                    onClose={() => setIsAddModalOpen(false)}
-                    onAdd={handleNodeAdd}
-                    parentId={selectedParentId}
-                    nodeType={selectedNodeType}
-                />
-            </div>
+            {renderModals()}
         </>
     );
 };
