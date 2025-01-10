@@ -6,7 +6,7 @@ import { getParentNodes } from './utils/treePositionUtils';
 import { treeData } from './data/treeData';
 import { Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {motion} from "framer-motion";
+import { motion } from 'framer-motion';
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -16,13 +16,11 @@ export default function App() {
     const usableWidth = totalWidth - (margin * 2);
     const parentSpacing = usableWidth / (parentNodes.length - 1);
 
-    // Updated vertical line measurements
     const verticalLineStartY = 445;
     const verticalLineEndY = 600;
     const parentNodeY = 800;
     const parentNodeRadius = 45;
 
-    // Calculate diagonal lines path
     const getDiagonalLines = () => {
         return parentNodes.map((_, index) => {
             const parentX = margin + (index * parentSpacing);
@@ -31,7 +29,7 @@ export default function App() {
     };
 
     return (
-        <div id="root" className="fixed inset-0 overflow-hidden bg-[#1C3559]">
+        <div className="fixed inset-0 bg-[#1C3559] flex flex-col overflow-hidden">
             {/* Admin Toggle Button */}
             <Button
                 variant="contained"
@@ -49,98 +47,58 @@ export default function App() {
                 {isAdmin ? 'Exit Admin' : 'Admin Mode'}
             </Button>
 
-            <div className="w-full h-full">
+            {/* Main Content */}
+            <div className="flex-1 w-full">
                 <ZoomableViewport initialWidth={3432} initialHeight={2000}>
                     <g>
-                        {/* Main background */}
-                        <rect width="3432" height="2000" fill="#1C3559"/>
+                        {/* Background */}
+                        <rect width="3432" height="2000" fill="#1C3559" />
 
                         {/* Header Section */}
                         <g>
                             {/* Lines */}
-                            <line x1="0" y1="400" x2="3432" y2="400" stroke="#ffffff" strokeWidth="8"/>
-                            <line x1="0" y1="415" x2="3432" y2="415" stroke="#ffffff" strokeWidth="8"/>
-                            <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8"/>
-                            <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8"/>
+                            <line x1="0" y1="400" x2="3432" y2="400" stroke="#ffffff" strokeWidth="8" />
+                            <line x1="0" y1="415" x2="3432" y2="415" stroke="#ffffff" strokeWidth="8" />
+                            <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8" />
+                            <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8" />
 
                             {/* Cloud animations */}
-                            <g>
-                                {/* Left-moving clouds */}
-                                <motion.g
-                                    initial={{ x: -200 }}
-                                    animate={{ x: 3632 }}
-                                    transition={{
-                                        duration: 30,
-                                        repeat: Infinity,
-                                        ease: "linear"
-                                    }}
-                                >
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        width="160"
-                                        height="120"
-                                        y="150"
-                                        style={{ opacity: 0.7 }}
-                                    />
-                                </motion.g>
+                            <motion.g
+                                initial={{ x: -200 }}
+                                animate={{ x: 3632 }}
+                                transition={{
+                                    duration: 30,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                            >
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="100"
+                                    style={{ opacity: 0.7 }}
+                                />
+                            </motion.g>
 
-                                <motion.g
-                                    initial={{ x: -200 }}
-                                    animate={{ x: 3632 }}
-                                    transition={{
-                                        duration: 30,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                        delay: 15
-                                    }}
-                                >
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        width="160"
-                                        height="120"
-                                        y="200"
-                                        style={{ opacity: 0.7 }}
-                                    />
-                                </motion.g>
-
-                                {/* Right-moving clouds */}
-                                <motion.g
-                                    initial={{ x: 3632 }}
-                                    animate={{ x: -200 }}
-                                    transition={{
-                                        duration: 30,
-                                        repeat: Infinity,
-                                        ease: "linear"
-                                    }}
-                                >
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        width="160"
-                                        height="120"
-                                        y="100"
-                                        style={{ opacity: 0.7 }}
-                                    />
-                                </motion.g>
-
-                                <motion.g
-                                    initial={{ x: 3632 }}
-                                    animate={{ x: -200 }}
-                                    transition={{
-                                        duration: 30,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                        delay: 15
-                                    }}
-                                >
-                                    <image
-                                        href="/assets/icons8-clouds-50.png"
-                                        width="160"
-                                        height="120"
-                                        y="250"
-                                        style={{ opacity: 0.7 }}
-                                    />
-                                </motion.g>
-                            </g>
+                            <motion.g
+                                initial={{ x: 3632 }}
+                                animate={{ x: -200 }}
+                                transition={{
+                                    duration: 30,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                    delay: 15
+                                }}
+                            >
+                                <image
+                                    href="/assets/icons8-clouds-50.png"
+                                    width="160"
+                                    height="120"
+                                    y="180"
+                                    style={{ opacity: 0.7 }}
+                                />
+                            </motion.g>
 
                             {/* Logo */}
                             <g transform="translate(1716, 300)">
@@ -175,7 +133,13 @@ export default function App() {
                     </g>
                 </ZoomableViewport>
             </div>
-            <div id="modal-root"></div>
+
+            {/* Modal Root */}
+            <div id="modal-root" className="fixed inset-0 pointer-events-none">
+                <div className="pointer-events-auto">
+                    {/* Modals will be rendered here */}
+                </div>
+            </div>
         </div>
     );
 }
