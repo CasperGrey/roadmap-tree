@@ -5,7 +5,7 @@ import { TreeNode } from '../../types/tree';
 interface TreeNodeComponentProps {
     node: TreeNode;
     position: { x: number; y: number };
-    onNodeClick?: (node: TreeNode) => void;
+    onNodeClick: (node: TreeNode) => void;  // Made required since it's essential functionality
 }
 
 export function TreeNodeComponent({
@@ -41,10 +41,8 @@ export function TreeNodeComponent({
         };
     };
 
-    // Title case helper function
     const toTitleCase = (str: string) => {
         return str.split(' ').map(word => {
-            // Handle special cases like "AI", "PR", "MS", etc.
             if (word.toUpperCase() === 'AI' ||
                 word.toUpperCase() === 'PR' ||
                 word.toUpperCase() === 'MS' ||
@@ -52,20 +50,18 @@ export function TreeNodeComponent({
                 word.toUpperCase() === 'POC') {
                 return word.toUpperCase();
             }
-            // Handle ampersand
             if (word === '&') return '&';
-            // Normal title case
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }).join(' ');
     };
 
+    const handleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onNodeClick(node);
+    };
+
     const style = getNodeStyles(node.type);
     const isImageUrl = (icon: string) => icon.startsWith('http') || icon.startsWith('/') || icon.startsWith('./');
-
-    const handleClick = () => {
-        console.log('Node clicked:', { id: node.id, title: node.title });
-        onNodeClick?.(node);
-    };
 
     return (
         <g transform={`translate(${position.x},${position.y})`}>

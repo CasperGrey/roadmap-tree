@@ -176,13 +176,15 @@ export default function App() {
                 </ZoomableViewport>
             </div>
 
-            {/* Modal container for portals */}
+            {/* Panel root for side panel portal */}
             <div
-                id="modal-root"
+                id="panel-root"
                 className="fixed inset-0 z-50 pointer-events-none"
+                aria-live="polite"
+                role="complementary"
             >
                 <div className="pointer-events-auto w-full h-full">
-                    {/* Modal content will be rendered here */}
+                    {/* Side panel will be rendered here */}
                 </div>
             </div>
         </div>

@@ -2,8 +2,7 @@
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode, NodeType } from '../../types/tree';
-import { AddNodeModal } from '../nodes/AddNodeModal';
-import { NodeModal } from '../modals/NodeModal';
+import { SidePanel } from '../panels/SidePanel';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
 import ReactDOM from 'react-dom';
@@ -17,9 +16,6 @@ type SelectableNodeType = Extract<NodeType, 'sub' | 'sub2'>;
 
 const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElement => {
     const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [selectedParentId, setSelectedParentId] = useState<string>('');
-    const [selectedNodeType, setSelectedNodeType] = useState<SelectableNodeType>('sub');
     const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
 
     const getNodePos = (node: TreeNode, index: number) => {
@@ -27,73 +23,23 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     const handleNodeClick = (node: TreeNode) => {
-        console.log('Opening modal for node:', node);
+        console.log('Opening panel for node:', node);
         setSelectedNode(node);
     };
 
-    const handleAddNode = (parentId: string, nodeType: SelectableNodeType): void => {
-        setSelectedParentId(parentId);
-        setSelectedNodeType(nodeType);
-        setIsAddModalOpen(true);
-    };
-
-    const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
-        const newNode: TreeNode = {
-            ...nodeData,
-            id: `node-${Date.now()}`,
-            children: []
-        };
-
-        setTreeData(currentTreeData => {
-            const updateNodes = (nodes: TreeNode[]): TreeNode[] => {
-                return nodes.map(node => {
-                    if (node.id === nodeData.parentId) {
-                        return {
-                            ...node,
-                            children: [...(node.children || []), newNode]
-                        };
-                    }
-                    if (node.children) {
-                        return {
-                            ...node,
-                            children: updateNodes(node.children)
-                        };
-                    }
-                    return node;
-                });
-            };
-            return updateNodes(currentTreeData);
-        });
-
-        setIsAddModalOpen(false);
-    };
-
-    const renderModals = () => {
-        const modalRoot = document.getElementById('modal-root');
-        if (!modalRoot) return null;
+    const renderSidePanel = () => {
+        const panelRoot = document.getElementById('panel-root');
+        if (!panelRoot) return null;
 
         return ReactDOM.createPortal(
-            <>
-                {selectedNode && (
-                    <NodeModal
-                        node={selectedNode}
-                        onClose={() => {
-                            console.log('Closing modal');
-                            setSelectedNode(null);
-                        }}
-                    />
-                )}
-                {isAddModalOpen && (
-                    <AddNodeModal
-                        isOpen={isAddModalOpen}
-                        onClose={() => setIsAddModalOpen(false)}
-                        onAdd={handleNodeAdd}
-                        parentId={selectedParentId}
-                        nodeType={selectedNodeType}
-                    />
-                )}
-            </>,
-            modalRoot
+            <SidePanel
+                node={selectedNode}
+                onClose={() => {
+                    console.log('Closing panel');
+                    setSelectedNode(null);
+                }}
+            />,
+            panelRoot
         );
     };
 
@@ -107,13 +53,12 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                         position={getNodePos(node, index)}
                         index={index}
                         getNodePosition={getNodePos}
-                        onAddClick={handleAddNode}
                         onNodeClick={handleNodeClick}
                         showButtons={showButtons}
                     />
                 ))}
             </g>
-            {renderModals()}
+            {renderSidePanel()}
         </>
     );
 };

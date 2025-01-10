@@ -12,14 +12,10 @@ export interface TreeNode {
     title: string;
     icon: string;
     description?: string;
-    parentId: string;           // Required - references the actual parent node
-    nextSiblingId?: string;     // Optional - references the next node in sequence
-    prevSiblingId?: string;     // Optional - references the previous node in sequence
-    children?: TreeNode[];      // Optional - contains sub2 nodes or nested structures
-}
-
-export interface NewNodeData extends Omit<TreeNode, 'id' | 'children'> {
     parentId: string;
+    nextSiblingId?: string;
+    prevSiblingId?: string;
+    children?: TreeNode[];
 }
 
 export interface TreeConnectorProps {
