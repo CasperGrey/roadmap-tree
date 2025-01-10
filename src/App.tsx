@@ -6,7 +6,7 @@ import { getParentNodes } from './utils/treePositionUtils';
 import { treeData } from './data/treeData';
 import { Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {motion} from 'framer-motion';
+import {motion} from "framer-motion";
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);

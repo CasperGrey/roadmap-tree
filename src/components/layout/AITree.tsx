@@ -3,7 +3,7 @@ import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode, NodeType } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
-import { NodeModal } from '../modals/NodeModal'; // Update import path
+import { NodeModal } from '../modals/NodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
 
@@ -12,7 +12,6 @@ interface AITreeProps {
     showButtons?: boolean;
 }
 
-// Define a more specific type for node type selection
 type SelectableNodeType = Extract<NodeType, 'sub' | 'sub2'>;
 
 const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElement => {
@@ -57,7 +56,6 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
             prevSiblingId: lastSibling?.id
         };
 
-        // Update the previous last sibling's nextSiblingId
         if (lastSibling) {
             setTreeData(currentTreeData => {
                 const updateNodeInTree = (nodes: TreeNode[]): TreeNode[] => {
@@ -100,7 +98,8 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     return (
-        <div className="relative w-full h-full">
+        <>
+            {/* SVG Tree Content */}
             <g>
                 {treeData.map((node, index) => (
                     <NodeTree
@@ -115,8 +114,9 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                     />
                 ))}
             </g>
-            {/* Render modals outside of SVG */}
-            <div className="fixed inset-0 pointer-events-none">
+
+            {/* Portaled Modal Content */}
+            <div id="modal-root">
                 <NodeModal
                     node={selectedNode}
                     onClose={() => {
@@ -132,7 +132,7 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                     nodeType={selectedNodeType}
                 />
             </div>
-        </div>
+        </>
     );
 };
 
