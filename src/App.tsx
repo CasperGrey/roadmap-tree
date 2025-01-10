@@ -176,7 +176,8 @@ export default function App() {
                 </ZoomableViewport>
             </div>
 
-            {/* Panel root for side panel portal */}
+            {/* Portal containers */}
+            {/* For node description side panel */}
             <div
                 id="panel-root"
                 className="fixed inset-0 z-50 pointer-events-none"
