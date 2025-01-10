@@ -40,15 +40,21 @@ export function ZoomableViewport({
             const mouseX = event.clientX - rect.left;
             const mouseY = event.clientY - rect.top;
 
-            const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
-            const newZoom = Math.max(0.5, Math.min(3, zoom * zoomFactor));
+            // When deltaY is negative (scroll up), zoom in
+            // When deltaY is positive (scroll down), zoom out
+            const newZoom = zoom * (event.deltaY < 0 ? 0.9 : 1.1);
+
+            // Limit zoom range
+            if (newZoom < 0.5 || newZoom > 3) return;
 
             const newWidth = initialWidth / newZoom;
             const newHeight = initialHeight / newZoom;
 
+            // Calculate where in the viewport the mouse is pointing
             const mouseViewportX = (mouseX / rect.width) * viewBox.width + viewBox.x;
             const mouseViewportY = (mouseY / rect.height) * viewBox.height + viewBox.y;
 
+            // Calculate new viewbox position to keep mouse position stable
             const newX = mouseViewportX - (mouseX / rect.width) * newWidth;
             const newY = mouseViewportY - (mouseY / rect.height) * newHeight;
 

@@ -6,6 +6,7 @@ import { getParentNodes } from './utils/treePositionUtils';
 import { treeData } from './data/treeData';
 import { Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import {motion} from 'framer-motion';
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -65,40 +66,80 @@ export default function App() {
                             {/* Cloud animations */}
                             <g>
                                 {/* Left-moving clouds */}
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    width="160"
-                                    height="120"
-                                    y="100"
-                                    className="animate-float-left"
-                                    style={{ opacity: 0.7 }}
-                                />
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    width="160"
-                                    height="120"
-                                    y="150"
-                                    className="animate-float-left"
-                                    style={{ animationDelay: '30s', opacity: 0.7 }}
-                                />
+                                <motion.g
+                                    initial={{ x: -200 }}
+                                    animate={{ x: 3632 }}
+                                    transition={{
+                                        duration: 30,
+                                        repeat: Infinity,
+                                        ease: "linear"
+                                    }}
+                                >
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        width="160"
+                                        height="120"
+                                        y="150"
+                                        style={{ opacity: 0.7 }}
+                                    />
+                                </motion.g>
+
+                                <motion.g
+                                    initial={{ x: -200 }}
+                                    animate={{ x: 3632 }}
+                                    transition={{
+                                        duration: 30,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                        delay: 15
+                                    }}
+                                >
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        width="160"
+                                        height="120"
+                                        y="200"
+                                        style={{ opacity: 0.7 }}
+                                    />
+                                </motion.g>
 
                                 {/* Right-moving clouds */}
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    width="160"
-                                    height="120"
-                                    y="180"
-                                    className="animate-float-right"
-                                    style={{ opacity: 0.7 }}
-                                />
-                                <image
-                                    href="/assets/icons8-clouds-50.png"
-                                    width="160"
-                                    height="120"
-                                    y="230"
-                                    className="animate-float-right"
-                                    style={{ animationDelay: '30s', opacity: 0.7 }}
-                                />
+                                <motion.g
+                                    initial={{ x: 3632 }}
+                                    animate={{ x: -200 }}
+                                    transition={{
+                                        duration: 30,
+                                        repeat: Infinity,
+                                        ease: "linear"
+                                    }}
+                                >
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        width="160"
+                                        height="120"
+                                        y="100"
+                                        style={{ opacity: 0.7 }}
+                                    />
+                                </motion.g>
+
+                                <motion.g
+                                    initial={{ x: 3632 }}
+                                    animate={{ x: -200 }}
+                                    transition={{
+                                        duration: 30,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                        delay: 15
+                                    }}
+                                >
+                                    <image
+                                        href="/assets/icons8-clouds-50.png"
+                                        width="160"
+                                        height="120"
+                                        y="250"
+                                        style={{ opacity: 0.7 }}
+                                    />
+                                </motion.g>
                             </g>
 
                             {/* Logo */}

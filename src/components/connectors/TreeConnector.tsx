@@ -18,21 +18,34 @@ export function TreeConnector({
                                   startRadius = 45,
                                   endRadius = 40
                               }: TreeConnectorProps) {
+    // Define node-specific radii
+    const getNodeRadius = (type: NodeType) => {
+        switch(type) {
+            case 'parent': return 45;
+            case 'sub': return 40;
+            case 'sub2': return 35;
+            default: return 40;
+        }
+    };
+
+    const actualStartRadius = getNodeRadius(nodeType === 'sub2' ? 'sub' : 'parent');
+    const actualEndRadius = getNodeRadius(nodeType);
+
     if (nodeType === 'sub2') {
-        // For sub2 nodes, create a curved connection from the right side
-        const startX = start.x + startRadius;  // Start from right side of parent
+        // Sub2 nodes connect from the right side of their parent sub node
+        const startX = start.x + actualStartRadius; // Right side of parent
         const startY = start.y;
-        const endX = end.x - endRadius;        // Connect to left side of child
+        const endX = end.x - actualEndRadius;      // Left side of sub2
         const endY = end.y;
 
-        // Calculate control points for the curve
-        const midX = startX + (endX - startX) / 2;
+        // Calculate curve control points
+        const controlX = startX + (endX - startX) / 2;
 
         return (
             <motion.path
                 d={`M ${startX} ${startY} 
-                    C ${midX} ${startY}, 
-                      ${midX} ${endY}, 
+                    C ${controlX} ${startY},
+                      ${controlX} ${endY},
                       ${endX} ${endY}`}
                 stroke="rgba(255, 255, 255, 0.3)"
                 strokeWidth="2"
@@ -42,27 +55,26 @@ export function TreeConnector({
                 transition={{ duration: 0.5, ease: "easeInOut" }}
             />
         );
+    } else {
+        // Regular sub nodes connect from bottom to top
+        const startX = start.x;
+        const startY = start.y + actualStartRadius; // Bottom of parent
+        const endX = end.x;
+        const endY = end.y - actualEndRadius;      // Top of child
+
+        return (
+            <motion.path
+                d={`M ${startX} ${startY} 
+                    L ${startX} ${startY + 20}
+                    L ${endX} ${endY - 20}
+                    L ${endX} ${endY}`}
+                stroke="rgba(255, 255, 255, 0.3)"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+        );
     }
-
-    // For sub nodes, create a path that avoids other nodes
-    const startX = start.x;
-    const startY = start.y + startRadius;     // Start from bottom of parent
-    const endX = end.x;
-    const endY = end.y - endRadius;          // Connect to top of child
-    const midY = startY + (endY - startY) / 2;
-
-    return (
-        <motion.path
-            d={`M ${startX} ${startY} 
-                L ${startX} ${midY} 
-                L ${endX} ${midY} 
-                L ${endX} ${endY}`}
-            stroke="rgba(255, 255, 255, 0.3)"
-            strokeWidth="2"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-        />
-    );
 }
