@@ -1,7 +1,7 @@
 // src/components/nodes/NodeTree.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TreeNode as TreeNodeType, Position } from '../../types/tree';
+import { TreeNode as TreeNodeType, Position, NodeType } from '../../types/tree';
 import { TreeNodeComponent } from './TreeNode';
 import { TreeConnector } from '../connectors/TreeConnector';
 import { Button } from '@mui/material';
@@ -30,16 +30,31 @@ export function NodeTree({
     const canAddSub = node.type === 'parent';
     const canAddSub2 = node.type === 'sub';
 
-    // Create sequential connections between sibling nodes
-    const renderSequentialConnectors = (currentNode: TreeNodeType) => {
-        if (currentNode.nextSiblingId) {
-            const nextNode = node.children?.find(child => child.id === currentNode.nextSiblingId);
-            if (nextNode) {
-                const nextPos = getNodePosition(nextNode, index);
+    // Render vertical connection (parent to first sub)
+    const renderMainConnection = (child: TreeNodeType, childPos: Position) => {
+        if (child.type === 'sub' && !child.prevSiblingId) {
+            return (
+                <TreeConnector
+                    start={position}
+                    end={childPos}
+                    nodeType={child.type}
+                    connectionType="vertical"
+                />
+            );
+        }
+        return null;
+    };
+
+    // Render sequential connections between sub nodes
+    const renderSequentialConnections = (child: TreeNodeType, childPos: Position) => {
+        if (child.type === 'sub' && child.prevSiblingId) {
+            const prevSibling = node.children?.find(n => n.id === child.prevSiblingId);
+            if (prevSibling) {
+                const prevPos = getNodePosition(prevSibling, index);
                 return (
                     <TreeConnector
-                        start={position}
-                        end={nextPos}
+                        start={prevPos}
+                        end={childPos}
                         nodeType="sub"
                         connectionType="sequential"
                     />
@@ -49,22 +64,19 @@ export function NodeTree({
         return null;
     };
 
-    // Debug logging for connection tracking
-    const logConnection = (child: TreeNodeType) => {
-        console.log('Connection details:', {
-            parent: {
-                id: node.id,
-                type: node.type,
-                position
-            },
-            child: {
-                id: child.id,
-                type: child.type,
-                position: getNodePosition(child, index),
-                nextSibling: child.nextSiblingId,
-                prevSibling: child.prevSiblingId
-            }
-        });
+    // Render sub2 connections
+    const renderSub2Connection = (child: TreeNodeType, childPos: Position) => {
+        if (child.type === 'sub2') {
+            return (
+                <TreeConnector
+                    start={position}
+                    end={childPos}
+                    nodeType="sub2"
+                    connectionType="sub2"
+                />
+            );
+        }
+        return null;
     };
 
     return (
@@ -83,8 +95,20 @@ export function NodeTree({
                     return null;
                 }
 
-                // Log connection details for debugging
-                logConnection(child);
+                console.log('Connection details:', {
+                    parent: {
+                        id: node.id,
+                        type: node.type,
+                        position
+                    },
+                    child: {
+                        id: child.id,
+                        type: child.type,
+                        position: childPos,
+                        prevSibling: child.prevSiblingId,
+                        nextSibling: child.nextSiblingId
+                    }
+                });
 
                 return (
                     <motion.g
@@ -93,53 +117,10 @@ export function NodeTree({
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3 }}
                     >
-                        {/* Parent-child connection */}
-                        <TreeConnector
-                            start={position}
-                            end={childPos}
-                            nodeType={child.type}
-                            connectionType={child.type === 'sub2' ? 'sub2' : child.type === 'sub' ? 'sequential' : 'vertical'}
-                        />
-
-                        {/* Debug visualization points */}
-                        {process.env.NODE_ENV === 'development' && (
-                            <>
-                                <circle
-                                    cx={position.x}
-                                    cy={position.y + (node.type === 'parent' ? 45 : 40)}
-                                    r="3"
-                                    fill="blue"
-                                    opacity="0.5"
-                                />
-                                <circle
-                                    cx={childPos.x}
-                                    cy={childPos.y - (child.type === 'sub2' ? 35 : 40)}
-                                    r="3"
-                                    fill="yellow"
-                                    opacity="0.5"
-                                />
-                            </>
-                        )}
-
-                        {/* Debug visualization points */}
-                        {process.env.NODE_ENV === 'development' && (
-                            <>
-                                <circle
-                                    cx={position.x}
-                                    cy={position.y + (node.type === 'parent' ? 45 : 40)}
-                                    r="3"
-                                    fill="blue"
-                                    opacity="0.5"
-                                />
-                                <circle
-                                    cx={childPos.x}
-                                    cy={childPos.y - (child.type === 'sub2' ? 35 : 40)}
-                                    r="3"
-                                    fill="yellow"
-                                    opacity="0.5"
-                                />
-                            </>
-                        )}
+                        {/* Render appropriate connections based on node type */}
+                        {renderMainConnection(child, childPos)}
+                        {renderSequentialConnections(child, childPos)}
+                        {renderSub2Connection(child, childPos)}
 
                         {/* Recursively render child node */}
                         <NodeTree
