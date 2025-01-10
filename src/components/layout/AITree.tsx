@@ -3,7 +3,7 @@ import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode, NodeType } from '../../types/tree';
 import { AddNodeModal } from '../nodes/AddNodeModal';
-import { NodeModal } from '../modals/NodeModal';
+import { NodeModal } from '../modals/NodeModal'; // Update import path
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
 
@@ -100,7 +100,7 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     return (
-        <>
+        <div className="relative w-full h-full">
             <g>
                 {treeData.map((node, index) => (
                     <NodeTree
@@ -115,18 +115,24 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
                     />
                 ))}
             </g>
-            <NodeModal
-                node={selectedNode}
-                onClose={() => setSelectedNode(null)}
-            />
-            <AddNodeModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                onAdd={handleNodeAdd}
-                parentId={selectedParentId}
-                nodeType={selectedNodeType}
-            />
-        </>
+            {/* Render modals outside of SVG */}
+            <div className="fixed inset-0 pointer-events-none">
+                <NodeModal
+                    node={selectedNode}
+                    onClose={() => {
+                        console.log('Closing modal');
+                        setSelectedNode(null);
+                    }}
+                />
+                <AddNodeModal
+                    isOpen={isAddModalOpen}
+                    onClose={() => setIsAddModalOpen(false)}
+                    onAdd={handleNodeAdd}
+                    parentId={selectedParentId}
+                    nodeType={selectedNodeType}
+                />
+            </div>
+        </div>
     );
 };
 
