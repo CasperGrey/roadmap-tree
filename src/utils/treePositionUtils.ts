@@ -58,15 +58,15 @@ export const calculateNodePosition = (
     if (node.type === 'sub') {
         const siblings = parent.children?.filter((child: TreeNode) => child.type === 'sub') || [];
         const nodeIndex = siblings.findIndex((n: TreeNode) => n.id === node.id);
-        const siblingSpacing = parentSpacing / (siblings.length + 1);
 
+        // Calculate vertical position based on index
         return {
-            x: parentPos.x - (parentSpacing / 2) + ((nodeIndex + 1) * siblingSpacing),
-            y: parentPos.y + levelSpacing
+            x: parentPos.x,  // Keep x position aligned with parent
+            y: parentPos.y + ((nodeIndex + 1) * levelSpacing)  // Stack vertically based on index
         };
     }
 
-    // Handle sub2 nodes
+// Handle sub2 nodes
     if (node.type === 'sub2') {
         const subParent = findDirectParent(treeData, node.id);
         if (!subParent) {
@@ -78,9 +78,10 @@ export const calculateNodePosition = (
         const subSiblings = subParent.children?.filter((child: TreeNode) => child.type === 'sub2') || [];
         const subIndex = subSiblings.findIndex((n: TreeNode) => n.id === node.id);
 
+        // Position sub2 nodes diagonally down and to the right from their parent sub node
         return {
-            x: subParentPos.x + parentSpacing / 2,
-            y: subParentPos.y + (subIndex * levelSpacing / 2)
+            x: subParentPos.x + parentSpacing,  // Move to the right by parentSpacing
+            y: subParentPos.y + ((subIndex + 1) * levelSpacing)  // Move down diagonally based on index
         };
     }
 
