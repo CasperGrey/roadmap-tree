@@ -1,4 +1,6 @@
+// src/components/connectors/TreeConnector.tsx
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Position, NodeType } from '../../types/tree';
 
 interface TreeConnectorProps {
@@ -15,45 +17,90 @@ export function TreeConnector({
                                   end,
                                   nodeType,
                                   connectionType,
-                                  startRadius = 45,
-                                  endRadius = 40
+                                  startRadius: propStartRadius,
+                                  endRadius: propEndRadius
                               }: TreeConnectorProps) {
-    const getPath = () => {
-        switch (connectionType) {
-            case 'vertical':
-                // Straight vertical line from bottom center of parent to top center of sub
-                return `M ${start.x} ${start.y + startRadius} 
-                        L ${start.x} ${end.y - endRadius}`;
+    if (!start || !end) {
+        console.error('Missing required props:', { start, end });
+        return null;
+    }
 
-            case 'sequential':
-                // Vertical connection between sub nodes with horizontal offset if needed
-                const midY = (start.y + end.y) / 2;
-                return `M ${start.x} ${start.y + startRadius}
-                        L ${start.x} ${midY}
-                        L ${end.x} ${midY}
-                        L ${end.x} ${end.y - endRadius}`;
-
-            case 'sub2':
-                // Curved diagonal connection from right side of sub to left side of sub2
-                const startX = start.x + startRadius; // Start from right side
-                const endX = end.x - endRadius; // End at left side
-                const curveY = end.y - 50;
-                return `M ${startX} ${start.y}
-                        C ${startX + 50} ${start.y},
-                          ${endX - 50} ${end.y},
-                          ${endX} ${end.y}`;
-
-            default:
-                return '';
+    // Define node-specific radii
+    const getNodeRadius = (type: NodeType): number => {
+        switch(type) {
+            case 'parent': return 45;
+            case 'sub': return 40;
+            case 'sub2': return 35;
+            default: return 40;
         }
     };
 
+    const startRadius = propStartRadius || getNodeRadius(nodeType === 'sub2' ? 'sub' : 'parent');
+    const endRadius = propEndRadius || getNodeRadius(nodeType);
+
+    // Sub2 connections (diagonal)
+    if (connectionType === 'sub2') {
+        const startX = start.x + startRadius;
+        const startY = start.y;
+        const endX = end.x - endRadius;
+        const endY = end.y;
+        const controlX = startX + (endX - startX) / 2;
+
+        return (
+            <motion.path
+                d={`M ${startX} ${startY} 
+                    C ${controlX} ${startY},
+                      ${controlX} ${endY},
+                      ${endX} ${endY}`}
+                stroke="rgba(255, 255, 255, 0.3)"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+        );
+    }
+
+    // Sequential connections (between siblings)
+    if (connectionType === 'sequential') {
+        const startX = start.x;
+        const startY = start.y + startRadius;
+        const endX = end.x;
+        const endY = end.y - endRadius;
+
+        return (
+            <motion.path
+                d={`M ${startX} ${startY} 
+                    L ${startX} ${startY + ((endY - startY) / 2)}
+                    L ${endX} ${endY - ((endY - startY) / 2)}
+                    L ${endX} ${endY}`}
+                stroke="rgba(255, 255, 255, 0.3)"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+        );
+    }
+
+    // Vertical connections (parent to child)
+    const startX = start.x;
+    const startY = start.y + startRadius;
+    const endX = end.x;
+    const endY = end.y - endRadius;
+
     return (
-        <path
-            d={getPath()}
-            stroke="white"
+        <motion.path
+            d={`M ${startX} ${startY} 
+                L ${startX} ${endY}`}
+            stroke="rgba(255, 255, 255, 0.3)"
             strokeWidth="2"
             fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
         />
     );
 }
