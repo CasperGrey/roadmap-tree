@@ -1,4 +1,3 @@
-// src/components/nodes/NodeTree.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TreeNode as TreeNodeType, Position, NodeType } from '../../types/tree';
@@ -30,6 +29,16 @@ export function NodeTree({
     const canAddSub = node.type === 'parent';
     const canAddSub2 = node.type === 'sub';
 
+    const getConnectionType = (parentNode: TreeNodeType, childNode: TreeNodeType): 'vertical' | 'sequential' | 'sub2' => {
+        if (childNode.type === 'sub2') {
+            return 'sub2';
+        }
+        if (parentNode.type === 'parent' && !childNode.prevSiblingId) {
+            return 'vertical';
+        }
+        return 'sequential';
+    };
+
     return (
         <g>
             <TreeNodeComponent
@@ -38,7 +47,7 @@ export function NodeTree({
                 onNodeClick={onNodeClick}
             />
 
-            {node.children?.map((child) => {
+            {node.children?.map((child, childIndex) => {
                 const childPos = getNodePosition(child, index);
 
                 if (!childPos) {
@@ -49,21 +58,20 @@ export function NodeTree({
                 return (
                     <motion.g
                         key={child.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                     >
                         <TreeConnector
                             start={position}
                             end={childPos}
                             nodeType={child.type}
-                            connectionType={!child.prevSiblingId && child.type === 'sub' ? 'vertical' : child.type === 'sub2' ? 'sub2' : 'sequential'}
+                            connectionType={getConnectionType(node, child)}
                         />
-
                         <NodeTree
                             node={child}
                             position={childPos}
-                            index={index}
+                            index={childIndex}
                             getNodePosition={getNodePosition}
                             onNodeClick={onNodeClick}
                             onAddClick={onAddClick}
@@ -73,34 +81,25 @@ export function NodeTree({
                 );
             })}
 
-            {showAddButtons && onAddClick && (
-                <foreignObject
-                    x={position.x - 60}
-                    y={position.y + 80}
-                    width="120"
-                    height="80"
-                >
-                    <div className="flex flex-col gap-2">
-                        {canAddSub && (
-                            <button
-                                onClick={() => onAddClick(node.id, 'sub')}
-                                className="px-2 py-1 bg-[#204B87] hover:bg-[#2b5ca6] text-white rounded
-                                         transition-colors border border-white/20 text-sm"
-                            >
-                                Add Sub
-                            </button>
-                        )}
-                        {canAddSub2 && (
-                            <button
-                                onClick={() => onAddClick(node.id, 'sub2')}
-                                className="px-2 py-1 bg-[#204B87] hover:bg-[#2b5ca6] text-white rounded
-                                         transition-colors border border-white/20 text-sm"
-                            >
-                                Add Sub-2
-                            </button>
-                        )}
-                    </div>
-                </foreignObject>
+            {showAddButtons && (
+                <g>
+                    {canAddSub && (
+                        <Button
+                            onClick={() => onAddClick?.(node.id, 'sub')}
+                            startIcon={<AddCircleOutlineIcon />}
+                        >
+                            Add Sub
+                        </Button>
+                    )}
+                    {canAddSub2 && (
+                        <Button
+                            onClick={() => onAddClick?.(node.id, 'sub2')}
+                            startIcon={<AddCircleOutlineIcon />}
+                        >
+                            Add Sub2
+                        </Button>
+                    )}
+                </g>
             )}
         </g>
     );
