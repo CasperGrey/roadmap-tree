@@ -1,3 +1,4 @@
+// treePositionUtils.ts
 import { TreeNode, Position } from '../types/tree';
 
 interface PositionConfig {
@@ -30,6 +31,7 @@ export const calculateNodePosition = (
     const usableWidth = totalWidth - (margin * 2);
     const spacing = usableWidth / (parentNodes.length - 1);
 
+    // Handle parent nodes
     if (node.type === 'parent') {
         const parentIndex = parentNodes.findIndex(n => n.id === node.id);
         return {
@@ -38,41 +40,65 @@ export const calculateNodePosition = (
         };
     }
 
+    // Find the immediate parent for the current node
     const parent = findParentNode(treeData, node.id);
     if (!parent) {
-        throw new Error(`Parent not found for node ${node.id}`);
+        console.error(`Parent not found for node ${node.id}`);
+        return { x: 0, y: 0 }; // Fallback position
     }
 
     const parentPos = calculateNodePosition(parent, index, treeData, config);
-    const siblings = parent.children || [];
-    const nodeIndex = siblings.findIndex(n => n.id === node.id);
 
+    // Handle sub nodes
     if (node.type === 'sub') {
+        const siblings = parent.children?.filter(child => child.type === 'sub') || [];
+        const nodeIndex = siblings.findIndex(n => n.id === node.id);
         const siblingSpacing = parentSpacing / (siblings.length + 1);
+
         return {
             x: parentPos.x - (parentSpacing / 2) + ((nodeIndex + 1) * siblingSpacing),
             y: parentPos.y + levelSpacing
         };
     }
 
+    // Handle sub2 nodes
     if (node.type === 'sub2') {
-        const subParent = siblings.find(s => s.children?.some(c => c.id === node.id));
+        // Find the sub node that is the parent of this sub2 node
+        const subParent = findDirectParent(treeData, node.id);
         if (!subParent) {
-            throw new Error(`Sub parent not found for node ${node.id}`);
+            console.error(`Sub parent not found for node ${node.id}`);
+            return { x: 0, y: 0 }; // Fallback position
         }
 
         const subParentPos = calculateNodePosition(subParent, index, treeData, config);
-        const subSiblings = subParent.children || [];
+        const subSiblings = subParent.children?.filter(child => child.type === 'sub2') || [];
         const subIndex = subSiblings.findIndex(n => n.id === node.id);
-        const subSpacing = parentSpacing / (subSiblings.length + 1);
 
+        // Position sub2 nodes to the right of their sub parent
         return {
-            x: subParentPos.x - (parentSpacing / 2) + ((subIndex + 1) * subSpacing),
-            y: subParentPos.y + levelSpacing
+            x: subParentPos.x + parentSpacing / 2,
+            y: subParentPos.y + (subIndex * levelSpacing / 2)
         };
     }
 
     throw new Error(`Invalid node type: ${node.type}`);
+};
+
+// Helper function to find the direct parent of a node
+const findDirectParent = (treeData: TreeNode[], nodeId: string): TreeNode | null => {
+    for (const node of treeData) {
+        if (node.children?.some(child => child.id === nodeId)) {
+            return node;
+        }
+        if (node.children) {
+            for (const child of node.children) {
+                if (child.children?.some(grandChild => grandChild.id === nodeId)) {
+                    return child;
+                }
+            }
+        }
+    }
+    return null;
 };
 
 export const getParentNodes = (treeData: TreeNode[]): TreeNode[] => {
@@ -88,8 +114,11 @@ export const findParentNode = (
             return node;
         }
         if (node.children) {
-            const found = findParentNode(node.children, nodeId);
-            if (found) return found;
+            for (const child of node.children) {
+                if (child.children?.some(grandChild => grandChild.id === nodeId)) {
+                    return child;
+                }
+            }
         }
     }
     return null;
