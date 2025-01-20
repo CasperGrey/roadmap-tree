@@ -1,4 +1,3 @@
-// src/components/layout/AITree.tsx
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
 import { TreeNode, NodeType } from '../../types/tree';
@@ -6,6 +5,7 @@ import { SidePanel } from '../panels/SidePanel';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
+import { addNodeToTree, generateNodeId } from '../../utils/treeManipulationUtils';
 import ReactDOM from 'react-dom';
 
 interface AITreeProps {
@@ -21,9 +21,16 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedParentId, setSelectedParentId] = useState<string>('');
     const [selectedNodeType, setSelectedNodeType] = useState<SelectableNodeType>('sub');
+    const [error, setError] = useState<string | null>(null);
 
     const getNodePos = (node: TreeNode, index: number) => {
-        return calculateNodePosition(node, index, treeData, { startY });
+        try {
+            return calculateNodePosition(node, index, treeData, { startY });
+        } catch (error) {
+            console.error('Error calculating node position:', error);
+            setError('Failed to calculate node position');
+            return null;
+        }
     };
 
     const handleNodeClick = (node: TreeNode) => {
@@ -38,75 +45,85 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     };
 
     const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
-        const newNode: TreeNode = {
-            ...nodeData,
-            id: `node-${Date.now()}`,
-            children: []
-        };
-
-        setTreeData(currentTreeData => {
-            const updateNodes = (nodes: TreeNode[]): TreeNode[] => {
-                return nodes.map(node => {
-                    if (node.id === nodeData.parentId) {
-                        return {
-                            ...node,
-                            children: [...(node.children || []), newNode]
-                        };
-                    }
-                    if (node.children) {
-                        return {
-                            ...node,
-                            children: updateNodes(node.children)
-                        };
-                    }
-                    return node;
-                });
+        try {
+            const newNode: TreeNode = {
+                ...nodeData,
+                id: generateNodeId(),
+                children: []
             };
-            return updateNodes(currentTreeData);
-        });
 
-        setIsAddModalOpen(false);
+            const position = getNodePos(newNode, treeData.length);
+            if (!position) {
+                throw new Error("Failed to calculate node position");
+            }
+
+            setTreeData(currentTreeData =>
+                addNodeToTree(currentTreeData, selectedParentId, newNode)
+            );
+            setIsAddModalOpen(false);
+        } catch (error) {
+            console.error('Error adding node:', error);
+            setError('Failed to add new node');
+        }
     };
 
-    const panelRoot = document.getElementById('panel-root');
-    const modalRoot = document.getElementById('modal-root');
+    const handleClosePanel = () => {
+        setSelectedNode(null);
+    };
+
+    const handleCloseModal = () => {
+        setIsAddModalOpen(false);
+        setSelectedParentId('');
+    };
 
     return (
         <>
-            <g>
-                {treeData.map((node, index) => (
-                    <NodeTree
-                        key={node.id}
-                        node={node}
-                        position={getNodePos(node, index)}
-                        index={index}
-                        getNodePosition={getNodePos}
-                        onNodeClick={handleNodeClick}
-                        onAddClick={handleAddClick}
-                        showButtons={showButtons}
-                    />
-                ))}
-            </g>
+            <svg width="100%" height="100%" viewBox="0 0 3432 1716">
+                {treeData.map((node, index) => {
+                    const position = getNodePos(node, index);
+                    if (!position) return null;
 
-            {/* Side Panel for Node Details */}
-            {selectedNode && panelRoot && ReactDOM.createPortal(
+                    return (
+                        <NodeTree
+                            key={node.id}
+                            node={node}
+                            position={position}
+                            index={index}
+                            getNodePosition={getNodePos}
+                            onNodeClick={handleNodeClick}
+                            onAddClick={handleAddClick}
+                            showButtons={showButtons}
+                        />
+                    );
+                })}
+            </svg>
+
+            {selectedNode && (
                 <SidePanel
                     node={selectedNode}
-                    onClose={() => setSelectedNode(null)}
-                />,
-                panelRoot
+                    onClose={handleClosePanel}
+                />
             )}
 
-            {/* Modal for Adding Nodes */}
-            {isAddModalOpen && modalRoot && ReactDOM.createPortal(
+            {isAddModalOpen && (
                 <AddNodeModal
-                    isOpen={isAddModalOpen}
-                    onClose={() => setIsAddModalOpen(false)}
-                    onAdd={handleNodeAdd}
                     parentId={selectedParentId}
                     nodeType={selectedNodeType}
-                />,
-                modalRoot
+                    onAdd={handleNodeAdd}
+                    onClose={handleCloseModal}
+                />
+            )}
+
+            {error && (
+                <div className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg">
+                    {error}
+                    <button
+                        onClick={() => setError(null)}
+                        className="ml-2 font-bold"
+                    >
+                        ×
+                    </button>
+                </div>
             )}
         </>
     );

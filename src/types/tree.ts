@@ -1,4 +1,3 @@
-// src/types/tree.ts
 export type NodeType = 'parent' | 'sub' | 'sub2';
 
 export interface Position {
@@ -8,37 +7,27 @@ export interface Position {
 
 export interface TreeNode {
     id: string;
-    type: NodeType;
     title: string;
-    icon: string;
     description?: string;
-    parentId: string;
-    nextSiblingId?: string;
-    prevSiblingId?: string;
+    icon: string;
+    type: NodeType;
     children?: TreeNode[];
+    parentId?: string;
+    prevSiblingId?: string;
 }
 
 export interface NewNodeData {
-    type: NodeType;
     title: string;
-    icon: string;
     description?: string;
+    icon: string;
+    type: NodeType;
     parentId: string;
 }
 
-export interface AddNodeModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onAdd: (nodeData: NewNodeData) => void;
-    parentId: string;
-    nodeType: 'sub' | 'sub2';
-}
-
-export interface TreeConnectorProps {
-    start: Position;
-    end: Position;
-    nodeType: NodeType;
-    connectionType: 'vertical' | 'sequential' | 'sub2';
-    startRadius?: number;
-    endRadius?: number;
+export interface TreeNodeStyles {
+    radius: number;
+    fill: string;
+    titleOffset: number;
+    titleClass: string;
+    iconSize: number;
 }

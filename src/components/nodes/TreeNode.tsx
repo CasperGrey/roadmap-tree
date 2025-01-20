@@ -1,11 +1,10 @@
-// src/components/nodes/TreeNode.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { TreeNode } from '../../types/tree';
 
 interface TreeNodeComponentProps {
     node: TreeNode;
     position: { x: number; y: number };
-    onNodeClick: (node: TreeNode) => void;  // Made required since it's essential functionality
+    onNodeClick: (node: TreeNode) => void;
 }
 
 export function TreeNodeComponent({
@@ -13,6 +12,9 @@ export function TreeNodeComponent({
                                       position,
                                       onNodeClick
                                   }: TreeNodeComponentProps) {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [imageError, setImageError] = useState(false);
+
     const getNodeStyles = (type: 'parent' | 'sub' | 'sub2') => {
         const styles = {
             parent: {
@@ -42,12 +44,9 @@ export function TreeNodeComponent({
     };
 
     const toTitleCase = (str: string) => {
+        const UPPERCASE_WORDS = ['AI', 'PR', 'MS', 'LMS', 'POC'];
         return str.split(' ').map(word => {
-            if (word.toUpperCase() === 'AI' ||
-                word.toUpperCase() === 'PR' ||
-                word.toUpperCase() === 'MS' ||
-                word.toUpperCase() === 'LMS' ||
-                word.toUpperCase() === 'POC') {
+            if (UPPERCASE_WORDS.includes(word.toUpperCase())) {
                 return word.toUpperCase();
             }
             if (word === '&') return '&';
@@ -65,7 +64,6 @@ export function TreeNodeComponent({
 
     return (
         <g transform={`translate(${position.x},${position.y})`}>
-            {/* Background circle */}
             <circle
                 r={style.radius}
                 fill={style.fill}
@@ -75,17 +73,28 @@ export function TreeNodeComponent({
                 onClick={handleClick}
             />
 
-            {/* Icon */}
             {isImageUrl(node.icon) ? (
-                <svg x={-style.iconSize/2} y={-style.iconSize/2} width={style.iconSize} height={style.iconSize}>
-                    <image
-                        href={node.icon}
-                        width="100%"
-                        height="100%"
-                        filter="brightness(0) invert(1)"
-                        preserveAspectRatio="xMidYMid meet"
-                    />
-                </svg>
+                <>
+                    {!imageLoaded && !imageError && (
+                        <circle
+                            r={style.radius}
+                            fill="#204B87"
+                            className="animate-pulse"
+                        />
+                    )}
+                    <svg x={-style.iconSize/2} y={-style.iconSize/2} width={style.iconSize} height={style.iconSize}>
+                        <image
+                            href={node.icon}
+                            width="100%"
+                            height="100%"
+                            onLoad={() => setImageLoaded(true)}
+                            onError={() => setImageError(true)}
+                            style={{ opacity: imageLoaded ? 1 : 0 }}
+                            filter="brightness(0) invert(1)"
+                            preserveAspectRatio="xMidYMid meet"
+                        />
+                    </svg>
+                </>
             ) : (
                 <foreignObject
                     x={-style.iconSize/2}
@@ -99,7 +108,6 @@ export function TreeNodeComponent({
                 </foreignObject>
             )}
 
-            {/* Title */}
             <text
                 x={style.titleOffset}
                 y="0"

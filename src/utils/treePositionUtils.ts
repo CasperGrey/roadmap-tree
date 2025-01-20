@@ -1,94 +1,96 @@
-// src/utils/treePositionUtils.ts
-import { TreeNode } from '../types/tree';
+import { TreeNode, Position } from '../types/tree';
 
-export const getParentNodes = (treeData: TreeNode[]): TreeNode[] =>
-    treeData.filter(node => node.type === 'parent');
+interface PositionConfig {
+    startY?: number;
+    parentSpacing?: number;
+    levelSpacing?: number;
+    margin?: number;
+}
 
-const findParentChain = (nodeId: string, treeData: TreeNode[]): TreeNode[] => {
-    const findInNodes = (nodes: TreeNode[], chain: TreeNode[] = []): TreeNode[] => {
-        for (const node of nodes) {
-            if (node.id === nodeId) {
-                return [...chain, node];
-            }
-            if (node.children) {
-                const result = findInNodes(node.children, [...chain, node]);
-                if (result.length) return result;
-            }
-        }
-        return [];
-    };
-    return findInNodes(treeData);
+const DEFAULT_CONFIG: Required<PositionConfig> = {
+    startY: 800,
+    parentSpacing: 400,
+    levelSpacing: 200,
+    margin: 200
 };
 
 export const calculateNodePosition = (
     node: TreeNode,
     index: number,
     treeData: TreeNode[],
-    config: { startY?: number } = {}
-): { x: number; y: number } => {
-    const startY = config.startY || 800;
-    const margin = 200;
+    config: PositionConfig = {}
+): Position => {
+    const { startY, parentSpacing, levelSpacing, margin } = {
+        ...DEFAULT_CONFIG,
+        ...config
+    };
+
+    const parentNodes = getParentNodes(treeData);
     const totalWidth = 3432;
     const usableWidth = totalWidth - (margin * 2);
-    const parentNodes = getParentNodes(treeData);
-    const parentSpacing = usableWidth / (parentNodes.length - 1);
+    const spacing = usableWidth / (parentNodes.length - 1);
 
-    // Parent node positioning
     if (node.type === 'parent') {
-        const parentIndex = parentNodes.findIndex(p => p.id === node.id);
+        const parentIndex = parentNodes.findIndex(n => n.id === node.id);
         return {
-            x: margin + (parentIndex * parentSpacing),
+            x: margin + (parentIndex * spacing),
             y: startY
         };
     }
 
-    // Find the parent chain for this node
-    const parentChain = findParentChain(node.id, treeData);
-    if (!parentChain.length) return { x: 0, y: 0 };
+    const parent = findParentNode(treeData, node.id);
+    if (!parent) {
+        throw new Error(`Parent not found for node ${node.id}`);
+    }
 
-    const mainParent = parentChain[0];
-    const parentIndex = parentNodes.findIndex(p => p.id === mainParent.id);
-    const parentX = margin + (parentIndex * parentSpacing);
-    const verticalSpacing = 150; // Space between sub nodes
+    const parentPos = calculateNodePosition(parent, index, treeData, config);
+    const siblings = parent.children || [];
+    const nodeIndex = siblings.findIndex(n => n.id === node.id);
 
-    // Sub node positioning
     if (node.type === 'sub') {
-        const siblings = mainParent.children?.filter(c => c.type === 'sub') || [];
-        const subIndex = siblings.findIndex(s => s.id === node.id);
-
+        const siblingSpacing = parentSpacing / (siblings.length + 1);
         return {
-            x: parentX,
-            y: startY + 200 + (subIndex * verticalSpacing)
+            x: parentPos.x - (parentSpacing / 2) + ((nodeIndex + 1) * siblingSpacing),
+            y: parentPos.y + levelSpacing
         };
     }
 
-    // Sub2 node positioning
     if (node.type === 'sub2') {
-        const immediateParent = parentChain[parentChain.length - 2];
-        if (!immediateParent || immediateParent.type !== 'sub') {
-            return { x: 0, y: 0 };
+        const subParent = siblings.find(s => s.children?.some(c => c.id === node.id));
+        if (!subParent) {
+            throw new Error(`Sub parent not found for node ${node.id}`);
         }
 
-        // Find the sub parent's position
-        const subParentSiblings = mainParent.children?.filter(c => c.type === 'sub') || [];
-        const subParentIndex = subParentSiblings.findIndex(s => s.id === immediateParent.id);
-        const subParentY = startY + 200 + (subParentIndex * verticalSpacing);
-
-        // Find the next sub sibling to position sub2 between them
-        const nextSubSibling = subParentSiblings[subParentIndex + 1];
-        const nextSubY = nextSubSibling
-            ? startY + 200 + ((subParentIndex + 1) * verticalSpacing)
-            : subParentY + verticalSpacing;
-
-        // Position sub2 halfway between current and next sub node
-        const horizontalOffset = 150;  // Distance to the right
-        const midpointY = (subParentY + nextSubY) / 2;
+        const subParentPos = calculateNodePosition(subParent, index, treeData, config);
+        const subSiblings = subParent.children || [];
+        const subIndex = subSiblings.findIndex(n => n.id === node.id);
+        const subSpacing = parentSpacing / (subSiblings.length + 1);
 
         return {
-            x: parentX + horizontalOffset,
-            y: midpointY
+            x: subParentPos.x - (parentSpacing / 2) + ((subIndex + 1) * subSpacing),
+            y: subParentPos.y + levelSpacing
         };
     }
 
-    return { x: 0, y: 0 };
+    throw new Error(`Invalid node type: ${node.type}`);
+};
+
+export const getParentNodes = (treeData: TreeNode[]): TreeNode[] => {
+    return treeData.filter(node => node.type === 'parent');
+};
+
+export const findParentNode = (
+    treeData: TreeNode[],
+    nodeId: string
+): TreeNode | null => {
+    for (const node of treeData) {
+        if (node.children?.some(child => child.id === nodeId)) {
+            return node;
+        }
+        if (node.children) {
+            const found = findParentNode(node.children, nodeId);
+            if (found) return found;
+        }
+    }
+    return null;
 };
