@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { TreeNode as TreeNodeType, Position, NodeType } from '../../types/tree';
 import { TreeNodeComponent } from './TreeNode';
 import { TreeConnector } from '../connectors/TreeConnector';
+import { Button } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 interface NodeTreeProps {
     node: TreeNodeType;
@@ -55,7 +57,7 @@ export function NodeTree({
                             start={position}
                             end={childPos}
                             nodeType={child.type}
-                            connectionType={child.type === 'sub2' ? 'sub2' : 'sequential'}
+                            connectionType={!child.prevSiblingId && child.type === 'sub' ? 'vertical' : child.type === 'sub2' ? 'sub2' : 'sequential'}
                         />
 
                         <NodeTree
@@ -82,7 +84,8 @@ export function NodeTree({
                         {canAddSub && (
                             <button
                                 onClick={() => onAddClick(node.id, 'sub')}
-                                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                                className="px-2 py-1 bg-[#204B87] hover:bg-[#2b5ca6] text-white rounded
+                                         transition-colors border border-white/20 text-sm"
                             >
                                 Add Sub
                             </button>
@@ -90,7 +93,8 @@ export function NodeTree({
                         {canAddSub2 && (
                             <button
                                 onClick={() => onAddClick(node.id, 'sub2')}
-                                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                                className="px-2 py-1 bg-[#204B87] hover:bg-[#2b5ca6] text-white rounded
+                                         transition-colors border border-white/20 text-sm"
                             >
                                 Add Sub-2
                             </button>

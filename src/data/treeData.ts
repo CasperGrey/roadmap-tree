@@ -169,7 +169,7 @@ export const treeData: TreeNode[] = [
                 children: [{
                     id: 'copilot-red-team',
                     type: 'sub2',
-                    title: 'CoPilot Red Team',
+                    title: 'CoPilot RED TEAM',
                     icon: '/assets/icons8-burglar-32.png',
                     description: 'Security testing team for Copilot implementations.',
                     parentId: 'copilot-readiness'
@@ -178,7 +178,7 @@ export const treeData: TreeNode[] = [
             {
                 id: 'ms-purview',
                 type: 'sub',
-                title: 'MS Purview',
+                title: 'MS PURVIEW',
                 icon: '/assets/icons8-eye-64.png',
                 description: 'Implementation of Microsoft Purview.',
                 parentId: 'ai-safety',
@@ -188,7 +188,7 @@ export const treeData: TreeNode[] = [
             {
                 id: 'ai-policy',
                 type: 'sub',
-                title: 'AI Policy & Governance Model',
+                title: 'AI POLICY & GOVERNANCE MODEL',
                 icon: '/assets/icons8-report-50.png',
                 description: 'Development of AI governance framework.',
                 parentId: 'ai-safety',
@@ -224,7 +224,7 @@ export const treeData: TreeNode[] = [
             {
                 id: 'ms-purview-extension',
                 type: 'sub',
-                title: 'MS Purview Browser Extension',
+                title: 'MS PURVIEW BROWSER ESTENSION',
                 icon: '/assets/icons8-eye-64.png',
                 description: 'Browser extension for Microsoft Purview.',
                 parentId: 'ai-safety',
@@ -234,7 +234,7 @@ export const treeData: TreeNode[] = [
             {
                 id: 'ai-monitoring',
                 type: 'sub',
-                title: 'AI Monitoring & Audits',
+                title: 'AI MONITORING & AUDIT',
                 icon: '/assets/icons8-audit-50.png',
                 description: 'Continuous monitoring of AI systems.',
                 parentId: 'ai-safety',
