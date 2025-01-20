@@ -18,6 +18,22 @@ export function SidePanel({ node, onClose }: SidePanelProps) {
         return () => window.removeEventListener('keydown', handleEscape);
     }, [onClose]);
 
+    const findParentChain = (nodeId: string, treeData: TreeNode[]): TreeNode[] => {
+        const findInNodes = (nodes: TreeNode[], chain: TreeNode[] = []): TreeNode[] => {
+            for (const node of nodes) {
+                if (node.id === nodeId) {
+                    return [...chain, node];
+                }
+                if (node.children?.length) {
+                    const result = findInNodes(node.children, [...chain, node]);
+                    if (result.length) return result;
+                }
+            }
+            return [];
+        };
+        return findInNodes(treeData);
+    };
+
     const toTitleCase = (str: string) => {
         return str.split(' ').map(word => {
             if (word.toUpperCase() === 'AI' ||

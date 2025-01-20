@@ -7,13 +7,14 @@ export interface Position {
 
 export interface TreeNode {
     id: string;
-    title: string;
-    description?: string;
-    icon: string;
     type: NodeType;
-    children?: TreeNode[];
-    parentId?: string;
+    title: string;
+    icon: string;
+    description?: string;
+    parentId?: string;  // Make optional since parent nodes don't have a parentId
+    nextSiblingId?: string;
     prevSiblingId?: string;
+    children?: TreeNode[];
 }
 
 export interface NewNodeData {
@@ -30,4 +31,12 @@ export interface TreeNodeStyles {
     titleOffset: number;
     titleClass: string;
     iconSize: number;
+}
+
+export interface AddNodeModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onAdd: (nodeData: NewNodeData) => void;
+    parentId: string;
+    nodeType: Extract<NodeType, 'sub' | 'sub2'>;
 }

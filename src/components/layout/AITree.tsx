@@ -1,11 +1,11 @@
 import React, { useState, ReactElement } from 'react';
 import { NodeTree } from '../nodes/NodeTree';
-import { TreeNode, NodeType } from '../../types/tree';
+import {TreeNode, NodeType, NewNodeData, Position } from '../../types/tree';
 import { SidePanel } from '../panels/SidePanel';
 import { AddNodeModal } from '../nodes/AddNodeModal';
 import { treeData as initialTreeData } from '../../data/treeData';
 import { calculateNodePosition } from '../../utils/treePositionUtils';
-import { addNodeToTree, generateNodeId } from '../../utils/treeManipulationUtils';
+import {addNodeToTree, createNewNode, generateNodeId} from '../../utils/treeManipulationUtils';
 import ReactDOM from 'react-dom';
 
 interface AITreeProps {
@@ -23,13 +23,15 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
     const [selectedNodeType, setSelectedNodeType] = useState<SelectableNodeType>('sub');
     const [error, setError] = useState<string | null>(null);
 
-    const getNodePos = (node: TreeNode, index: number) => {
+    const getNodePos = (node: TreeNode, index: number): Position => {
         try {
-            return calculateNodePosition(node, index, treeData, { startY });
+            const position = calculateNodePosition(node, index, treeData, { startY });
+            return position;
         } catch (error) {
             console.error('Error calculating node position:', error);
             setError('Failed to calculate node position');
-            return null;
+            // Return a default position instead of null
+            return { x: 0, y: 0 };
         }
     };
 
@@ -44,26 +46,30 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
         setIsAddModalOpen(true);
     };
 
-    const handleNodeAdd = (nodeData: Omit<TreeNode, 'id' | 'children'>) => {
+    const handleNodeAdd = (nodeData: NewNodeData) => {
         try {
+            // Create new node with proper typing
             const newNode: TreeNode = {
                 ...nodeData,
                 id: generateNodeId(),
                 children: []
             };
 
+            // Calculate position - important to keep this!
             const position = getNodePos(newNode, treeData.length);
             if (!position) {
                 throw new Error("Failed to calculate node position");
             }
 
+            // Update tree data while maintaining structure
             setTreeData(currentTreeData =>
-                addNodeToTree(currentTreeData, selectedParentId, newNode)
+                addNodeToTree(currentTreeData, nodeData.parentId, newNode)
             );
             setIsAddModalOpen(false);
+            setError(null);
         } catch (error) {
             console.error('Error adding node:', error);
-            setError('Failed to add new node');
+            setError(error instanceof Error ? error.message : 'Failed to add new node');
         }
     };
 
@@ -107,6 +113,7 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
 
             {isAddModalOpen && (
                 <AddNodeModal
+                    isOpen={isAddModalOpen}  // Add this line
                     parentId={selectedParentId}
                     nodeType={selectedNodeType}
                     onAdd={handleNodeAdd}
