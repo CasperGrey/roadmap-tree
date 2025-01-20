@@ -7,6 +7,10 @@ import { treeData } from './data/treeData';
 import { Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { motion } from 'framer-motion';
+import {SidePanel} from "./components/panels/SidePanel";
+import {TreeNode} from "./types/tree";
+
+
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -15,6 +19,7 @@ export default function App() {
     const totalWidth = 3432;
     const usableWidth = totalWidth - (margin * 2);
     const parentSpacing = usableWidth / (parentNodes.length - 1);
+    const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
 
     const verticalLineStartY = 445;
     const verticalLineEndY = 600;
@@ -33,7 +38,7 @@ export default function App() {
             {/* Admin Toggle Button */}
             <Button
                 variant="contained"
-                startIcon={<SettingsIcon />}
+                startIcon={<SettingsIcon/>}
                 onClick={() => setIsAdmin(!isAdmin)}
                 style={{
                     position: 'fixed',
@@ -46,27 +51,32 @@ export default function App() {
             >
                 {isAdmin ? 'Exit Admin' : 'Admin Mode'}
             </Button>
+            <div id="panel-root" className="fixed inset-0 z-50 pointer-events-none"/>
+            <SidePanel
+                node={selectedNode}
+                onClose={() => setSelectedNode(null)}
+            />
 
             {/* Main Content */}
             <div className="flex-1 w-full relative">
                 <ZoomableViewport initialWidth={3432} initialHeight={2000}>
                     <g>
                         {/* Background */}
-                        <rect width="3432" height="2000" fill="#1C3559" />
+                        <rect width="3432" height="2000" fill="#1C3559"/>
 
                         {/* Header Section */}
                         <g>
                             {/* Lines */}
-                            <line x1="0" y1="400" x2="3432" y2="400" stroke="#ffffff" strokeWidth="8" />
-                            <line x1="0" y1="415" x2="3432" y2="415" stroke="#ffffff" strokeWidth="8" />
-                            <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8" />
-                            <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8" />
+                            <line x1="0" y1="400" x2="3432" y2="400" stroke="#ffffff" strokeWidth="8"/>
+                            <line x1="0" y1="415" x2="3432" y2="415" stroke="#ffffff" strokeWidth="8"/>
+                            <line x1="0" y1="430" x2="3432" y2="430" stroke="#204B87" strokeWidth="8"/>
+                            <line x1="0" y1="445" x2="3432" y2="445" stroke="#204B87" strokeWidth="8"/>
 
                             {/* Cloud animations */}
                             {/* Left to right cloud */}
                             <motion.g
-                                initial={{ x: -200 }}
-                                animate={{ x: 3632 }}
+                                initial={{x: -200}}
+                                animate={{x: 3632}}
                                 transition={{
                                     duration: 30,
                                     repeat: Infinity,
@@ -79,14 +89,14 @@ export default function App() {
                                     width="160"
                                     height="120"
                                     y="100"
-                                    style={{ opacity: 0.7 }}
+                                    style={{opacity: 0.7}}
                                 />
                             </motion.g>
 
                             {/* Right to left cloud - starts from right */}
                             <motion.g
-                                initial={{ x: 3632 }}
-                                animate={{ x: -200 }}
+                                initial={{x: 3632}}
+                                animate={{x: -200}}
                                 transition={{
                                     duration: 30,
                                     repeat: Infinity,
@@ -99,14 +109,14 @@ export default function App() {
                                     width="160"
                                     height="120"
                                     y="180"
-                                    style={{ opacity: 0.7 }}
+                                    style={{opacity: 0.7}}
                                 />
                             </motion.g>
 
                             {/* Additional clouds with offset starting positions */}
                             <motion.g
-                                initial={{ x: 1716 }}
-                                animate={{ x: 3632 }}
+                                initial={{x: 1716}}
+                                animate={{x: 3632}}
                                 transition={{
                                     duration: 30,
                                     repeat: Infinity,
@@ -119,13 +129,13 @@ export default function App() {
                                     width="160"
                                     height="120"
                                     y="140"
-                                    style={{ opacity: 0.7 }}
+                                    style={{opacity: 0.7}}
                                 />
                             </motion.g>
 
                             <motion.g
-                                initial={{ x: 1716 }}
-                                animate={{ x: -200 }}
+                                initial={{x: 1716}}
+                                animate={{x: -200}}
                                 transition={{
                                     duration: 30,
                                     repeat: Infinity,
@@ -138,7 +148,7 @@ export default function App() {
                                     width="160"
                                     height="120"
                                     y="220"
-                                    style={{ opacity: 0.7 }}
+                                    style={{opacity: 0.7}}
                                 />
                             </motion.g>
 
@@ -171,7 +181,10 @@ export default function App() {
                         </g>
 
                         {/* Tree Section */}
-                        <AITree startY={800} showButtons={isAdmin} />
+                        <AITree
+                            startY={800}
+                            showButtons={isAdmin}
+                            />
                     </g>
                 </ZoomableViewport>
             </div>
