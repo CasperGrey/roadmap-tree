@@ -52,12 +52,10 @@ export default function App() {
             >
                 {isAdmin ? 'Exit Admin' : 'Admin Mode'}
             </Button>
-            <AnimatePresence>
-                <SidePanel
-                    node={selectedNode}
-                    onClose={() => setSelectedNode(null)}
-                />
-            </AnimatePresence>
+            <SidePanel
+                node={selectedNode}
+                onClose={() => setSelectedNode(null)}
+            />
 
             {/* Main Content */}
             <div className="flex-1 w-full relative">

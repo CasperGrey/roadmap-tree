@@ -5,13 +5,15 @@ interface TreeNodeComponentProps {
     node: TreeNode;
     position: { x: number; y: number };
     onNodeClick: (node: TreeNode) => void;
+    showButtons: boolean;
 }
 
 export function TreeNodeComponent({
-                                      node,
-                                      position,
-                                      onNodeClick
-                                  }: TreeNodeComponentProps) {
+                                       node,
+                                       position,
+                                       onNodeClick,
+                                       showButtons
+                                   }: TreeNodeComponentProps) {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
 
@@ -56,7 +58,11 @@ export function TreeNodeComponent({
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        onNodeClick(node);
+        if (showButtons) {
+            // Existing admin mode logic
+        } else {
+            onNodeClick(node);
+        }
     };
 
     const style = getNodeStyles(node.type);

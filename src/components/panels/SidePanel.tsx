@@ -60,10 +60,10 @@ export function SidePanel({ node, onClose }: SidePanelProps) {
                     {/* Backdrop for click-outside */}
                     <motion.div
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        animate={{ opacity: 0.3 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/20 z-40"
+                        className="fixed inset-0 bg-black z-40"
                     />
 
                     {/* Side Panel */}
