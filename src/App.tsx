@@ -51,7 +51,6 @@ export default function App() {
             >
                 {isAdmin ? 'Exit Admin' : 'Admin Mode'}
             </Button>
-            <div id="panel-root" className="fixed inset-0 z-50 pointer-events-none"/>
             <SidePanel
                 node={selectedNode}
                 onClose={() => setSelectedNode(null)}

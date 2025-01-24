@@ -8,7 +8,11 @@ interface SidePanelProps {
     onClose: () => void;
 }
 
+import { useClickOutside } from '@mantine/hooks';
+
 export function SidePanel({ node, onClose }: SidePanelProps) {
+    const ref = useClickOutside(onClose);
+    
     // Handle escape key
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
