@@ -1,5 +1,6 @@
 // src/App.tsx
 import React, { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import AITree from './components/layout/AITree';
 import { ZoomableViewport } from './components/layout/ZoomableViewport';
 import { getParentNodes } from './utils/treePositionUtils';
@@ -51,10 +52,12 @@ export default function App() {
             >
                 {isAdmin ? 'Exit Admin' : 'Admin Mode'}
             </Button>
-            <SidePanel
-                node={selectedNode}
-                onClose={() => setSelectedNode(null)}
-            />
+            <AnimatePresence>
+                <SidePanel
+                    node={selectedNode}
+                    onClose={() => setSelectedNode(null)}
+                />
+            </AnimatePresence>
 
             {/* Main Content */}
             <div className="flex-1 w-full relative">
