@@ -2,13 +2,14 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TreeNode } from '../../types/tree';
+import { useClickOutside } from '@mantine/hooks';
 
 interface SidePanelProps {
     node: TreeNode | null;
     onClose: () => void;
 }
 
-import { useClickOutside } from '@mantine/hooks';
+
 
 export function SidePanel({ node, onClose }: SidePanelProps) {
     const ref = useClickOutside(onClose);
