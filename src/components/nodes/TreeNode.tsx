@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { TreeNode } from '../../types/tree';
 
 interface TreeNodeComponentProps {
     node: TreeNode;
     position: { x: number; y: number };
     onNodeClick: (node: TreeNode) => void;
-    showButtons: boolean;
+    showButtons?: boolean;
 }
 
-export function TreeNodeComponent({
-                                       node,
-                                       position,
-                                       onNodeClick,
-                                       showButtons
-                                   }: TreeNodeComponentProps) {
+export const TreeNodeComponent = React.memo(forwardRef<HTMLDivElement, TreeNodeComponentProps>(({
+    node,
+    position,
+    onNodeClick,
+    showButtons = false
+}: TreeNodeComponentProps) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
+    const isMounted = useRef(true);
+    
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     const getNodeStyles = (type: 'parent' | 'sub' | 'sub2') => {
         const styles = {
@@ -47,20 +54,35 @@ export function TreeNodeComponent({
 
     const toTitleCase = (str: string) => {
         const UPPERCASE_WORDS = ['AI', 'PR', 'MS', 'LMS', 'POC'];
-        return str.split(' ').map(word => {
-            if (UPPERCASE_WORDS.includes(word.toUpperCase())) {
-                return word.toUpperCase();
+        return str.split(/(\s+|-+|\/+|&)/).map((segment, index, arr) => {
+            // Preserve whitespace, hyphens, slashes, and ampersands
+            if (/^\s+$/.test(segment) || /^-+$/.test(segment) ||
+                /^\/+$/.test(segment) || segment === '&') {
+                return segment;
             }
-            if (word === '&') return '&';
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }).join(' ');
+
+            // Check if previous segment was an ampersand
+            const afterAmpersand = index > 0 && arr[index - 1] === '&';
+            
+            // Preserve existing ALLCAPS words
+            if (segment === segment.toUpperCase()) return segment;
+            
+            // Handle special acronym cases
+            if (UPPERCASE_WORDS.includes(segment.toUpperCase())) {
+                return segment.toUpperCase();
+            }
+
+            // Capitalize first letter and handle subsequent characters
+            return segment.charAt(0).toUpperCase() +
+                (afterAmpersand
+                    ? segment.slice(1).toUpperCase()
+                    : segment.slice(1).toLowerCase());
+        }).join('');
     };
 
-    const handleClick = (e: React.MouseEvent) => {
+    const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
         e.stopPropagation();
-        if (showButtons) {
-            // Existing admin mode logic
-        } else {
+        if (!showButtons) {
             onNodeClick(node);
         }
     };
@@ -69,7 +91,17 @@ export function TreeNodeComponent({
     const isImageUrl = (icon: string) => icon.startsWith('http') || icon.startsWith('/') || icon.startsWith('./');
 
     return (
-        <g transform={`translate(${position.x},${position.y})`}>
+        <g
+            transform={`translate(${position.x},${position.y})`}
+            role="button"
+            tabIndex={0}
+            aria-label={`${node.title} node`}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    handleClick(e);
+                }
+            }}
+        >
             <circle
                 r={style.radius}
                 fill={style.fill}
@@ -125,4 +157,4 @@ export function TreeNodeComponent({
             </text>
         </g>
     );
-}
+}));

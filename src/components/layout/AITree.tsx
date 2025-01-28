@@ -28,15 +28,22 @@ const AITree = ({ startY = 800, showButtons = false }: AITreeProps): ReactElemen
             const position = calculateNodePosition(node, index, treeData, { startY });
             return position;
         } catch (error) {
-            console.error('Error calculating node position:', error);
-            setError('Failed to calculate node position');
-            // Return a default position instead of null
-            return { x: 0, y: 0 };
+            console.error('Node position calculation failed:', {
+                nodeId: node.id,
+                index,
+                treeDepth: treeData.length,
+                error: error instanceof Error ? error.message : 'Unknown error'
+            });
+            setError(`Position error for ${node.title} (${node.id}): ${error instanceof Error ? error.message : 'Please try again'}`);
+            // Return randomized fallback position to prevent overlap
+            return {
+                x: Math.random() * 500,
+                y: startY + (Math.random() * 100)
+            };
         }
     };
 
     const handleNodeClick = (node: TreeNode) => {
-        console.log('Opening panel for node:', node);
         setSelectedNode(node);
     };
 

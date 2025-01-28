@@ -15,7 +15,7 @@ import {TreeNode} from "./types/tree";
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);
-    const parentNodes = getParentNodes(treeData);
+    const parentNodes = React.useMemo(() => getParentNodes(treeData), [treeData]);
     const margin = 200;
     const totalWidth = 3432;
     const usableWidth = totalWidth - (margin * 2);
@@ -75,15 +75,24 @@ export default function App() {
                             {/* Cloud animations */}
                             {/* Left to right cloud */}
                             <motion.g
-                                initial={{x: -200}}
-                                animate={{x: 3632}}
-                                transition={{
-                                    duration: 30,
-                                    repeat: Infinity,
-                                    ease: "linear",
-                                    repeatDelay: 0
+                                role="img"
+                                aria-label="Decorative cloud animation"
+                                initial={{ x: -200 }}
+                                animate={{
+                                    x: typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                                        ? -200
+                                        : 3632,
+                                    transition: {
+                                        duration: 30,
+                                        repeat: typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                                            ? 0
+                                            : Infinity,
+                                        ease: "linear",
+                                        repeatDelay: 0
+                                    }
                                 }}
                             >
+                                <title>Animated cloud decoration</title>
                                 <image
                                     href="/assets/icons8-clouds-50.png"
                                     width="160"

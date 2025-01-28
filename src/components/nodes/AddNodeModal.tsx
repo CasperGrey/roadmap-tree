@@ -18,13 +18,19 @@ export function AddNodeModal({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Detailed validation with specific messages
         if (!title.trim()) {
-            setError('Title is required');
+            setError('Node title cannot be empty');
+            return;
+        }
+        
+        if (title.trim().length > 40) {
+            setError('Title must be less than 40 characters');
             return;
         }
 
         if (!icon.trim()) {
-            setError('Icon URL or name is required');
+            setError('Please select or enter an icon name');
             return;
         }
 
